@@ -119,7 +119,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
     int mUiState = 1;// 0 hide: 1: visible, 2: all visible
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void requestFullScreen() {
         final int uiHideOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -134,6 +134,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        mRootView.setSystemUiVisibility(uiHideOptions);
 
         View fullScreenController = mRootView
                 .findViewById(R.id.full_screen_controller);
@@ -167,14 +168,14 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         createPlayer(mFilePath);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         releasePlayer();
     }
 
@@ -193,8 +194,9 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
     public void surfaceChanged(SurfaceHolder surfaceholder, int format,
             int width, int height) {
-        if (libvlc != null)
+        if (libvlc != null) {
             libvlc.attachSurface(holder.getSurface(), this);
+        }
     }
 
     public void surfaceDestroyed(SurfaceHolder surfaceholder) {
@@ -203,8 +205,9 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     private void setSize(int width, int height) {
         mVideoWidth = width;
         mVideoHeight = height;
-        if (mVideoWidth * mVideoHeight <= 1)
+        if (mVideoWidth * mVideoHeight <= 1) {
             return;
+        }
 
         // get screen size
         int w = getWindow().getDecorView().getWidth();
@@ -236,6 +239,8 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         lp.height = h;
         mSurface.setLayoutParams(lp);
         mSurface.invalidate();
+
+        Log.d(TAG, "Set Video Surface View Width=" + w + ", Height=" + h);
     }
 
     @Override
@@ -279,6 +284,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         } catch (Exception e) {
             Toast.makeText(this, "Error creating player!", Toast.LENGTH_LONG)
                     .show();
+            Log.d(TAG, "Create Player Exception:" + e.toString());
         }
     }
 
