@@ -2,6 +2,8 @@ package com.wanke.danmaku.protocol;
 
 import org.apache.mina.core.buffer.IoBuffer;
 
+import android.util.Log;
+
 public class PushChatResponse extends BaseProtocol {
     /**
      * 聊天类型
@@ -182,12 +184,12 @@ public class PushChatResponse extends BaseProtocol {
         sendUserNickName = getStringByLength(b, 32);
         content = getStringByLength(b, 128);
 
-        System.out.println("Chat Type:" + chatType);
-        System.out.println("authenticated:" + authenticated);
-        System.out.println("anonymous:" + anonymous);
-        System.out.println("sendUserId:" + sendUserId);
-        System.out.println("sendUserNickName:" + sendUserNickName);
-        System.out.println("content:" + content);
+        Log.d(TAG, "Chat Type:" + chatType);
+        Log.d(TAG, "authenticated:" + authenticated);
+        Log.d(TAG, "anonymous:" + anonymous);
+        Log.d(TAG, "sendUserId:" + sendUserId);
+        Log.d(TAG, "sendUserNickName:" + sendUserNickName);
+        Log.d(TAG, "content:" + content);
 
         return 0;
     }

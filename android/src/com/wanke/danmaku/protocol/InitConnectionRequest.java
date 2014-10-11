@@ -118,7 +118,7 @@ public class InitConnectionRequest extends BaseProtocol {
     }
 
     @Override
-    public byte[] getBody() {
+    protected byte[] getBody() {
         IoBuffer b = IoBuffer.allocate(getBodyLength());
 
         b.putInt(roomId)
@@ -132,7 +132,7 @@ public class InitConnectionRequest extends BaseProtocol {
     }
 
     @Override
-    public int analyzeBody(byte[] recvBody) {
+    protected int analyzeBody(byte[] recvBody) {
         if (recvBody.length != getBodyLength()) {
             return -1;
         }

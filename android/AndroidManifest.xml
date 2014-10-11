@@ -29,8 +29,7 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape"
             android:finishOnTaskLaunch="true"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="stateVisible" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

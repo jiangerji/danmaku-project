@@ -1,2 +1,7 @@
 eclipse.preferences.version=1
+encoding//src/com/wanke/network/socket/SocketByteBuffer.java=UTF-8
+encoding//src/com/wanke/network/socket/SocketClient.java=UTF-8
+encoding//src/com/wanke/network/socket/SocketDataHandler.java=UTF-8
+encoding//src/com/wanke/network/socket/SocketInputThread.java=UTF-8
+encoding//src/com/wanke/network/socket/SocketThreadManager.java=UTF-8
 encoding/<project>=UTF-8

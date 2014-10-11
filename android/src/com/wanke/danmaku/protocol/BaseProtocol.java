@@ -2,10 +2,14 @@ package com.wanke.danmaku.protocol;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Hashtable;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import android.util.Log;
 
 public abstract class BaseProtocol {
     protected final static String TAG = "protocol";
@@ -222,14 +226,14 @@ public abstract class BaseProtocol {
     /**
      * 头部的长度
      */
-    int headLength = 12;
+    public final static int headLength = 12;
 
     /**
      * Resv INT2 2 保留字。
      * Checksum UINT2 2 校验位。
      * checksum的长度
      */
-    int checkSumLength = 4;
+    public final static int checkSumLength = 4;
 
     /**
      * 获取整个协议的数据包
@@ -289,4 +293,173 @@ public abstract class BaseProtocol {
         return analyzeBody(ResBody);
     }
 
+    /*******************************************************************************************/
+    private static Hashtable<Integer, Class> PROTOCOL_HANDLERS = new Hashtable<Integer, Class>();
+    static {
+        PROTOCOL_HANDLERS.put(Integer.valueOf(CMD_INIT_RES),
+                InitConnectionResponse.class);
+        PROTOCOL_HANDLERS.put(Integer.valueOf(CMD_USER_CHAT_PUSH),
+                PushChatResponse.class);
+        PROTOCOL_HANDLERS.put(Integer.valueOf(CMD_USER_CHAT_RES),
+                SendChatResponse.class);
+        PROTOCOL_HANDLERS.put(Integer.valueOf(CMD_USER_LOGIN_RES),
+                LoginResponse.class);
+        PROTOCOL_HANDLERS.put(Integer.valueOf(CMD_USER_LOGOUT_RES),
+                LogoutResponse.class);
+    }
+
+    /**
+     * 处理收到的socket消息
+     * 
+     * @param cmdType
+     *            该消息的协议类型
+     * @param buffer
+     *            该消息的buffer字段
+     * @return
+     *         该消息是否被处理
+     */
+    public static boolean handleMessage(int cmdType, byte[] buffer) {
+        boolean result = true;
+
+        if (!PROTOCOL_HANDLERS.containsKey(cmdType)) {
+            result = false;
+        } else {
+            IoBuffer message = IoBuffer.allocate(buffer.length);
+            message.put(buffer);
+            message.flip();
+
+            try {
+                BaseProtocol protocolInstance = (BaseProtocol) PROTOCOL_HANDLERS.get(cmdType)
+                        .newInstance();
+                protocolInstance.analyzeMessage(message);
+
+                handleProtocolListener(protocolInstance);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    /**************************** 监听接收到协议包 ****************************/
+    // 处理协议监听事件
+    private static void handleProtocolListener(BaseProtocol baseProtocol) {
+        int cmdType = baseProtocol.getCommandId();
+
+        switch (cmdType) {
+        case CMD_INIT_RES:
+            InitConnectionResponse response = (InitConnectionResponse) baseProtocol;
+            Log.d(TAG, "Init Response:" + response.getResult());
+            for (ProtocolListener listener : mProtocolListeners) {
+                listener.onInitConnectionStatus(response.getResult());
+            }
+            break;
+
+        case CMD_USER_LOGIN_RES:
+            LoginResponse loginResponse = (LoginResponse) baseProtocol;
+            Log.d(TAG, "Login Response:" + loginResponse.getResult());
+            for (ProtocolListener listener : mProtocolListeners) {
+                listener.onLoginStatus(loginResponse.getResult());
+            }
+            break;
+
+        case CMD_USER_LOGOUT_RES:
+            LogoutResponse logoutResponse = (LogoutResponse) baseProtocol;
+            Log.d(TAG, "Logout Response:" + logoutResponse.getResult());
+            for (ProtocolListener listener : mProtocolListeners) {
+                listener.onLogoutStatus(logoutResponse.getResult());
+            }
+            break;
+
+        case CMD_USER_CHAT_RES:
+            SendChatResponse sendChatResponse = (SendChatResponse) baseProtocol;
+            Log.d(TAG, "Send Chat Response:" + sendChatResponse.getResult());
+            for (ProtocolListener listener : mProtocolListeners) {
+                listener.onSendChatStatus(sendChatResponse.getResult());
+            }
+            break;
+
+        case CMD_USER_CHAT_PUSH:
+            PushChatResponse pushChatResponse = (PushChatResponse) baseProtocol;
+            Log.d(TAG, "Push Chat Response:" + pushChatResponse.getContent());
+            for (ProtocolListener listener : mProtocolListeners) {
+                listener.onPushChatReceive(pushChatResponse);
+            }
+            break;
+
+        default:
+            break;
+        }
+
+    }
+
+    public static interface ProtocolListener {
+        /**
+         * 初始化聊天连接的状态
+         * 
+         * @param status
+         *            0表示成功，-1表示失败
+         */
+        public void onInitConnectionStatus(int status);
+
+        /**
+         * 连接聊天服务器的状态
+         * 
+         * @param status
+         *            0表示成功，-1表示失败
+         */
+        public void onLoginStatus(int status);
+
+        /**
+         * 退出聊天服务器的状态
+         * 
+         * @param status
+         *            0表示成功，-1表示失败
+         */
+        public void onLogoutStatus(int status);
+
+        /**
+         * 发送聊天后的结果，目前只有错误的状态
+         * 
+         * @param status
+         *            0表示成功，-1表示失败
+         */
+        public void onSendChatStatus(int status);
+
+        /**
+         * 收到聊天结果
+         * 
+         * @param pushChatResponse
+         */
+        public void onPushChatReceive(PushChatResponse pushChatResponse);
+    }
+
+    private static HashSet<ProtocolListener> mProtocolListeners = new HashSet<ProtocolListener>();
+
+    public static void addProtocolListener(ProtocolListener listener) {
+        synchronized (mProtocolListeners) {
+            try {
+                mProtocolListeners.add(listener);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void removeProtocolListener(ProtocolListener listener) {
+        synchronized (mProtocolListeners) {
+            try {
+                mProtocolListeners.remove(listener);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static HashSet<ProtocolListener> getProtocolListeners() {
+        synchronized (mProtocolListeners) {
+            return mProtocolListeners;
+        }
+    }
 }

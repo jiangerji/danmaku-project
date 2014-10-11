@@ -2,6 +2,9 @@ package com.wanke.activity;
 
 import java.lang.ref.WeakReference;
 
+import master.flame.danmaku.DanmakuManager;
+import master.flame.danmaku.ui.widget.DanmakuSurfaceView;
+
 import org.videolan.libvlc.EventHandler;
 import org.videolan.libvlc.IVideoPlayer;
 import org.videolan.libvlc.LibVLC;
@@ -19,6 +22,7 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,11 +31,18 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.wanke.danmaku.DanmakuController;
+import com.wanke.danmaku.DanmakuController.DanmakuListener;
+import com.wanke.danmaku.protocol.PushChatResponse;
 import com.wanke.tv.R;
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         IVideoPlayer {
     public final static String TAG = "VideoActivity";
@@ -74,7 +85,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             mFilePath = extraBundle.getString(LOCATION);
         }
 
-        mFilePath = "file:///storage/sdcard0/1.mp4";
+        mFilePath = "file:///storage/sdcard0/2.mp4";
 
         Log.d(TAG, "Playing back " + mFilePath);
 
@@ -89,14 +100,48 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
         mVideoControllContainer = findViewById(R.id.video_controll_container);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, 70);
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        layoutParams.setMargins(0, 0, 0, mNavigationBarHeight);
+        layoutParams.setMargins(0, 0, 0, 0);
         mVideoControllContainer.setLayoutParams(layoutParams);
+
+        initVideoController(mVideoControllContainer);
+        initDanmaku();
+    }
+
+    // 控制是否显示弹幕
+    private View mDanmakuSwitch = null;
+
+    /**
+     * 初始化视频播放的工具栏
+     * 
+     * @param videoController
+     */
+    private void initVideoController(View videoController) {
+        mDanmakuSwitch = videoController.findViewById(R.id.danmuku_btn);
+
+        mDanmakuSwitch.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                DanmakuController.getInstance().sendChat("Hello World!");
+            }
+        });
+    }
+
+    private DanmakuSurfaceView mDanmakuView;
+
+    private void initDanmaku() {
+        mDanmakuView = (DanmakuSurfaceView) findViewById(R.id.danmamu_surface);
+        if (mDanmakuView != null) {
+            DanmakuManager.getInstance()
+                    .init((DanmakuSurfaceView) mDanmakuView);
+            DanmakuManager.getInstance().start();
+        }
     }
 
     /**
-     * 判断当前设备是手机还是平板，代码来自 Google I/O App for Android
+     * 判断当前设备是手机还是平板，代码来自Google I/O App for Android
      * 
      * @param context
      * @return 平板返回 True，手机返回 False
@@ -119,21 +164,17 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
     int mUiState = 1;// 0 hide: 1: visible, 2: all visible
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    final int uiHideOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+    final int uiVisibleOptions = View.SYSTEM_UI_FLAG_VISIBLE
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void requestFullScreen() {
-        final int uiHideOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-
-        final int uiVisibleOptions = View.SYSTEM_UI_FLAG_VISIBLE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-
-        //        mRootView.setSystemUiVisibility(uiHideOptions);
-        getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(uiHideOptions);
         mRootView.setSystemUiVisibility(uiHideOptions);
 
         View fullScreenController = mRootView
@@ -151,14 +192,65 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                     mVideoControllContainer.setVisibility(View.INVISIBLE);
                 } else if ((i & View.SYSTEM_UI_FLAG_VISIBLE) == View.SYSTEM_UI_FLAG_VISIBLE
                         && mVideoControllContainer.getVisibility() == View.INVISIBLE) {
-                    mRootView.setSystemUiVisibility(uiVisibleOptions);
-                    mVideoControllContainer.setVisibility(View.VISIBLE);
+                    showVideoControllBar();
                 } else {
-                    mRootView.setSystemUiVisibility(uiHideOptions);
-                    mVideoControllContainer.setVisibility(View.INVISIBLE);
+                    hideVideoControllBar();
                 }
             }
         });
+    }
+
+    // 显示视频播放工具栏
+    private void showVideoControllBar() {
+        Animation animation = AnimationUtils.loadAnimation(this,
+                R.anim.slide_in_bottom);
+        mVideoControllContainer.setVisibility(View.VISIBLE);
+        animation.setAnimationListener(new AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mRootView.setSystemUiVisibility(uiVisibleOptions);
+                mVideoControllContainer.setVisibility(View.VISIBLE);
+            }
+        });
+        mVideoControllContainer.startAnimation(animation);
+    }
+
+    // 隐藏视频播放工具栏
+    private void hideVideoControllBar() {
+        Animation animation = AnimationUtils.loadAnimation(this,
+                R.anim.slide_out_bottom);
+        mVideoControllContainer.setVisibility(View.INVISIBLE);
+        animation.setAnimationListener(new AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mRootView.setSystemUiVisibility(uiHideOptions);
+                mVideoControllContainer.setVisibility(View.INVISIBLE);
+            }
+        });
+        mVideoControllContainer.startAnimation(animation);
+
     }
 
     @Override
@@ -170,13 +262,59 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     @Override
     protected void onStart() {
         super.onStart();
+
         createPlayer(mFilePath);
+        DanmakuController.getInstance().connect(new DanmakuListener() {
+
+            @Override
+            public void onSendChatStatus(int status) {
+                // 发送失败
+            }
+
+            @Override
+            public void onPushChatReceive(PushChatResponse pushChatResponse) {
+                // 收到弹幕
+                Message message = mDanmakuHandler.obtainMessage(DANMAKU_PUSH_CAHT);
+                message.obj = pushChatResponse;
+                mDanmakuHandler.sendMessage(message);
+            }
+
+            @Override
+            public void onLoginStatus(int status) {
+                // 登录状态
+            }
+
+            @Override
+            public void onConnectionStatus(int status) {
+                // 连接状态
+            }
+        });
     }
+
+    private final static int DANMAKU_PUSH_CAHT = 0x01;
+    private Handler mDanmakuHandler = new Handler(new Callback() {
+
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+            case DANMAKU_PUSH_CAHT:
+                String chatContent = ((PushChatResponse) msg.obj).getContent();
+                DanmakuManager.getInstance().sendDanmaku(chatContent);
+                break;
+
+            default:
+                break;
+            }
+            return false;
+        }
+    });
 
     @Override
     protected void onStop() {
         super.onStop();
+
         releasePlayer();
+        DanmakuController.getInstance().disconnect();
     }
 
     @Override
@@ -188,14 +326,15 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     /*************
      * Surface
      *************/
-
     public void surfaceCreated(SurfaceHolder holder) {
     }
 
     public void surfaceChanged(SurfaceHolder surfaceholder, int format,
             int width, int height) {
         if (libvlc != null) {
-            libvlc.attachSurface(holder.getSurface(), this);
+            if (holder != null) {
+                libvlc.attachSurface(holder.getSurface(), this);
+            }
         }
     }
 
@@ -306,7 +445,6 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     /*************
      * Events
      *************/
-
     private Handler mHandler = new MyHandler(this);
 
     private static class MyHandler extends Handler {
