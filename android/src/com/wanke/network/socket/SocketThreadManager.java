@@ -6,11 +6,9 @@ public class SocketThreadManager {
 
     private SocketInputThread mInputThread = null;
     private SocketOutputThread mOutThread = null;
+    private SocketHeartThread mHeartThread = null;
 
     private final static Object mMutex = new Object();
-
-    //
-    //    private SocketHeartThread mHeartThread = null;
 
     // 获取单例
     public static SocketThreadManager sharedInstance() {
@@ -32,17 +30,16 @@ public class SocketThreadManager {
     /**
      * 启动线程
      */
-
     public void startThreads() {
-        //        mHeartThread.start();
         mInputThread = new SocketInputThread();
         mInputThread.setStart(true);
         mInputThread.start();
 
         mOutThread = new SocketOutputThread();
         mOutThread.start();
-        //        mOutThread.start();
-        // mDnsthread.start();
+
+        mHeartThread = new SocketHeartThread();
+        mHeartThread.start();
     }
 
     /**
@@ -56,6 +53,10 @@ public class SocketThreadManager {
 
         if (mOutThread != null) {
             mOutThread.setStart(false);
+        }
+
+        if (mHeartThread != null) {
+            mHeartThread.stopThread();
         }
     }
 
