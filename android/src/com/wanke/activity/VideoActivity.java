@@ -33,6 +33,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -45,7 +46,7 @@ import com.wanke.danmaku.DanmakuController.DanmakuListener;
 import com.wanke.danmaku.protocol.PushChatResponse;
 import com.wanke.tv.R;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         IVideoPlayer {
     public final static String TAG = "VideoActivity";
@@ -74,6 +75,8 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         mRootView = getLayoutInflater().inflate(R.layout.activity_video_play,
                 null);
         requestFullScreen();
@@ -88,25 +91,13 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             mFilePath = extraBundle.getString(LOCATION);
         }
 
-        mFilePath = "file:///storage/sdcard0/2.mp4";
+        mFilePath = "file:///storage/sdcard0/1.mp4";
 
         Log.d(TAG, "Playing back " + mFilePath);
 
         mSurface = (SurfaceView) findViewById(R.id.video_surface);
         holder = mSurface.getHolder();
         holder.addCallback(this);
-
-        if (isTablet(this)) {
-            mNavigationBarHeight = getNavigationBarHeight();
-            Log.d(TAG, "navigation bar height:" + mNavigationBarHeight);
-        }
-
-        mVideoControllContainer = findViewById(R.id.video_controll_container);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        layoutParams.setMargins(0, 0, 0, 0);
-        mVideoControllContainer.setLayoutParams(layoutParams);
 
         initVideoPanel();
         initDanmaku();
@@ -124,20 +115,44 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
      * @param videoController
      */
     private void initVideoPanel() {
+        mNavigationBarHeight = getNavigationBarHeight();
+        Log.d(TAG, "navigation bar height:" + mNavigationBarHeight);
+
+        mVideoControllContainer = findViewById(R.id.video_controll_container);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        if (!isTablet(this)) {
+            layoutParams.setMargins(0, 0, mNavigationBarHeight, 0);
+        } else {
+            layoutParams.setMargins(0, 0, 0, 0);
+        }
+        mVideoControllContainer.setLayoutParams(layoutParams);
+
+        // init top panel
+        mTopPanel = findViewById(R.id.video_top_panel);
+        layoutParams = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        if (!isTablet(this)) {
+            layoutParams.setMargins(0, 0, mNavigationBarHeight, 0);
+        } else {
+            layoutParams.setMargins(0, 0, 0, 0);
+        }
+        mTopPanel.setLayoutParams(layoutParams);
+
         mDanmakuSwitch = mVideoControllContainer.findViewById(R.id.danmuku_btn);
 
         mDanmakuSwitch.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                DanmakuController.getInstance().sendChat("Hello World!");
+                //                DanmakuController.getInstance().sendChat("Hello World!");
+                DanmakuManager.getInstance().sendDanmaku("Hello World!");
             }
         });
 
         mElapseTime = (TextView) mVideoControllContainer.findViewById(R.id.elapse_time);
-
-        // init top panel
-        mTopPanel = findViewById(R.id.video_top_panel);
     }
 
     private DanmakuSurfaceView mDanmakuView;
@@ -175,17 +190,23 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
     int mUiState = 1;// 0 hide: 1: visible, 2: all visible
 
-    final int uiHideOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+    private int uiHideOptions = 0;
+    private int uiVisibleOptions = 0;
 
-    final int uiVisibleOptions = View.SYSTEM_UI_FLAG_VISIBLE
-            | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void requestFullScreen() {
-        getWindow().getDecorView().setSystemUiVisibility(uiHideOptions);
+        uiHideOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+        uiVisibleOptions = View.SYSTEM_UI_FLAG_VISIBLE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+        getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         mRootView.setSystemUiVisibility(uiHideOptions);
 
         View fullScreenController = mRootView
