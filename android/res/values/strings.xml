@@ -1,5 +1,7 @@
 <resources>
 
     <string name="app_name">玩客TV</string>
+    
+    <string name="start_time">0:00</string>
 
 </resources>

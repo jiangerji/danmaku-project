@@ -13,8 +13,10 @@ import org.videolan.libvlc.MediaList;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -35,6 +37,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wanke.danmaku.DanmakuController;
@@ -105,20 +108,23 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         layoutParams.setMargins(0, 0, 0, 0);
         mVideoControllContainer.setLayoutParams(layoutParams);
 
-        initVideoController(mVideoControllContainer);
+        initVideoPanel();
         initDanmaku();
     }
 
     // 控制是否显示弹幕
     private View mDanmakuSwitch = null;
+    private TextView mElapseTime = null;
+
+    private View mTopPanel = null;
 
     /**
      * 初始化视频播放的工具栏
      * 
      * @param videoController
      */
-    private void initVideoController(View videoController) {
-        mDanmakuSwitch = videoController.findViewById(R.id.danmuku_btn);
+    private void initVideoPanel() {
+        mDanmakuSwitch = mVideoControllContainer.findViewById(R.id.danmuku_btn);
 
         mDanmakuSwitch.setOnClickListener(new OnClickListener() {
 
@@ -127,6 +133,11 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                 DanmakuController.getInstance().sendChat("Hello World!");
             }
         });
+
+        mElapseTime = (TextView) mVideoControllContainer.findViewById(R.id.elapse_time);
+
+        // init top panel
+        mTopPanel = findViewById(R.id.video_top_panel);
     }
 
     private DanmakuSurfaceView mDanmakuView;
@@ -192,19 +203,20 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                     mVideoControllContainer.setVisibility(View.INVISIBLE);
                 } else if ((i & View.SYSTEM_UI_FLAG_VISIBLE) == View.SYSTEM_UI_FLAG_VISIBLE
                         && mVideoControllContainer.getVisibility() == View.INVISIBLE) {
-                    showVideoControllBar();
+                    showVideoBar();
                 } else {
-                    hideVideoControllBar();
+                    hideVideoBar();
                 }
             }
         });
     }
 
     // 显示视频播放工具栏
-    private void showVideoControllBar() {
+    private void showVideoBar() {
         Animation animation = AnimationUtils.loadAnimation(this,
                 R.anim.slide_in_bottom);
         mVideoControllContainer.setVisibility(View.VISIBLE);
+        mTopPanel.setVisibility(View.VISIBLE);
         animation.setAnimationListener(new AnimationListener() {
 
             @Override
@@ -224,13 +236,17 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             }
         });
         mVideoControllContainer.startAnimation(animation);
+
+        mTopPanel.startAnimation(AnimationUtils.loadAnimation(this,
+                R.anim.slide_in_top));
     }
 
     // 隐藏视频播放工具栏
-    private void hideVideoControllBar() {
+    private void hideVideoBar() {
         Animation animation = AnimationUtils.loadAnimation(this,
                 R.anim.slide_out_bottom);
         mVideoControllContainer.setVisibility(View.INVISIBLE);
+        mTopPanel.setVisibility(View.INVISIBLE);
         animation.setAnimationListener(new AnimationListener() {
 
             @Override
@@ -250,7 +266,8 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             }
         });
         mVideoControllContainer.startAnimation(animation);
-
+        mTopPanel.startAnimation(AnimationUtils.loadAnimation(this,
+                R.anim.slide_out_top));
     }
 
     @Override
@@ -478,4 +495,29 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             }
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        registerReceiver(mTimeTickReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        unregisterReceiver(mTimeTickReceiver);
+    }
+
+    private final BroadcastReceiver mTimeTickReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_TIME_TICK)) {
+            }
+        }
+    };
 }
