@@ -2,7 +2,6 @@ package com.wanke.activity;
 
 import java.lang.ref.WeakReference;
 
-import master.flame.danmaku.DanmakuManager;
 import master.flame.danmaku.ui.widget.DanmakuSurfaceView;
 
 import org.videolan.libvlc.EventHandler;
@@ -43,6 +42,7 @@ import android.widget.Toast;
 
 import com.wanke.danmaku.DanmakuController;
 import com.wanke.danmaku.DanmakuController.DanmakuListener;
+import com.wanke.danmaku.DanmakuManager;
 import com.wanke.danmaku.protocol.PushChatResponse;
 import com.wanke.tv.R;
 
@@ -164,6 +164,10 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                     .init((DanmakuSurfaceView) mDanmakuView);
             DanmakuManager.getInstance().start();
         }
+    }
+
+    private void deinitDanmaku() {
+        DanmakuManager.getInstance().deinit();
     }
 
     /**
@@ -359,6 +363,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     protected void onDestroy() {
         super.onDestroy();
         releasePlayer();
+        deinitDanmaku();
     }
 
     /*************
