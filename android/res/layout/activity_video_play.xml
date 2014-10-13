@@ -52,7 +52,7 @@
             android:src="@drawable/video_player_panel_pause_btn"
             android:contentDescription="@null" />
         
-        <TextView
+        <Chronometer
             android:id="@+id/elapse_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

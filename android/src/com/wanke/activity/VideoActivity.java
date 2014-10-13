@@ -36,8 +36,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Chronometer;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wanke.danmaku.DanmakuController;
@@ -106,7 +106,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
     // 控制是否显示弹幕
     private View mDanmakuSwitch = null;
-    private TextView mElapseTime = null;
+    private Chronometer mElapseTime = null;
 
     private View mTopPanel = null;
 
@@ -148,12 +148,13 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
             @Override
             public void onClick(View v) {
-                DanmakuController.getInstance().sendChat("Hello World!");
-                //                DanmakuManager.getInstance().sendDanmaku("Hello World!");
+                //                DanmakuController.getInstance().sendChat("Hello World!");
+                DanmakuManager.getInstance().sendDanmaku("Hello World!");
             }
         });
 
-        mElapseTime = (TextView) mVideoControllContainer.findViewById(R.id.elapse_time);
+        mElapseTime = (Chronometer) mVideoControllContainer.findViewById(R.id.elapse_time);
+        mElapseTime.start();
     }
 
     private DanmakuSurfaceView mDanmakuView;
@@ -327,7 +328,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                 Log.d(TAG, "Login Status:" + status);
                 // 登录状态
                 if (status < 0) {
-                    mHandler.sendEmptyMessage(DANMAKU_LOGIN_FAILED);
+                    mDanmakuHandler.sendEmptyMessage(DANMAKU_LOGIN_FAILED);
                 }
             }
 
@@ -336,7 +337,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                 // 连接状态
                 Log.d(TAG, "Connection Status:" + status);
                 if (status < 0) {
-                    mHandler.sendEmptyMessage(DANMAKU_CONNECTION_FAILED);
+                    mDanmakuHandler.sendEmptyMessage(DANMAKU_CONNECTION_FAILED);
                 }
             }
         });
@@ -452,6 +453,8 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     @Override
     public void setSurfaceSize(int width, int height, int visible_width,
             int visible_height, int sar_num, int sar_den) {
+        Log.d(TAG, "setSurfaceSize:" + width + " " + height + " "
+                + visible_width + " " + visible_height);
         Message msg = Message.obtain(mHandler, VideoSizeChanged, width, height);
         msg.sendToTarget();
     }
@@ -472,12 +475,11 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
             // Create a new media player
             libvlc = LibVLC.getInstance();
-            libvlc.setHardwareAcceleration(LibVLC.HW_ACCELERATION_DISABLED);
-            libvlc.setSubtitlesEncoding("");
+            libvlc.setHardwareAcceleration(LibVLC.HW_ACCELERATION_DECODING);
             libvlc.setAout(LibVLC.AOUT_OPENSLES);
             libvlc.setTimeStretching(true);
             libvlc.setChroma("RV32");
-            libvlc.setVerboseMode(true);
+            libvlc.setVerboseMode(false);
             // LibVLC.restart(this);
             libvlc.init(this);
             EventHandler.getInstance().addHandler(mHandler);
@@ -527,6 +529,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
             // SamplePlayer events
             if (msg.what == VideoSizeChanged) {
+                Log.d(TAG, "Video Size Changed:" + msg.arg1 + " " + msg.arg2);
                 player.setSize(msg.arg1, msg.arg2);
                 return;
             }

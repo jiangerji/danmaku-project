@@ -31,9 +31,9 @@ public class SocketThreadManager {
      * 启动线程
      */
     public void startThreads() {
-        mInputThread = new SocketInputThread();
-        mInputThread.setStart(true);
-        mInputThread.start();
+        //        mInputThread = new SocketInputThread();
+        //        mInputThread.setStart(true);
+        //        mInputThread.start();
 
         mOutThread = new SocketOutputThread();
         mOutThread.start();

@@ -54,6 +54,7 @@ public class DanmakuManager {
 
         mDanmakuView.showFPS(false);
         mDanmakuView.enableDanmakuDrawingCache(true);
+        mDanmakuView.setDrawingThreadType(DanmakuSurfaceView.THREAD_TYPE_LOW_PRIORITY);
 
         // DanmakuGlobalConfig.DEFAULT.setDanmakuStyle(DanmakuGlobalConfig.DANMAKU_STYLE_STROKEN,
         // 3);
@@ -198,7 +199,7 @@ public class DanmakuManager {
     /**
      * 默认弹幕文字的大小
      */
-    private int mDefaultDanmakuTextSize = 25;
+    private int mDefaultDanmakuTextSize = 30;
 
     /**
      * 设置默认弹幕文字大小

@@ -107,7 +107,7 @@ public class SocketClient {
             if (!done && selector != null) {
                 selector.close();
             }
-            if (!done) {
+            if (!done && socketChannel != null) {
                 socketChannel.close();
             }
         }
