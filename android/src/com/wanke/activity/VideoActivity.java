@@ -45,6 +45,7 @@ import com.wanke.danmaku.DanmakuController.DanmakuListener;
 import com.wanke.danmaku.DanmakuManager;
 import com.wanke.danmaku.protocol.PushChatResponse;
 import com.wanke.tv.R;
+import com.wanke.ui.ToastUtil;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class VideoActivity extends Activity implements SurfaceHolder.Callback,
@@ -147,8 +148,8 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
             @Override
             public void onClick(View v) {
-                //                DanmakuController.getInstance().sendChat("Hello World!");
-                DanmakuManager.getInstance().sendDanmaku("Hello World!");
+                DanmakuController.getInstance().sendChat("Hello World!");
+                //                DanmakuManager.getInstance().sendDanmaku("Hello World!");
             }
         });
 
@@ -323,17 +324,30 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
             @Override
             public void onLoginStatus(int status) {
+                Log.d(TAG, "Login Status:" + status);
                 // 登录状态
+                if (status < 0) {
+                    mHandler.sendEmptyMessage(DANMAKU_LOGIN_FAILED);
+                }
             }
 
             @Override
             public void onConnectionStatus(int status) {
                 // 连接状态
+                Log.d(TAG, "Connection Status:" + status);
+                if (status < 0) {
+                    mHandler.sendEmptyMessage(DANMAKU_CONNECTION_FAILED);
+                }
             }
         });
     }
 
     private final static int DANMAKU_PUSH_CAHT = 0x01;
+
+    // 连接弹幕服务器失败
+    private final static int DANMAKU_CONNECTION_FAILED = 0x00010001;
+    // 登录弹幕服务器失败
+    private final static int DANMAKU_LOGIN_FAILED = 0x00010002;
     private Handler mDanmakuHandler = new Handler(new Callback() {
 
         @Override
@@ -342,6 +356,16 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             case DANMAKU_PUSH_CAHT:
                 String chatContent = ((PushChatResponse) msg.obj).getContent();
                 DanmakuManager.getInstance().sendDanmaku(chatContent);
+                break;
+
+            case DANMAKU_CONNECTION_FAILED:
+                ToastUtil.showToast(VideoActivity.this,
+                        R.string.danmaku_connection_failed);
+                break;
+
+            case DANMAKU_LOGIN_FAILED:
+                ToastUtil.showToast(VideoActivity.this,
+                        R.string.danmaku_login_failed);
                 break;
 
             default:

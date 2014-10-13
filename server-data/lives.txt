@@ -1,0 +1,68 @@
+{
+    "channels": [
+        {
+            "roomId": "2",
+            "title": "完爆你们这些弱弱~~",
+            "anchorName": "我是主播的名字",
+            "gameId": "game_action_2",
+            "gameName": "暗黑破坏神3",
+            "audience": 12313
+        },
+        {
+            "roomId": "21",
+            "title": "完爆你们这些弱弱~~",
+            "anchorName": "我是主播的名字",
+            "gameId": "game_action_2",
+            "gameName": "暗黑破坏神3",
+            "audience": 123125
+        },
+        {
+            "roomId": "22",
+            "title": "完爆你们这些弱弱~~",
+            "anchorName": "我是主播的名字",
+            "gameId": "game_action_2",
+            "gameName": "暗黑破坏神3",
+            "audience": 123145
+        },
+        {
+            "roomId": "23",
+            "title": "完爆你们这些弱弱~~",
+            "anchorName": "我是主播的名字",
+            "gameId": "game_action_2",
+            "gameName": "暗黑破坏神3",
+            "audience": 1234123
+        },
+        {
+            "roomId": "1",
+            "title": "完爆你们这些弱弱~~",
+            "anchorName": "我是主播的名字",
+            "gameId": "game_action1",
+            "gameName": "炉石传说",
+            "audience": 123123
+        },
+        {
+            "roomId": "11",
+            "title": "完爆你们这些弱弱~~",
+            "anchorName": "我是主播的名字",
+            "gameId": "game_action1",
+            "gameName": "炉石传说",
+            "audience": 123123
+        },
+        {
+            "roomId": "12",
+            "title": "完爆你们这些弱弱~~",
+            "anchorName": "我是主播的名字",
+            "gameId": "game_action1",
+            "gameName": "炉石传说",
+            "audience": 123123
+        },
+        {
+            "roomId": "13",
+            "title": "完爆你们这些弱弱~~",
+            "anchorName": "我是主播的名字",
+            "gameId": "game_action1",
+            "gameName": "炉石传说",
+            "audience": 123123
+        }
+    ]
+}

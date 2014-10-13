@@ -1,0 +1,20 @@
+{
+    "games":[
+        {
+            "gameId": "game_action_1",
+            "gameName": "英雄联盟"
+        },
+        {
+            "gameId": "game_action_2",
+            "gameName": "暗黑破坏神3"
+        },
+        {
+            "gameId": "game_action_3",
+            "gameName": "Dota2"
+        },
+        {
+            "gameId": "game_action_4",
+            "gameName": "炉石传说"
+        }
+    ]
+}

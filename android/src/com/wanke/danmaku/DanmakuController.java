@@ -43,9 +43,18 @@ public class DanmakuController {
 
     private DanmakuListener mDanmakuListener = null;
 
+    private int mConnectionStatus = -1; // 弹幕服务器连接状态
+    private int mLoginStatus = -1; // 弹幕服务器登录状态
+
     private ProtocolListener mListener = new ProtocolListener() {
 
         @Override
+        /**
+         * status
+         *  0: 表示发送成功
+         *  -1: 表示发送失败
+         *  1: 表示不允许发送，需要登录
+         */
         public void onSendChatStatus(int status) {
 
         }
@@ -69,6 +78,8 @@ public class DanmakuController {
             if (mDanmakuListener != null) {
                 mDanmakuListener.onLoginStatus(status);
             }
+
+            mLoginStatus = status;
         }
 
         @Override
@@ -83,6 +94,8 @@ public class DanmakuController {
             if (mDanmakuListener != null) {
                 mDanmakuListener.onConnectionStatus(status);
             }
+
+            mConnectionStatus = status;
         }
     };
 
@@ -126,20 +139,6 @@ public class DanmakuController {
 
         SocketThreadManager.sharedInstance()
                 .sendMsg(initConnectionRequest.getMessage());
-
-        //        new Thread(new Runnable() {
-        //
-        //            @Override
-        //            public void run() {
-        //                try {
-        //                    Thread.sleep(1000);
-        //                } catch (InterruptedException e) {
-        //                    e.printStackTrace();
-        //                }
-        //                login();
-        //            }
-        //        }).start();
-
     }
 
     /**
@@ -169,12 +168,19 @@ public class DanmakuController {
      * 发送弹幕聊天信息
      */
     public void sendChat(String content) {
-        SendChatRequest request = new SendChatRequest();
-        request.setAnonymous(1);
-        request.setUserId(userId);
-        request.setContent(content);
+        if (mLoginStatus < 0) {
+            // 未登录的话
+            if (mDanmakuListener != null) {
+                mDanmakuListener.onSendChatStatus(1);
+            }
+        } else {
+            SendChatRequest request = new SendChatRequest();
+            request.setAnonymous(1);
+            request.setUserId(userId);
+            request.setContent(content);
 
-        SocketThreadManager.sharedInstance()
-                .sendMsg(request.getMessage());
+            SocketThreadManager.sharedInstance()
+                    .sendMsg(request.getMessage());
+        }
     }
 }

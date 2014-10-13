@@ -344,7 +344,7 @@ public abstract class BaseProtocol {
 
     /**************************** 监听接收到协议包 ****************************/
     // 处理协议监听事件
-    private static void handleProtocolListener(BaseProtocol baseProtocol) {
+    public static void handleProtocolListener(BaseProtocol baseProtocol) {
         int cmdType = baseProtocol.getCommandId();
 
         switch (cmdType) {

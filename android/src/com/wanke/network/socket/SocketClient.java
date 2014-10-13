@@ -11,6 +11,9 @@ import java.nio.channels.SocketChannel;
 
 import android.util.Log;
 
+import com.wanke.danmaku.protocol.BaseProtocol;
+import com.wanke.danmaku.protocol.InitConnectionResponse;
+
 public class SocketClient {
     private final static String TAG = "SocketClient";
 
@@ -95,6 +98,11 @@ public class SocketClient {
                     done = true;
                 }
             }
+        } catch (Exception e) {
+            Log.d(TAG, "Socket Init Exception:" + e.toString());
+            InitConnectionResponse initConnectionResponse = new InitConnectionResponse();
+            initConnectionResponse.setResult(-1);
+            BaseProtocol.handleProtocolListener(initConnectionResponse);
         } finally {
             if (!done && selector != null) {
                 selector.close();
@@ -104,7 +112,7 @@ public class SocketClient {
             }
         }
 
-        Log.d(TAG, "Socket Client Initialize Finish!");
+        Log.d(TAG, "Socket Client Initialize Finish:" + done);
     }
 
     static void blockUntil(SelectionKey key, long timeout) throws IOException {
