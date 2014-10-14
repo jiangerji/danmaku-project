@@ -56,7 +56,7 @@ public class SocketClient {
      * @param HostListenningPort
      * @throws IOException
      */
-    public SocketClient(String HostIp, int HostListenningPort) {
+    private SocketClient(String HostIp, int HostListenningPort) {
         this.hostIp = HostIp;
         this.hostListenningPort = HostListenningPort;
 

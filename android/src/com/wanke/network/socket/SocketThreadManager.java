@@ -1,6 +1,9 @@
 package com.wanke.network.socket;
 
+import android.util.Log;
+
 public class SocketThreadManager {
+    private final static String TAG = "SocketThreadManager";
 
     private static SocketThreadManager s_SocketManager = null;
 
@@ -27,26 +30,47 @@ public class SocketThreadManager {
         //        mOutThread = new SocketOutputThread();
     }
 
+    private Thread mStartThread = null;
+
     /**
      * 启动线程
      */
     public void startThreads() {
-        //        mInputThread = new SocketInputThread();
-        //        mInputThread.setStart(true);
-        //        mInputThread.start();
+        // 首先开启SocketClient
+        mStartThread = new Thread(new Runnable() {
 
-        mOutThread = new SocketOutputThread();
-        mOutThread.start();
+            @Override
+            public void run() {
+                SocketClient client = SocketClient.instance();
+                if (client.isConnect()) {
+                    mInputThread = new SocketInputThread();
+                    mInputThread.setStart(true);
+                    mInputThread.start();
 
-        mHeartThread = new SocketHeartThread();
-        mHeartThread.start();
+                    mOutThread = new SocketOutputThread();
+                    mOutThread.start();
+
+                    mHeartThread = new SocketHeartThread();
+                    mHeartThread.start();
+                } else {
+                    Log.d(TAG, "Socket Client is not connected!");
+                }
+
+                mStartThread = null;
+            }
+        });
+
+        mStartThread.start();
     }
 
     /**
      * stop线程
      */
     public void stopThreads() {
-        //        mHeartThread.stopThread();
+        if (mStartThread != null) {
+            mStartThread.interrupt();
+        }
+
         if (mInputThread != null) {
             mInputThread.setStart(false);
         }
