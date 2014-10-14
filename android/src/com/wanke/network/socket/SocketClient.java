@@ -176,7 +176,9 @@ public class SocketClient {
     public boolean isConnect() {
         boolean isConnect = false;
         if (this.isInitialized) {
-            isConnect = this.socketChannel.isConnected();
+            if (this.socketChannel != null) {
+                isConnect = this.socketChannel.isConnected();
+            }
         }
         return isConnect;
     }
@@ -213,7 +215,6 @@ public class SocketClient {
                 socketChannel.socket().sendUrgentData(0xff);
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
         } catch (Exception e) {

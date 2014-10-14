@@ -32,6 +32,8 @@ public class SocketThreadManager {
 
     private Thread mStartThread = null;
 
+    private SocketClient mClient;
+
     /**
      * 启动线程
      */
@@ -41,8 +43,8 @@ public class SocketThreadManager {
 
             @Override
             public void run() {
-                SocketClient client = SocketClient.instance();
-                if (client.isConnect()) {
+                mClient = SocketClient.instance();
+                if (mClient.isConnect()) {
                     mInputThread = new SocketInputThread();
                     mInputThread.setStart(true);
                     mInputThread.start();
@@ -81,6 +83,10 @@ public class SocketThreadManager {
 
         if (mHeartThread != null) {
             mHeartThread.stopThread();
+        }
+
+        if (mClient != null) {
+            mClient.closeTCPSocket();
         }
     }
 

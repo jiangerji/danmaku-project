@@ -1,6 +1,7 @@
 package com.wanke.ui.activity;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
 
 import master.flame.danmaku.ui.widget.DanmakuSurfaceView;
 
@@ -16,7 +17,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
@@ -38,6 +38,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wanke.danmaku.DanmakuController;
@@ -81,7 +82,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         mRootView = getLayoutInflater().inflate(R.layout.activity_video_play,
                 null);
         requestFullScreen();
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         setContentView(mRootView);
 
@@ -109,6 +110,13 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     private Chronometer mElapseTime = null;
 
     private View mTopPanel = null;
+    private TextView mTopPanelTime;
+
+    private View mTopDanmakuPanel;
+    private View mTopDanmakuPanelHotBtn;
+    private View mTopDanmakuPanelContent;
+    private View mTopDanmakuPanelSendBtn;
+    private View mInvokeDanmakuPanelBtn;
 
     /**
      * 初始化视频播放的工具栏
@@ -142,6 +150,10 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         }
         mTopPanel.setLayoutParams(layoutParams);
 
+        // 顶部时间控件
+        mTopPanelTime = (TextView) mTopPanel.findViewById(R.id.video_top_panel_time);
+        updateTime();
+
         mDanmakuSwitch = mVideoControllContainer.findViewById(R.id.danmuku_btn);
 
         mDanmakuSwitch.setOnClickListener(new OnClickListener() {
@@ -155,6 +167,44 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
         mElapseTime = (Chronometer) mVideoControllContainer.findViewById(R.id.elapse_time);
         mElapseTime.start();
+
+        // 初始化顶部弹幕工具栏
+        mTopDanmakuPanel = findViewById(R.id.video_top_danmaku_panel);
+        mTopDanmakuPanelContent = findViewById(R.id.video_top_danmaku_panel_content);
+        mTopDanmakuPanelHotBtn = findViewById(R.id.video_top_danmaku_panel_hot_danmaku);
+        mTopDanmakuPanelSendBtn = findViewById(R.id.video_top_danmaku_panel_send);
+        mInvokeDanmakuPanelBtn = findViewById(R.id.video_invoke_danmaku_panel_btn);
+
+        layoutParams = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        if (!isTablet(this)) {
+            layoutParams.setMargins(0, 0, mNavigationBarHeight, 0);
+        } else {
+            layoutParams.setMargins(0, 0, 0, 0);
+        }
+        mTopDanmakuPanel.setLayoutParams(layoutParams);
+
+        mInvokeDanmakuPanelBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mTopDanmakuPanel.getVisibility() == View.VISIBLE) {
+                    hideDanmakuPanel();
+                } else {
+                    hideVideoBarOnly();
+                    showDanmakuPanel();
+                }
+            }
+        });
+
+        mTopDanmakuPanelHotBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private DanmakuSurfaceView mDanmakuView;
@@ -186,8 +236,10 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
     private int getNavigationBarHeight() {
         Resources resources = getResources();
+        // navigation_bar_height
         int resourceId = resources.getIdentifier("navigation_bar_height",
-                "dimen", "android");
+                "dimen",
+                "android");
         if (resourceId > 0) {
             return resources.getDimensionPixelSize(resourceId);
         }
@@ -230,6 +282,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                     mVideoControllContainer.setVisibility(View.INVISIBLE);
                 } else if ((i & View.SYSTEM_UI_FLAG_VISIBLE) == View.SYSTEM_UI_FLAG_VISIBLE
                         && mVideoControllContainer.getVisibility() == View.INVISIBLE) {
+                    hideDanmakuPanel();
                     showVideoBar();
                 } else {
                     hideVideoBar();
@@ -238,63 +291,113 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         });
     }
 
+    /**
+     * 显示顶部弹幕工具栏
+     */
+    private void showDanmakuPanel() {
+        if (mTopDanmakuPanel.getVisibility() == View.VISIBLE) {
+            return;
+        }
+
+        if (mTopDanmakuPanel != null) {
+            mTopDanmakuPanel.startAnimation(AnimationUtils.loadAnimation(this,
+                    R.anim.slide_in_top));
+        }
+        mTopDanmakuPanel.setVisibility(View.VISIBLE);
+    }
+
+    private void hideDanmakuPanel() {
+        if (mTopDanmakuPanel.getVisibility() == View.INVISIBLE) {
+            return;
+        }
+
+        if (mTopDanmakuPanel != null) {
+            mTopDanmakuPanel.startAnimation(AnimationUtils.loadAnimation(this,
+                    R.anim.slide_out_top));
+        }
+        mTopDanmakuPanel.setVisibility(View.INVISIBLE);
+    }
+
     // 显示视频播放工具栏
     private void showVideoBar() {
-        Animation animation = AnimationUtils.loadAnimation(this,
-                R.anim.slide_in_bottom);
-        mVideoControllContainer.setVisibility(View.VISIBLE);
-        mTopPanel.setVisibility(View.VISIBLE);
-        animation.setAnimationListener(new AnimationListener() {
+        if (mVideoControllContainer.getVisibility() == View.INVISIBLE) {
+            Animation animation = AnimationUtils.loadAnimation(this,
+                    R.anim.slide_in_bottom);
+            mVideoControllContainer.setVisibility(View.VISIBLE);
+            animation.setAnimationListener(new AnimationListener() {
 
-            @Override
-            public void onAnimationStart(Animation animation) {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mRootView.setSystemUiVisibility(uiVisibleOptions);
-                mVideoControllContainer.setVisibility(View.VISIBLE);
-            }
-        });
-        mVideoControllContainer.startAnimation(animation);
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mRootView.setSystemUiVisibility(uiVisibleOptions);
+                    mVideoControllContainer.setVisibility(View.VISIBLE);
+                }
+            });
+            mVideoControllContainer.startAnimation(animation);
+        }
 
-        mTopPanel.startAnimation(AnimationUtils.loadAnimation(this,
-                R.anim.slide_in_top));
+        if (mTopPanel.getVisibility() == View.INVISIBLE) {
+            mTopPanel.setVisibility(View.VISIBLE);
+            mTopPanel.startAnimation(AnimationUtils.loadAnimation(this,
+                    R.anim.slide_in_top));
+        }
     }
 
     // 隐藏视频播放工具栏
     private void hideVideoBar() {
-        Animation animation = AnimationUtils.loadAnimation(this,
-                R.anim.slide_out_bottom);
-        mVideoControllContainer.setVisibility(View.INVISIBLE);
-        mTopPanel.setVisibility(View.INVISIBLE);
-        animation.setAnimationListener(new AnimationListener() {
+        if (mVideoControllContainer.getVisibility() == View.VISIBLE) {
+            Animation animation = AnimationUtils.loadAnimation(this,
+                    R.anim.slide_out_bottom);
+            mVideoControllContainer.setVisibility(View.INVISIBLE);
+            animation.setAnimationListener(new AnimationListener() {
 
-            @Override
-            public void onAnimationStart(Animation animation) {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mRootView.setSystemUiVisibility(uiHideOptions);
-                mVideoControllContainer.setVisibility(View.INVISIBLE);
-            }
-        });
-        mVideoControllContainer.startAnimation(animation);
-        mTopPanel.startAnimation(AnimationUtils.loadAnimation(this,
-                R.anim.slide_out_top));
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mRootView.setSystemUiVisibility(uiHideOptions);
+                    mVideoControllContainer.setVisibility(View.INVISIBLE);
+                }
+            });
+            mVideoControllContainer.startAnimation(animation);
+        }
+
+        if (mTopPanel.getVisibility() == View.VISIBLE) {
+            mTopPanel.setVisibility(View.INVISIBLE);
+            mTopPanel.startAnimation(AnimationUtils.loadAnimation(this,
+                    R.anim.slide_out_top));
+        }
+    }
+
+    private void hideVideoBarOnly() {
+        if (mVideoControllContainer.getVisibility() == View.VISIBLE) {
+            mVideoControllContainer.setVisibility(View.INVISIBLE);
+            mVideoControllContainer.startAnimation(AnimationUtils.loadAnimation(this,
+                    R.anim.slide_out_bottom));
+        }
+
+        if (mTopPanel.getVisibility() == View.VISIBLE) {
+            mTopPanel.setVisibility(View.INVISIBLE);
+            mTopPanel.startAnimation(AnimationUtils.loadAnimation(this,
+                    R.anim.slide_out_top));
+        }
     }
 
     @Override
@@ -568,9 +671,21 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     private final BroadcastReceiver mTimeTickReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Time Tick:" + intent);
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_TIME_TICK)) {
+                updateTime();
             }
         }
     };
+
+    private void updateTime() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        if (mTopPanelTime != null) {
+            mTopPanelTime.setText(String.format("%02d:%02d", hour, minute));
+        }
+    }
 }
