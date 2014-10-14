@@ -26,7 +26,7 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name="com.wanke.activity.VideoActivity"
+            android:name="com.wanke.ui.activity.VideoActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape"
             android:finishOnTaskLaunch="true"
@@ -37,7 +37,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.wanke.activity.TestActivity">
+        <activity android:name="com.wanke.ui.activity.TestActivity">
             
         </activity>
     </application>

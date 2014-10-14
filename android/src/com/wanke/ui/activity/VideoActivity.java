@@ -1,4 +1,4 @@
-package com.wanke.activity;
+package com.wanke.ui.activity;
 
 import java.lang.ref.WeakReference;
 
@@ -148,8 +148,8 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
             @Override
             public void onClick(View v) {
-                //                DanmakuController.getInstance().sendChat("Hello World!");
-                DanmakuManager.getInstance().sendDanmaku("Hello World!");
+                DanmakuController.getInstance().sendChat("Hello World!");
+                //                DanmakuManager.getInstance().sendDanmaku("Hello World!");
             }
         });
 

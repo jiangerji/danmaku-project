@@ -1,4 +1,4 @@
-package com.wanke.activity;
+package com.wanke.ui.activity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
