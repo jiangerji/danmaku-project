@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:baselineAligned="false"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:id="@+id/video_player_root" >
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -283,5 +284,15 @@
         android:layout_marginEnd="20dp"
         android:src="@drawable/video_palyer_invoke_send_danmaku_panel"
         android:contentDescription="@null" />
+    
+    <ListView
+        android:id="@+id/video_top_danmaku_panel_hot_danmaku_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="#00000000"
+        android:background="#80333333"
+        android:divider="@null"
+        android:listSelector="@drawable/list_selector"
+        android:visibility="invisible" />
     
 </RelativeLayout>

@@ -19,7 +19,7 @@ import android.util.Log;
 public class SocketInputThread extends Thread {
     private boolean isStart = true;
 
-    private static String TAG = "SocketInputThread";
+    private static String TAG = "Socket";
 
     public SocketInputThread() {
     }

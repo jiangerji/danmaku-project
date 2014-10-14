@@ -114,9 +114,10 @@ public class DanmakuController {
     }
 
     public void disconnect() {
-        SocketThreadManager manager = SocketThreadManager.sharedInstance();
         logout();
 
+        BaseProtocol.removeProtocolListener(mListener);
+        SocketThreadManager.sharedInstance().stopThreads();
         mDanmakuListener = null;
     }
 
@@ -139,6 +140,7 @@ public class DanmakuController {
 
         SocketThreadManager.sharedInstance()
                 .sendMsg(initConnectionRequest.getMessage());
+        Log.d(TAG, "Send Init Connection Request!");
     }
 
     /**
@@ -151,6 +153,7 @@ public class DanmakuController {
 
         SocketThreadManager.sharedInstance()
                 .sendMsg(loginRequest.getMessage());
+        Log.d(TAG, "Send Login Connection Request!");
     }
 
     /**
@@ -171,7 +174,7 @@ public class DanmakuController {
         if (mLoginStatus < 0) {
             // 未登录的话
             if (mDanmakuListener != null) {
-                mDanmakuListener.onSendChatStatus(1);
+                mDanmakuListener.onLoginStatus(-1);
             }
         } else {
             SendChatRequest request = new SendChatRequest();

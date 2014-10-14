@@ -15,7 +15,7 @@ import com.wanke.danmaku.protocol.BaseProtocol;
 import com.wanke.danmaku.protocol.InitConnectionResponse;
 
 public class SocketClient {
-    private final static String TAG = "SocketClient";
+    private final static String TAG = "Socket";
 
     // 信道选择器
     private Selector selector;
@@ -72,6 +72,10 @@ public class SocketClient {
         }
     }
 
+    public boolean isInitialize() {
+        return isInitialized;
+    }
+
     /**
      * 初始化
      * 
@@ -100,9 +104,6 @@ public class SocketClient {
             }
         } catch (Exception e) {
             Log.d(TAG, "Socket Init Exception:" + e.toString());
-            InitConnectionResponse initConnectionResponse = new InitConnectionResponse();
-            initConnectionResponse.setResult(-1);
-            BaseProtocol.handleProtocolListener(initConnectionResponse);
         } finally {
             if (!done && selector != null) {
                 selector.close();
@@ -111,6 +112,14 @@ public class SocketClient {
                 socketChannel.close();
             }
         }
+
+        InitConnectionResponse initConnectionResponse = new InitConnectionResponse();
+        if (done) {
+            initConnectionResponse.setResult(0);
+        } else {
+            initConnectionResponse.setResult(-1);
+        }
+        BaseProtocol.handleProtocolListener(initConnectionResponse);
 
         Log.d(TAG, "Socket Client Initialize Finish:" + done);
     }

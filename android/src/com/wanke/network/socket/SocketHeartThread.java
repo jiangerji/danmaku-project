@@ -20,7 +20,6 @@ class SocketHeartThread extends Thread {
     }
 
     public SocketHeartThread() {
-        SocketClient.instance();
     }
 
     public void stopThread() {

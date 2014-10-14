@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
@@ -37,6 +38,8 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +49,9 @@ import com.wanke.danmaku.DanmakuController.DanmakuListener;
 import com.wanke.danmaku.DanmakuManager;
 import com.wanke.danmaku.protocol.PushChatResponse;
 import com.wanke.tv.R;
+import com.wanke.ui.HotDamankuAdapter;
 import com.wanke.ui.ToastUtil;
+import com.wanke.ui.UiUtils;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class VideoActivity extends Activity implements SurfaceHolder.Callback,
@@ -114,7 +119,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
     private View mTopDanmakuPanel;
     private View mTopDanmakuPanelHotBtn;
-    private View mTopDanmakuPanelContent;
+    private EditText mTopDanmakuPanelContent;
     private View mTopDanmakuPanelSendBtn;
     private View mInvokeDanmakuPanelBtn;
 
@@ -170,7 +175,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
         // 初始化顶部弹幕工具栏
         mTopDanmakuPanel = findViewById(R.id.video_top_danmaku_panel);
-        mTopDanmakuPanelContent = findViewById(R.id.video_top_danmaku_panel_content);
+        mTopDanmakuPanelContent = (EditText) findViewById(R.id.video_top_danmaku_panel_content);
         mTopDanmakuPanelHotBtn = findViewById(R.id.video_top_danmaku_panel_hot_danmaku);
         mTopDanmakuPanelSendBtn = findViewById(R.id.video_top_danmaku_panel_send);
         mInvokeDanmakuPanelBtn = findViewById(R.id.video_invoke_danmaku_panel_btn);
@@ -202,9 +207,72 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
             @Override
             public void onClick(View v) {
-
+                if (mHotDanmakus != null) {
+                    if (mHotDanmakus.getVisibility() == View.INVISIBLE) {
+                        mHotDanmakus.setVisibility(View.VISIBLE);
+                    } else {
+                        mHotDanmakus.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
         });
+
+        mTopDanmakuPanelSendBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String danmakuContent = mTopDanmakuPanelContent.getText()
+                        .toString();
+                if (TextUtils.isEmpty(danmakuContent)) {
+                    return;
+                }
+
+                //                DanmakuController.getInstance().sendChat(danmakuContent);
+                DanmakuManager.getInstance().sendDanmaku(danmakuContent);
+                mTopDanmakuPanelContent.setText("");
+            }
+        });
+
+        initHotDanmakuList();
+    }
+
+    private ListView mHotDanmakus;
+
+    /**
+     * 初始化热门弹幕列表
+     */
+    private void initHotDanmakuList() {
+        mHotDanmakus = (ListView) findViewById(R.id.video_top_danmaku_panel_hot_danmaku_list);//new ListView(this);
+        int width = UiUtils.getScreenWidth(this) / 5 * 2;
+        int height = UiUtils.getScreenHeight(this) / 4 * 3;
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                width, height);
+        layoutParams.addRule(RelativeLayout.ALIGN_RIGHT,
+                R.id.video_top_danmaku_panel);
+        layoutParams.addRule(RelativeLayout.BELOW, R.id.video_top_danmaku_panel);
+        layoutParams.setMargins(0, 2, 0, 0);
+        mHotDanmakus.setLayoutParams(layoutParams);
+
+        //        ((RelativeLayout) findViewById(R.id.video_player_root)).addView(mHotDanmakus);
+        //        mHotDanmakus.setVisibility(View.INVISIBLE);
+
+        HotDamankuAdapter mHotDamankuAdapter = new HotDamankuAdapter(this);
+        // debug begin
+        String[] hotDanmakus = {
+                "牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛！！！！",
+                "太烂了吧你也！",
+                "我看好你哦~~哈哈",
+                "真心贵了",
+                "牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛！！！！",
+                "太烂了吧你也！",
+                "我看好你哦~~哈哈",
+                "真心贵了"
+        };
+        for (String hotDanmaku : hotDanmakus) {
+            mHotDamankuAdapter.add(hotDanmaku);
+        }
+        mHotDanmakus.setAdapter(mHotDamankuAdapter);
     }
 
     private DanmakuSurfaceView mDanmakuView;
@@ -316,6 +384,10 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                     R.anim.slide_out_top));
         }
         mTopDanmakuPanel.setVisibility(View.INVISIBLE);
+
+        if (mHotDanmakus != null) {
+            mHotDanmakus.setVisibility(View.INVISIBLE);
+        }
     }
 
     // 显示视频播放工具栏

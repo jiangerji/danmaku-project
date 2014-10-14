@@ -3,7 +3,7 @@ package com.wanke.network.socket;
 import android.util.Log;
 
 public class SocketThreadManager {
-    private final static String TAG = "SocketThreadManager";
+    private final static String TAG = "Socket";
 
     private static SocketThreadManager s_SocketManager = null;
 
@@ -39,21 +39,24 @@ public class SocketThreadManager {
      */
     public void startThreads() {
         // 首先开启SocketClient
+        mInputThread = new SocketInputThread();
+        mOutThread = new SocketOutputThread();
+        mHeartThread = new SocketHeartThread();
+
         mStartThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 mClient = SocketClient.instance();
-                if (mClient.isConnect()) {
-                    mInputThread = new SocketInputThread();
+                if (mClient.isInitialize()) {
                     mInputThread.setStart(true);
                     mInputThread.start();
 
-                    mOutThread = new SocketOutputThread();
                     mOutThread.start();
 
-                    mHeartThread = new SocketHeartThread();
                     mHeartThread.start();
+
+                    Log.d(TAG, "Socket Client has connected!");
                 } else {
                     Log.d(TAG, "Socket Client is not connected!");
                 }

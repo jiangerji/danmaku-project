@@ -14,7 +14,7 @@ import android.util.Log;
 public class SocketOutputThread extends Thread
 {
     private boolean isStart = true;
-    private static String TAG = "SocketOutputThread";
+    private static String TAG = "Socket";
 
     private Queue<SocketByteBuffer> sendMsgList;
 
@@ -30,7 +30,7 @@ public class SocketOutputThread extends Thread
     }
 
     // 使用socket发送消息
-    public boolean sendMsg(byte[] msg) throws Exception {
+    private boolean sendMsg(byte[] msg) throws Exception {
         if (msg == null) {
             return false;
         }
@@ -47,6 +47,7 @@ public class SocketOutputThread extends Thread
     // 使用socket发送消息
     public void addMsgToSendList(byte[] msg) {
         synchronized (this) {
+            Log.d(TAG, "Send Msg to List:" + msg.length);
             SocketByteBuffer socketByteBuffer = new SocketByteBuffer(msg,
                     0, msg.length);
             this.sendMsgList.offer(socketByteBuffer);
