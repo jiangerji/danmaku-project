@@ -7,6 +7,7 @@
     
     <string name="danmaku_connection_failed">连接弹幕服务器失败！</string>
     <string name="danmaku_login_failed">登录弹幕服务器失败！</string>
+    <string name="danmaku_send_too_fast">发送弹幕速度太快！</string>
     
     <!-- danmaku related -->
     <string name="danmaku_edittext_hint">请输入您要发送的弹幕</string>

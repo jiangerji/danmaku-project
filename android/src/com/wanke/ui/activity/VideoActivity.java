@@ -37,6 +37,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -165,8 +167,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
             @Override
             public void onClick(View v) {
-                DanmakuController.getInstance().sendChat("Hello World!");
-                //                DanmakuManager.getInstance().sendDanmaku("Hello World!");
+                sendDanmaku("Hello World!");
             }
         });
 
@@ -228,7 +229,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                 }
 
                 //                DanmakuController.getInstance().sendChat(danmakuContent);
-                DanmakuManager.getInstance().sendDanmaku(danmakuContent);
+                sendDanmaku(danmakuContent);
                 mTopDanmakuPanelContent.setText("");
             }
         });
@@ -237,6 +238,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     }
 
     private ListView mHotDanmakus;
+    private HotDamankuAdapter mHotDamankuAdapter;
 
     /**
      * 初始化热门弹幕列表
@@ -257,7 +259,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         //        ((RelativeLayout) findViewById(R.id.video_player_root)).addView(mHotDanmakus);
         //        mHotDanmakus.setVisibility(View.INVISIBLE);
 
-        HotDamankuAdapter mHotDamankuAdapter = new HotDamankuAdapter(this);
+        mHotDamankuAdapter = new HotDamankuAdapter(this);
         // debug begin
         String[] hotDanmakus = {
                 "牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛！！！！",
@@ -273,6 +275,28 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             mHotDamankuAdapter.add(hotDanmaku);
         }
         mHotDanmakus.setAdapter(mHotDamankuAdapter);
+
+        mHotDanmakus.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(
+                    AdapterView<?> parent, View view, int position, long id) {
+                String content = (String) mHotDamankuAdapter.getItem(position);
+                sendDanmaku(content);
+            }
+        });
+    }
+
+    private long mPreSendDanmakuTime = 0;
+
+    private void sendDanmaku(String content) {
+        long currTime = System.currentTimeMillis();
+        if (currTime - mPreSendDanmakuTime > 3000) {
+            DanmakuManager.getInstance().sendDanmaku(content);
+            mPreSendDanmakuTime = currTime;
+        } else {
+            mDanmakuHandler.sendEmptyMessage(DANMAKU_SEND_TOO_FAST);
+        }
     }
 
     private DanmakuSurfaceView mDanmakuView;
@@ -524,6 +548,9 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     private final static int DANMAKU_CONNECTION_FAILED = 0x00010001;
     // 登录弹幕服务器失败
     private final static int DANMAKU_LOGIN_FAILED = 0x00010002;
+    // 发送弹幕速度太快
+    private final static int DANMAKU_SEND_TOO_FAST = 0x00020001;
+    private Toast mDanmakuSendTooFast = null;
     private Handler mDanmakuHandler = new Handler(new Callback() {
 
         @Override
@@ -531,7 +558,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             switch (msg.what) {
             case DANMAKU_PUSH_CAHT:
                 String chatContent = ((PushChatResponse) msg.obj).getContent();
-                DanmakuManager.getInstance().sendDanmaku(chatContent);
+                sendDanmaku(chatContent);
                 break;
 
             case DANMAKU_CONNECTION_FAILED:
@@ -542,6 +569,18 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             case DANMAKU_LOGIN_FAILED:
                 ToastUtil.showToast(VideoActivity.this,
                         R.string.danmaku_login_failed);
+                break;
+
+            case DANMAKU_SEND_TOO_FAST:
+                try {
+                    if (mDanmakuSendTooFast != null) {
+                        mDanmakuSendTooFast.cancel();
+                    }
+                } catch (Exception e) {
+                }
+
+                mDanmakuSendTooFast = ToastUtil.showToast(VideoActivity.this,
+                        R.string.danmaku_send_too_fast);
                 break;
 
             default:
