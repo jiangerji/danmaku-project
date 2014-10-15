@@ -91,7 +91,48 @@ def recommend():
     result["data"] = jsonRooms
     return json.dumps(result)
 
+import os
+"""
+获取当前版本更新信息
+"""
+def version():
+    parseRequest()
+    platform = request.vars.get("type", "")
 
+    result = {}
+    result["error"] = 0
+
+    if len(platform) == 0:
+        return
+
+    result["error"] = 0
+
+    result["version"] = "1.0.1"
+    result["forceUpdate"] = False
+    result["updateShortLog"] = "这是一次假的更新。\nhaha ~~"
+    result["updateDetailLog"] = "http://www.baidu.com"
+    result["downUrl"] = "http://www.baidu.com"
+
+    return json.dumps(result)
+
+"""
+获取图片
+"""
+def imgfile():
+    filename = request.vars.get("id", "")
+    if len(filename) == 0:
+        return ""
+
+    print filename
+    # redirect(URL("/static/images/cover/"+filename))
+    filepath = os.path.join(os.getcwd(), "applications")
+    filepath = os.path.join(filepath, "wanketv")
+    filepath = os.path.join(filepath, "static")
+    filepath = os.path.join(filepath, "images")
+    filepath = os.path.join(filepath, "cover")
+    filepath = os.path.join(filepath, filename)
+    url = "http://192.168.41.101:9257/wanketv/static/images/cover/"+filename
+    redirect(url)
 
 
 def parseRequest():
