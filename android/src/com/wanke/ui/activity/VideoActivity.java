@@ -51,9 +51,9 @@ import com.wanke.danmaku.DanmakuController.DanmakuListener;
 import com.wanke.danmaku.DanmakuManager;
 import com.wanke.danmaku.protocol.PushChatResponse;
 import com.wanke.tv.R;
-import com.wanke.ui.HotDamankuAdapter;
 import com.wanke.ui.ToastUtil;
 import com.wanke.ui.UiUtils;
+import com.wanke.ui.adapter.HotDamankuAdapter;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class VideoActivity extends Activity implements SurfaceHolder.Callback,

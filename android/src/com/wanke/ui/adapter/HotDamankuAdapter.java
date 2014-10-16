@@ -1,4 +1,4 @@
-package com.wanke.ui;
+package com.wanke.ui.adapter;
 
 import java.util.ArrayList;
 
