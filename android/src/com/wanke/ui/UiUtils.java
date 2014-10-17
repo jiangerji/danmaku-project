@@ -1,8 +1,14 @@
 package com.wanke.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.wanke.WankeTVApplication;
 
 public class UiUtils {
 
@@ -45,6 +51,10 @@ public class UiUtils {
             return mScreenHeight;
         }
 
+        if (context == null) {
+            context = WankeTVApplication.getCurrentApplication();
+        }
+
         DisplayMetrics dm = new DisplayMetrics();
         // 取得窗口属性
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE))
@@ -56,5 +66,12 @@ public class UiUtils {
         mDensity = dm.density;
 
         return mScreenHeight;
+    }
+
+    public static DisplayImageOptions getOptionsFadeIn() {
+        return new DisplayImageOptions.Builder().cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565).cacheInMemory(true)
+                .displayer(new FadeInBitmapDisplayer(250))
+                .imageScaleType(ImageScaleType.EXACTLY).build();
     }
 }

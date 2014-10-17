@@ -11,9 +11,14 @@ import com.lidroid.xutils.http.client.HttpRequest;
 public class CommonHttpUtils {
     private final static String TAG = "http";
 
+    private final static String BASE_URL = "http://192.168.41.101:9257/wanketv/live/";
+
     public static void get(
-            final String url, final RequestCallBack<String> callBack) {
+            final String action, final RequestCallBack<String> callBack) {
+        final String url = BASE_URL + action;
+
         HttpUtils http = new HttpUtils();
+        http.configCurrentHttpCacheExpiry(1000 * 10);
         http.send(HttpRequest.HttpMethod.GET,
                 url,
                 new RequestCallBack<String>() {

@@ -16,4 +16,10 @@
     
     <!-- danmaku related -->
     <string name="danmaku_edittext_hint">请输入您要发送的弹幕</string>
+    
+    <!-- fragmen recommend -->
+    <string name="fragment_recommend_game_title_yxlm">英雄联盟</string>
+    <string name="fragment_recommend_game_title_dota2">DOTA2</string>
+    <string name="fragment_recommend_game_title_lscs">炉石传说</string>
+    <string name="fragment_recommend_game_title_zjyx">主机游戏</string>
 </resources>

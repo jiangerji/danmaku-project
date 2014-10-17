@@ -11,7 +11,7 @@ import android.view.View;
 
 import com.wanke.tv.R;
 import com.wanke.ui.adapter.MyFragmentPagerAdapter;
-import com.wanke.ui.fragment.Recommend;
+import com.wanke.ui.fragment.FragmentRecommend;
 
 public class MainActivity extends FragmentActivity {
     MyFragmentPagerAdapter mMyFragmentPagerAdapter;
@@ -47,7 +47,7 @@ public class MainActivity extends FragmentActivity {
         mFragmentList = new ArrayList<Fragment>();
         mTitleList = new ArrayList<String>();
 
-        Fragment firstFragment = new Recommend();
+        Fragment firstFragment = new FragmentRecommend();
         //        Fragment secondFragment = new Live();
         //        Fragment thirdFragment = new Game();
         //        Fragment fourthFragment = new MyPage();

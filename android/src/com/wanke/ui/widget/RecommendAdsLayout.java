@@ -6,7 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
@@ -25,19 +24,18 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.wanke.network.http.CommonHttpUtils;
+import com.wanke.network.http.Constants;
 import com.wanke.tv.R;
 import com.wanke.ui.UiUtils;
 
-public class ViewpagerLayout {
+public class RecommendAdsLayout {
     private ViewPager mViewPager = null;
     private Context mContext = null;
     private View mRootView;
     private DisplayImageOptions mOptions;
 
-    public ViewpagerLayout(Context context) {
+    public RecommendAdsLayout(Context context) {
         mContext = context;
         initView(mContext);
     }
@@ -50,10 +48,7 @@ public class ViewpagerLayout {
     private ArrayList<String> mAdTitles = new ArrayList<String>();
 
     private void initView(Context context) {
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
-                .bitmapConfig(Bitmap.Config.RGB_565).cacheInMemory(true)
-                .displayer(new FadeInBitmapDisplayer(250))
-                .imageScaleType(ImageScaleType.EXACTLY).build();
+        mOptions = UiUtils.getOptionsFadeIn();
 
         mRootView = View.inflate(context, R.layout.recommend_top_ad, null);
         mViewPager = (ViewPager) mRootView.findViewById(R.id.adv_pager);
@@ -80,7 +75,7 @@ public class ViewpagerLayout {
     }
 
     private void initAdapter() {
-        CommonHttpUtils.get("http://192.168.41.101:9257/wanketv/live/ads",
+        CommonHttpUtils.get("ads",
                 new RequestCallBack<String>() {
                     @Override
                     public void onLoading(
@@ -112,9 +107,7 @@ public class ViewpagerLayout {
                 JSONObject ad = (JSONObject) ads.get(i);
 
                 String cover = ad.getString("cover");
-                mAdapter.addAdv(i,
-                        "http://192.168.41.101:9257/wanketv/static/images/cover/"
-                                + cover);
+                mAdapter.addAdv(i, Constants.buildImageUrl(cover));
                 mAdTitles.add(ad.getString("title"));
             }
 

@@ -27,7 +27,7 @@ public class WankeTVApplication extends Application {
         ImageLoader.getInstance().init(config);
     }
 
-    public WankeTVApplication getCurrentApplication() {
+    public static WankeTVApplication getCurrentApplication() {
         return mCurrentApplication;
     }
 }
