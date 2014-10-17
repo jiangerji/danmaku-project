@@ -12,9 +12,11 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -30,7 +32,9 @@ import com.wanke.tv.R;
 import com.wanke.ui.UiUtils;
 
 public class RecommendAdsLayout {
-    private ViewPager mViewPager = null;
+    private final static String TAG = "recommend";
+
+    private ViewPager mAdViewPager = null;
     private Context mContext = null;
     private View mRootView;
     private DisplayImageOptions mOptions;
@@ -51,24 +55,35 @@ public class RecommendAdsLayout {
         mOptions = UiUtils.getOptionsFadeIn();
 
         mRootView = View.inflate(context, R.layout.recommend_top_ad, null);
-        mViewPager = (ViewPager) mRootView.findViewById(R.id.adv_pager);
+        mAdViewPager = (ViewPager) mRootView.findViewById(R.id.adv_pager);
         mTitle = (TextView) mRootView.findViewById(R.id.ad_title);
 
         int height = UiUtils.getScreenWidth(mContext) * 480
                 / 854;
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 height);
-        mViewPager.setLayoutParams(layoutParams);
+        mAdViewPager.setLayoutParams(layoutParams);
 
         mAdapter = new AdvAdapter();
-        mViewPager.setAdapter(mAdapter);
-        mViewPager.setOnPageChangeListener(new AdPageChangeListener());
+        mAdViewPager.setAdapter(mAdapter);
+        mAdViewPager.setOnPageChangeListener(new AdPageChangeListener());
         initAdapter();
 
         mIndicator = (BottomIndicator) mRootView.findViewById(R.id.indicator);
         mIndicator.setNumber(mAdapter.getCount());
         mIndicator.setSelection(0);
     }
+
+    private Runnable mScrollRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            mAdViewPager.setCurrentItem((mAdViewPager.getCurrentItem() + 1)
+                    % mAdapter.getCount(), true);
+
+            mHandler.postDelayed(mScrollRunnable, 5000);
+        }
+    };
 
     public View getView() {
         return mRootView;
@@ -110,7 +125,7 @@ public class RecommendAdsLayout {
                 mAdapter.addAdv(i, Constants.buildImageUrl(cover));
                 mAdTitles.add(ad.getString("title"));
             }
-
+            Log.d(TAG, "Refresh ad");
             mHandler.sendEmptyMessage(GET_AD_FINISH);
         } catch (Exception e) {
         }
@@ -129,9 +144,10 @@ public class RecommendAdsLayout {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
             case GET_AD_FINISH:
+                mHandler.postDelayed(mScrollRunnable, 2500);
+                mAdapter.update(mAdViewPager.getCurrentItem());
+                setAdTitle(mAdViewPager.getCurrentItem());
                 mAdapter.notifyDataSetChanged();
-
-                setAdTitle(mViewPager.getCurrentItem());
                 break;
 
             default:
@@ -166,7 +182,9 @@ public class RecommendAdsLayout {
 
         private AdvAdapter() {
             for (int i = 0; i < 4; i++) {
-                images.add(new ImageView(mContext));
+                ImageView imageView = new ImageView(mContext);
+                imageView.setScaleType(ScaleType.FIT_XY);
+                images.add(imageView);
                 mAdvCovers.add(null);
             }
         }
@@ -198,6 +216,7 @@ public class RecommendAdsLayout {
         public Object instantiateItem(ViewGroup view, int position) {
             ImageView imageView = images.get(position);
             if (mAdvCovers.get(position) != null) {
+                Log.d(TAG, "show " + position + " " + mAdvCovers.get(position));
                 ImageLoader.getInstance()
                         .displayImage(mAdvCovers.get(position),
                                 imageView, mOptions);
@@ -205,6 +224,16 @@ public class RecommendAdsLayout {
 
             view.addView(imageView);
             return images.get(position);
+        }
+
+        public void update(int position) {
+            ImageView imageView = images.get(position);
+            if (mAdvCovers.get(position) != null) {
+                Log.d(TAG, "show " + position + " " + mAdvCovers.get(position));
+                ImageLoader.getInstance()
+                        .displayImage(mAdvCovers.get(position),
+                                imageView, mOptions);
+            }
         }
     }
 }

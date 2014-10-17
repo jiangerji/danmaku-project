@@ -41,7 +41,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:horizontalSpacing="3dp"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:numColumns="2" >
     </GridView>
 

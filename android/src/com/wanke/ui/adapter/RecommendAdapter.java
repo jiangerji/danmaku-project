@@ -26,7 +26,7 @@ import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.tv.R;
 
 public class RecommendAdapter extends BaseAdapter {
-    private final static String TAG = "recommend";
+    private final static String TAG = "RecommendAdapter";
 
     private ArrayList<GameInfo> mGames = new ArrayList<GameInfo>();
     private Hashtable<Integer, ArrayList<ChannelInfo>> mChannelInfos = new Hashtable<Integer, ArrayList<ChannelInfo>>();
@@ -101,7 +101,7 @@ public class RecommendAdapter extends BaseAdapter {
                                             + e.toString());
                         }
 
-                        GridView gridView = (GridView) mRecommendViews.get(gameInfo.getGameId())
+                        final GridView gridView = (GridView) mRecommendViews.get(gameInfo.getGameId())
                                 .findViewById(R.id.recommend_games);
                         LiveChannelAdapter adapter = (LiveChannelAdapter) gridView.getAdapter();
                         adapter.setChannels(mChannelInfos.get(gameInfo.getGameId()));

@@ -1,14 +1,10 @@
 package com.wanke.ui.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.PointF;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 public class ChildViewPager extends ViewPager {
     /** 触摸时按下的点 **/
@@ -16,7 +12,6 @@ public class ChildViewPager extends ViewPager {
     /** 触摸时当前的点 **/
     PointF curP = new PointF();
     OnSingleTouchListener onSingleTouchListener;
-    List<View> mPageViews = new ArrayList<View>();
 
     public ChildViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
