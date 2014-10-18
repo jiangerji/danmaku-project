@@ -2,4 +2,7 @@
 <resources>
     <dimen name="bottom_indicator_gap">12.5dp</dimen>
     <dimen name="bottom_indicator_raduis">5dp</dimen>
+    
+    <dimen name="grid_view_horizontal_gap">3dp</dimen>
+    <dimen name="grid_view_vertical_gap">3dp</dimen>
 </resources>

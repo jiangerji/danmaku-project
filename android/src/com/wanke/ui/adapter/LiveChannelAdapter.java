@@ -32,6 +32,11 @@ public class LiveChannelAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addChannels(ArrayList<ChannelInfo> channelInfos) {
+        mChannelInfos.addAll(channelInfos);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return mChannelInfos.size();
