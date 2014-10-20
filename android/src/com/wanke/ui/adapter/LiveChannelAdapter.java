@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import com.wanke.model.ChannelInfo;
 import com.wanke.network.http.Constants;
 import com.wanke.tv.R;
 import com.wanke.ui.UiUtils;
+import com.wanke.ui.activity.LiveChannelDetailActivity;
 
 public class LiveChannelAdapter extends BaseAdapter {
 
@@ -43,8 +46,8 @@ public class LiveChannelAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public ChannelInfo getItem(int position) {
+        return mChannelInfos.get(position);
     }
 
     @Override
@@ -61,8 +64,26 @@ public class LiveChannelAdapter extends BaseAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.live_channel_item,
                     null);
+
+            convertView.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    ChannelInfo channelInfo = (ChannelInfo) v.getTag();
+
+                    Intent intent = new Intent();
+                    intent.setClass(v.getContext(),
+                            LiveChannelDetailActivity.class);
+                    intent.putExtra(LiveChannelDetailActivity.CHANNEL_ID,
+                            channelInfo.getRoomId());
+                    v.getContext().startActivity(intent);
+                }
+            });
+
             init = true;
         }
+
+        convertView.setTag(getItem(position));
 
         ImageView liveChannelCover = (ImageView) convertView.findViewById(R.id.live_channel_cover);
         if (init) {

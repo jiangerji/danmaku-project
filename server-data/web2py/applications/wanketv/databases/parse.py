@@ -126,7 +126,7 @@ def parseHot():
     conn = httplib.HTTPConnection("api.douyutv.com")
     index = 0
     for gameId in gameIds:
-        url = "/api/client/live/"+str(gameId)+"/?offset=0&limit=4&client_sys=android"
+        url = "/api/client/live/"+str(gameId)+"/?offset=0&limit=50&client_sys=android"
         print url
         conn.request(method="POST", url=url)
         response = conn.getresponse()
@@ -159,9 +159,19 @@ def parseHot():
                     print e
 
                 getFile(roomCover, "cover")
+
+                # 获取头像
+                getFile("http://uc.douyutv.com/avatar.php?uid=%s&size=big"%ownerId, "cover")
             db.commit()
             # raw_input()
     cursor.close()
     db.close()
 
 # parseHot()
+for i in os.listdir("."):
+    if i.startswith("avatar.php@uid="):
+        srcName = os.path.join(".", i)
+        targetName = os.path.join("cover", i[len("avatar.php@uid="):]+".png")
+        os.rename(srcName, targetName)
+        print i
+        # raw_input()

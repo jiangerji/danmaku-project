@@ -3,6 +3,7 @@ package com.wanke.ui.activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.wanke.tv.R;
 import com.wanke.ui.adapter.MyFragmentPagerAdapter;
@@ -15,7 +16,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        InitViewPager();
+        initView();
     }
 
     public class txListener implements View.OnClickListener {
@@ -31,19 +32,68 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private View mRecommentBtn = null;
+    private View mLiveBtn = null;
+    private View mGameBtn = null;
+    private View mAccountBtn = null;
+
+    private MyFragmentPagerAdapter mFragmentPagerAdapter;
+
     /*
      * 初始化ViewPager
      */
-    public void InitViewPager() {
+    public void initView() {
         mPager = (ViewPager) findViewById(R.id.viewpager);
 
         // 给ViewPager设置适配器
-        MyFragmentPagerAdapter viewerPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
-        mPager.setOffscreenPageLimit(viewerPagerAdapter.getCount());
-        mPager.setAdapter(viewerPagerAdapter);
+        mFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+        mPager.setOffscreenPageLimit(mFragmentPagerAdapter.getCount());
+        mPager.setAdapter(mFragmentPagerAdapter);
         mPager.setCurrentItem(0);// 设置当前显示标签页为第一页
         //        mPager.setOnPageChangeListener(new MyOnPageChangeListener());// 页面变化时的监听器
+
+        mRecommentBtn = findViewById(R.id.recomment_btn);
+        mRecommentBtn.setOnClickListener(mBtnClickListener);
+        mLiveBtn = findViewById(R.id.live_btn);
+        mLiveBtn.setOnClickListener(mBtnClickListener);
+        mGameBtn = findViewById(R.id.game_btn);
+        mGameBtn.setOnClickListener(mBtnClickListener);
+        mAccountBtn = findViewById(R.id.account_btn);
+        mAccountBtn.setOnClickListener(mBtnClickListener);
     }
+
+    private OnClickListener mBtnClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            int id = v.getId();
+            int pageIndex = -1;
+            switch (id) {
+            case R.id.recomment_btn:
+                pageIndex = 0;
+                break;
+
+            case R.id.live_btn:
+                pageIndex = 1;
+                break;
+
+            case R.id.game_btn:
+                pageIndex = 2;
+                break;
+
+            case R.id.account_btn:
+                break;
+
+            default:
+                break;
+            }
+
+            if (pageIndex >= 0 && pageIndex < mFragmentPagerAdapter.getCount()) {
+                mPager.setCurrentItem(pageIndex, true);
+            }
+
+        }
+    };
     // /
     //    private int first = 0;
     //    private int second = 0;

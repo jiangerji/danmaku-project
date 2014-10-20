@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    
+        <ImageView
+            android:id="@+id/room_cover"
+            android:layout_width="match_parent"
+            android:layout_height="200dip"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/live_channel_default_cover"
+            android:contentDescription="@null" />
+    
+        <ImageView
+            android:id="@+id/video_play_btn"
+            android:layout_width="match_parent"
+            android:layout_height="200dip"
+            android:layout_alignTop="@id/room_cover"
+            android:layout_alignBottom="@id/room_cover"
+            android:layout_alignLeft="@id/room_cover"
+            android:layout_alignStart="@id/room_cover"
+            android:layout_alignRight="@id/room_cover"
+            android:layout_alignEnd="@id/room_cover"
+            android:scaleType="center"
+            android:src="@drawable/detail_activity_play_btn"
+            android:contentDescription="@null" />
+        
+        <View
+            android:id="@+id/avatar_top_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="10dip"
+            android:layout_alignBottom="@id/room_cover" />
+        
+        <ImageView
+            android:id="@+id/owner_avatar"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_alignTop="@id/avatar_top_indicator"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/default_avatar"
+            android:contentDescription="@null" />
+        
+        <TextView
+            android:id="@+id/owner_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/room_cover"
+            android:layout_toRightOf="@id/owner_avatar"
+            android:layout_toEndOf="@id/owner_avatar"
+            android:paddingTop="3dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="0dp"
+            android:paddingStart="3dp"
+            android:paddingEnd="0dp"
+            android:textSize="14sp"
+            android:text="我是主播" />
+        
+        <TextView
+            android:id="@+id/online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/owner_nickname"
+            android:layout_alignBottom="@id/owner_avatar"
+            android:layout_toRightOf="@id/owner_avatar"
+            android:layout_toEndOf="@id/owner_avatar"
+            android:paddingTop="3dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="0dp"
+            android:paddingStart="3dp"
+            android:paddingEnd="0dp"
+            android:textSize="12sp"
+            android:textColor="@color/text_black_color"
+            android:text="在线：12.6万" />
+        
+        <ImageView
+            android:id="@+id/share_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/avatar_top_indicator"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/detail_activity_share_btn"
+            android:contentDescription="@null" />
+        
+        <ImageView
+            android:id="@+id/like_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/avatar_top_indicator"
+            android:layout_toLeftOf="@id/share_btn"
+            android:layout_toStartOf="@id/share_btn"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/detail_activity_like_btn"
+            android:contentDescription="@null" />
+        
+        <TextView
+            android:id="@+id/room_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/owner_avatar"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginEnd="25dp"
+            android:textSize="14sp"
+            android:text="个你们看看我怎么弄死他的！~~~~~~" />
+        
+        <View
+            android:id="@+id/detail_top_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:layout_below="@id/room_title"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/grey" />
+        
+        <TextView
+            android:id="@+id/room_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_top_indicator"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginEnd="25dp"
+            android:textSize="12sp"
+            android:text="个你们看看我怎么弄死他的！~~~~~\n个你们看看我怎么弄死他的！~~~~~\n个你们看看我怎么弄死他的！~~~~~\n个你们看看我怎么弄死他的！~~~~~\n" />
+    
+    </RelativeLayout>
+</ScrollView>

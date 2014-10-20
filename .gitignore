@@ -24,3 +24,7 @@ proguard/
 
 # Log Files
 *.log
+
+server-data/
+# 
+!server-data/web2py/applications/wanketv/

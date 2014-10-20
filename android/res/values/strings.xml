@@ -7,6 +7,8 @@
     <string name="game">游戏</string>
     <string name="mine">我的</string>
     
+    <string name="live_channel_title">直播——%s</string>
+    
     <string name="start_time">0:00</string>
 
     

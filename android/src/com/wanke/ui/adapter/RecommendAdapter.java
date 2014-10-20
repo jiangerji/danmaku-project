@@ -8,9 +8,11 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -24,6 +26,7 @@ import com.wanke.model.GameInfo;
 import com.wanke.model.ParserUtil;
 import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.tv.R;
+import com.wanke.ui.activity.LiveChannelActivity;
 
 public class RecommendAdapter extends BaseAdapter {
     private final static String TAG = "RecommendAdapter";
@@ -53,7 +56,7 @@ public class RecommendAdapter extends BaseAdapter {
 
     @SuppressLint("InflateParams")
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, final ViewGroup parent) {
         final GameInfo gameInfo = mGames.get(position);
 
         convertView = mRecommendViews.get(gameInfo.getGameId());
@@ -71,6 +74,23 @@ public class RecommendAdapter extends BaseAdapter {
             String gameGame = gameInfo.getGameName();
             TextView gameNameTV = (TextView) convertView.findViewById(R.id.game_title);
             gameNameTV.setText(gameGame);
+
+            View moreBtn = convertView.findViewById(R.id.more_btn);
+            moreBtn.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setClass(parent.getContext(),
+                            LiveChannelActivity.class);
+                    intent.putExtra(LiveChannelActivity.GAME_ID,
+                            gameInfo.getGameId());
+                    intent.putExtra(LiveChannelActivity.GAME_NAME,
+                            gameInfo.getGameName());
+
+                    parent.getContext().startActivity(intent);
+                }
+            });
 
             GridView gridView = (GridView) convertView.findViewById(R.id.recommend_games);
             gridView.setAdapter(new LiveChannelAdapter());

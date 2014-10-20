@@ -44,6 +44,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.wanke.ui.activity.LiveChannelActivity" 
+            android:screenOrientation="portrait">
+            
+        </activity>
+        <activity android:name="com.wanke.ui.activity.LiveChannelDetailActivity" 
+            android:screenOrientation="portrait">
+            
+        </activity>
     </application>
 
 </manifest>

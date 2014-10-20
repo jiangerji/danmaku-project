@@ -32,6 +32,7 @@ def games():
     db = DAL('sqlite://wanke.sqlite3.sqlite')
     allGames = db.executesql("select * from games order by gameIndex")
     result = {}
+    result["error"] = 0
     jsonGames = []
     for game in allGames:
         jsonGame = {}
@@ -40,7 +41,7 @@ def games():
         jsonGame["gameCover"] = game[4]
         jsonGames.append(jsonGame)
 
-    result["games"] = jsonGames
+    result["data"] = jsonGames
     return json.dumps(result)
 
 """
@@ -57,8 +58,12 @@ def recommend():
     """
     parseRequest()
     gameId = request.vars.get("gameId", "")
-    limit = request.vars.get("limit", 20)
-    offset = request.vars.get("offset", 0)
+    limit = int(request.vars.get("limit", 20))
+    offset = int(request.vars.get("offset", 0))
+
+    debug = request.vars.get("debug", "")
+    if len(debug) > 0:
+        gameId = ""
 
     db = DAL('sqlite://wanke.sqlite3.sqlite')
     allRooms = []
@@ -71,10 +76,15 @@ def recommend():
 
     result = {}
     result["error"] = 0
+
     index = 0
     jsonRooms = []
     for room in allRooms:
-        if index >= limit:
+        if index < limit*offset:
+            index += 1
+            continue
+
+        if index >= limit*(offset+1):
             break
 
         jsonRoom = {}
@@ -88,8 +98,46 @@ def recommend():
         jsonRoom["fans"] = room[13]
         jsonRooms.append(jsonRoom)
 
+        index += 1
+
     result["data"] = jsonRooms
     return json.dumps(result)
+
+def channel():
+    """
+    channel?roomId=2121
+    roomId 如果没有，返回空
+    """
+    parseRequest()
+    roomId = request.vars.get("roomId", "")
+
+    db = DAL('sqlite://wanke.sqlite3.sqlite')
+    allRooms = []
+
+    result = ""
+    if len(roomId) > 0:
+        sql = "select * from live_channels where roomId=%s order by _id"%roomId
+        allRooms = db.executesql(sql)
+
+    room = None
+    if len(allRooms) >= 1:
+        room = allRooms[0]
+
+    if room != None:
+        jsonRoom = {}
+        jsonRoom["roomId"] = room[1]
+        jsonRoom["roomName"] = room[2]
+        jsonRoom["roomCover"] = room[3]
+        jsonRoom["gameId"] = room[5]
+        jsonRoom["gameName"] = room[6]
+        jsonRoom["ownerUid"] = room[9]
+        jsonRoom["ownerNickname"] = room[11]
+        jsonRoom["online"] = room[12]
+        jsonRoom["fans"] = room[13]
+        jsonRoom["detail"] = room[14]
+        result = json.dumps(jsonRoom)
+
+    return result
 
 import os
 """
@@ -133,7 +181,6 @@ def imgfile():
     filepath = os.path.join(filepath, filename)
     url = "http://192.168.41.101:9257/wanketv/static/images/cover/"+filename
     redirect(url)
-
 
 def parseRequest():
     # 发起请求客户端的操作系统类型

@@ -25,9 +25,11 @@
         android:baselineAligned="false" >
 
         <LinearLayout
-            android:id="@+id/rl_view1"
+            android:id="@+id/recomment_btn"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_weight="1" >
@@ -49,9 +51,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/rl_view2"
+            android:id="@+id/live_btn"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_weight="1" >
@@ -73,9 +77,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/rl_view3"
+            android:id="@+id/game_btn"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_weight="1" >
@@ -97,9 +103,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/rl_view4"
+            android:id="@+id/account_btn"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_weight="1" >
