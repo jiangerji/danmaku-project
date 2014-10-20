@@ -37,4 +37,27 @@ public class ParserUtil {
 
         return channelInfos;
     }
+
+    public static ArrayList<GameInfo> parseGamesInfo(JSONArray games) {
+        ArrayList<GameInfo> gameInfos = new ArrayList<GameInfo>();
+        JSONObject game;
+
+        try {
+
+            for (int i = 0; i < games.length(); i++) {
+                game = games.getJSONObject(i);
+
+                GameInfo gameInfo = new GameInfo();
+                gameInfo.setGameId(game.getInt("gameId"));
+                gameInfo.setGameName(game.getString("gameName"));
+                gameInfo.setGameCover(game.getString("gameCover"));
+
+                gameInfos.add(gameInfo);
+                Log.d(TAG, "Game Info:" + gameInfo.toString());
+            }
+        } catch (Exception e) {
+        }
+
+        return gameInfos;
+    }
 }

@@ -38,9 +38,8 @@ public class FragmentLive extends Fragment {
         mChannelList = (PullToRefreshGridView) inflater.inflate(R.layout.fragment_live,
                 container,
                 false);
-        //        mChannelList = (PullToRefreshGridView) view
-        //                .findViewById(R.id.channel_list);
-        mChannelList.setMode(Mode.PULL_FROM_END);
+        //        mChannelList = (PullToRefreshGridView) view.findViewById(R.id.channel_list);
+        mChannelList.setMode(Mode.DISABLED);
 
         mChannelList.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 

@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.wanke.tv.R;
 import com.wanke.ui.adapter.MyFragmentPagerAdapter;
+import com.wanke.ui.fragment.FragmentGame;
 import com.wanke.ui.fragment.FragmentLive;
 import com.wanke.ui.fragment.FragmentRecommend;
 
@@ -50,11 +51,11 @@ public class MainActivity extends FragmentActivity {
 
         Fragment firstFragment = new FragmentRecommend();
         Fragment secondFragment = new FragmentLive();
-        //        Fragment thirdFragment = new Game();
+        Fragment thirdFragment = new FragmentGame();
         //        Fragment fourthFragment = new MyPage();
         mFragmentList.add(firstFragment);
         mFragmentList.add(secondFragment);
-        //        mFragmentList.add(thirdFragment);
+        mFragmentList.add(thirdFragment);
         //        mFragmentList.add(fourthFragment);
 
         // 给ViewPager设置适配器

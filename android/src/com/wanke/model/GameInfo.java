@@ -4,6 +4,22 @@ public class GameInfo {
 
     private int gameId;
     private String gameName;
+    private String gameCover;
+
+    /**
+     * @return the gameCover
+     */
+    public String getGameCover() {
+        return gameCover;
+    }
+
+    /**
+     * @param gameCover
+     *            the gameCover to set
+     */
+    public void setGameCover(String gameCover) {
+        this.gameCover = gameCover;
+    }
 
     /**
      * @return the gameId
@@ -33,6 +49,15 @@ public class GameInfo {
      */
     public void setGameName(String gameName) {
         this.gameName = gameName;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("gameName:" + getGameName() + " ");
+        sb.append("gameId:" + getGameId() + " ");
+        sb.append("gameCover:" + getGameCover() + " ");
+        return sb.toString();
     }
 
 }
