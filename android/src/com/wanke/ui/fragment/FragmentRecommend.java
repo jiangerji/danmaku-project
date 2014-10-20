@@ -1,7 +1,7 @@
 package com.wanke.ui.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,7 @@ import com.wanke.tv.R;
 import com.wanke.ui.adapter.RecommendAdapter;
 import com.wanke.ui.widget.RecommendAdsLayout;
 
-public class FragmentRecommend extends Fragment {
+public class FragmentRecommend extends BaseFragment {
     private ListView mListView;
 
     @Override
@@ -29,6 +29,7 @@ public class FragmentRecommend extends Fragment {
         mListView.addHeaderView(viewpagerLayout.getView());
 
         initRecommend();
+        Log.d(TAG, "FragmentRecommend: onCreateView");
         return view;
     }
 

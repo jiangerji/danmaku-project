@@ -1,35 +1,47 @@
 package com.wanke.ui.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Hashtable;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
+
+import com.wanke.ui.fragment.FragmentGame;
+import com.wanke.ui.fragment.FragmentLive;
+import com.wanke.ui.fragment.FragmentRecommend;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-    ArrayList<Fragment> list;
-    List<String> titleList;
+    private Hashtable<Integer, Fragment> mFragmentTable = new Hashtable<Integer, Fragment>();
 
-    public MyFragmentPagerAdapter(FragmentManager fm, ArrayList<Fragment> list,
-            List<String> titleList) {
+    private Class<?> mFragmentClass[] = { FragmentRecommend.class,
+            FragmentLive.class, FragmentGame.class };
+
+    public MyFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
-        this.list = list;
-        this.titleList = titleList;
     }
 
     public CharSequence getPageTitle(int position) {
-        return titleList.get(position);
+        return "";
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return mFragmentClass.length;
     }
 
     @Override
-    public Fragment getItem(int arg0) {
-        return list.get(arg0);
+    public Fragment getItem(int position) {
+        Fragment fragment = mFragmentTable.get(position);
+        if (fragment == null) {
+            Class<?> fragmentClass = mFragmentClass[position];
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                Log.d("excetpion", "MyFragmentPagerAdapter:" + e.toString());
+            }
+        }
+        return fragment;
     }
 
 }

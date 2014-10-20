@@ -1,25 +1,15 @@
 package com.wanke.ui.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.wanke.tv.R;
 import com.wanke.ui.adapter.MyFragmentPagerAdapter;
-import com.wanke.ui.fragment.FragmentGame;
-import com.wanke.ui.fragment.FragmentLive;
-import com.wanke.ui.fragment.FragmentRecommend;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends BaseActivity {
     MyFragmentPagerAdapter mMyFragmentPagerAdapter;
     private ViewPager mPager;
-    private ArrayList<Fragment> mFragmentList;
-    private List<String> mTitleList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,25 +36,14 @@ public class MainActivity extends FragmentActivity {
      */
     public void InitViewPager() {
         mPager = (ViewPager) findViewById(R.id.viewpager);
-        mFragmentList = new ArrayList<Fragment>();
-        mTitleList = new ArrayList<String>();
-
-        Fragment firstFragment = new FragmentRecommend();
-        Fragment secondFragment = new FragmentLive();
-        Fragment thirdFragment = new FragmentGame();
-        //        Fragment fourthFragment = new MyPage();
-        mFragmentList.add(firstFragment);
-        mFragmentList.add(secondFragment);
-        mFragmentList.add(thirdFragment);
-        //        mFragmentList.add(fourthFragment);
 
         // 给ViewPager设置适配器
-        mPager.setAdapter(new MyFragmentPagerAdapter(
-                getSupportFragmentManager(), mFragmentList, mTitleList));
+        MyFragmentPagerAdapter viewerPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+        mPager.setOffscreenPageLimit(viewerPagerAdapter.getCount());
+        mPager.setAdapter(viewerPagerAdapter);
         mPager.setCurrentItem(0);// 设置当前显示标签页为第一页
         //        mPager.setOnPageChangeListener(new MyOnPageChangeListener());// 页面变化时的监听器
     }
-
     // /
     //    private int first = 0;
     //    private int second = 0;

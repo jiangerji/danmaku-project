@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.json.JSONObject;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +25,7 @@ import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.tv.R;
 import com.wanke.ui.adapter.LiveChannelAdapter;
 
-public class FragmentLive extends Fragment {
-    private final static String TAG = "live";
+public class FragmentLive extends BaseFragment {
 
     private PullToRefreshGridView mChannelList;
     private LiveChannelAdapter mAdapter;
@@ -68,6 +66,8 @@ public class FragmentLive extends Fragment {
         mChannelList.setAdapter(mAdapter);
 
         getNextPage();
+
+        Log.d(TAG, "FragmentLive: onCreateView");
         return mChannelList;
     }
 

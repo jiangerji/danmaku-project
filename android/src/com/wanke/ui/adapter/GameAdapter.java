@@ -2,6 +2,7 @@ package com.wanke.ui.adapter;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,7 @@ public class GameAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         boolean init = false;
@@ -64,6 +66,7 @@ public class GameAdapter extends BaseAdapter {
             icon.getViewTreeObserver()
                     .addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
+                        @SuppressWarnings("deprecation")
                         @Override
                         public void onGlobalLayout() {
                             int width = icon.getWidth();

@@ -3,7 +3,7 @@ package com.wanke.ui.fragment;
 import org.json.JSONObject;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +18,7 @@ import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.tv.R;
 import com.wanke.ui.adapter.GameAdapter;
 
-public class FragmentGame extends Fragment {
+public class FragmentGame extends BaseFragment {
 
     private PullToRefreshGridView mPullRefreshGridView;
     private GameAdapter mAdapter;
@@ -34,6 +34,8 @@ public class FragmentGame extends Fragment {
         mPullRefreshGridView.setAdapter(mAdapter);
 
         init();
+
+        Log.d(TAG, "FragmentGame: onCreateView");
         return mPullRefreshGridView;
     }
 
