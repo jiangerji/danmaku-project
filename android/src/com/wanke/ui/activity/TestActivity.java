@@ -12,6 +12,8 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+import com.wanke.network.http.CommonHttpUtils;
+import com.wanke.network.http.HttpExceptionButFoundCache;
 
 public class TestActivity extends Activity {
     private final static String TAG = "Test";
@@ -246,7 +248,7 @@ public class TestActivity extends Activity {
     private void parseGames(String msg) {
         try {
             JSONObject all = new JSONObject(msg);
-            JSONArray games = all.getJSONArray("games");
+            JSONArray games = all.getJSONArray("data");
             JSONObject game;
             String gameId;
             String gameName;
@@ -267,33 +269,78 @@ public class TestActivity extends Activity {
 
     // 获取所有游戏列表数据，之后需要实现为分页获取
     private void getGames() {
-        String url = "http://192.168.41.101/server-data/games";
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.GET,
-                url,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onLoading(
-                            long total, long current, boolean isUploading) {
-                        Log.d(TAG, "onLoading:" + total + " " + current + " "
-                                + isUploading);
-                    }
+        //        String url = "http://192.168.41.101:9257/wanketv/live/games";
+        //        HttpUtils http = new HttpUtils();
+        //        http.configCurrentHttpCacheExpiry(1000 * 30);//设置缓存30秒，30秒内直接返回上次成功请求的结果
+        //        http.send(HttpRequest.HttpMethod.GET,
+        //                url,
+        //                new RequestCallBack<String>() {
+        //                    @Override
+        //                    public void onLoading(
+        //                            long total, long current, boolean isUploading) {
+        //                        Log.d(TAG, "onLoading:" + total + " " + current + " "
+        //                                + isUploading);
+        //                    }
+        //
+        //                    @Override
+        //                    public void onSuccess(ResponseInfo<String> responseInfo) {
+        //                        parseGames(responseInfo.result);
+        //                    }
+        //
+        //                    @Override
+        //                    public void onStart() {
+        //                        Log.d(TAG, "onStart");
+        //                    }
+        //
+        //                    @Override
+        //                    public void onFailure(HttpException error, String msg) {
+        //                        Log.d(TAG, "onFailure:" + error.toString() + " " + msg);
+        //                        if (error instanceof HttpExceptionButFoundCache) {
+        //                            Log.d(TAG, "Found Cache:" + msg);
+        //                        }
+        //                    }
+        //                });
 
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        parseGames(responseInfo.result);
-                    }
+        CommonHttpUtils.get("games", null, new RequestCallBack<String>() {
+            @Override
+            public void onLoading(
+                    long total, long current, boolean isUploading) {
+                Log.d(TAG, "onLoading:" + total + " " + current + " "
+                        + isUploading);
+            }
 
-                    @Override
-                    public void onStart() {
-                        Log.d(TAG, "onStart");
-                    }
+            @Override
+            public void onSuccess(ResponseInfo<String> responseInfo) {
+                parseGames(responseInfo.result);
+            }
 
-                    @Override
-                    public void onFailure(HttpException error, String msg) {
-                        Log.d(TAG, "onFailure:" + error.toString() + " " + msg);
-                    }
-                });
+            @Override
+            public void onStart() {
+                Log.d(TAG, "onStart");
+            }
+
+            @Override
+            public void onFailure(HttpException error, String msg) {
+                Log.d(TAG, "onFailure:" + error.toString() + " " + msg);
+                if (error instanceof HttpExceptionButFoundCache) {
+                    Log.d(TAG, "Found Cache:" + msg);
+                }
+            }
+        }, "games");
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    getGames();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override

@@ -28,6 +28,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.network.http.Constants;
+import com.wanke.network.http.HttpExceptionButFoundCache;
 import com.wanke.tv.R;
 import com.wanke.ui.UiUtils;
 
@@ -90,12 +91,8 @@ public class RecommendAdsLayout {
     }
 
     private void initAdapter() {
-        CommonHttpUtils.get("ads",
+        CommonHttpUtils.get("ads", null,
                 new RequestCallBack<String>() {
-                    @Override
-                    public void onLoading(
-                            long total, long current, boolean isUploading) {
-                    }
 
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
@@ -104,13 +101,12 @@ public class RecommendAdsLayout {
                     }
 
                     @Override
-                    public void onStart() {
-                    }
-
-                    @Override
                     public void onFailure(HttpException error, String msg) {
+                        if (error instanceof HttpExceptionButFoundCache) {
+                            parseContent(msg);
+                        }
                     }
-                });
+                }, "ads");
     }
 
     private void parseContent(String content) {

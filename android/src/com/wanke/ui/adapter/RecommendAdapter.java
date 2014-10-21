@@ -19,12 +19,14 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.wanke.model.ChannelInfo;
 import com.wanke.model.GameInfo;
 import com.wanke.model.ParserUtil;
 import com.wanke.network.http.CommonHttpUtils;
+import com.wanke.network.http.HttpExceptionButFoundCache;
 import com.wanke.tv.R;
 import com.wanke.ui.activity.LiveChannelActivity;
 
@@ -96,41 +98,54 @@ public class RecommendAdapter extends BaseAdapter {
             gridView.setAdapter(new LiveChannelAdapter());
 
             // 获取推荐直播列表
-            String actionUrl = "recommend?gameId=" + gameInfo.getGameId()
-                    + "&offset=0&limit=4";
-            CommonHttpUtils.get(actionUrl, new RequestCallBack<String>() {
+            RequestParams params = new RequestParams();
+            params.addQueryStringParameter("gameId", "" + gameInfo.getGameId());
+            params.addQueryStringParameter("offset", "" + 0);
+            params.addQueryStringParameter("limit", "" + 4);
 
-                @Override
-                public void onFailure(HttpException error, String msg) {
-                    Log.d(TAG, "Exception:" + msg);
-                }
+            CommonHttpUtils.get("recommend",
+                    params,
+                    new RequestCallBack<String>() {
 
-                @Override
-                public void onSuccess(ResponseInfo<String> responseInfo) {
-                    Log.d(TAG, "onSuccess:" + responseInfo.statusCode);
-                    if (responseInfo.statusCode == 200) {
-                        try {
-                            JSONObject object = new JSONObject(responseInfo.result);
-                            JSONArray channels = object.getJSONArray("data");
-
-                            mChannelInfos.put(gameInfo.getGameId(),
-                                    ParserUtil.parseChannelsInfo(channels));
-                        } catch (Exception e) {
-                            Log.w(TAG,
-                                    "Parse channel result exception:"
-                                            + e.toString());
+                        @Override
+                        public void onFailure(HttpException error, String msg) {
+                            Log.d(TAG, "Exception:" + msg);
+                            if (error instanceof HttpExceptionButFoundCache) {
+                                parseResult(msg, gameInfo);
+                            }
                         }
 
-                        final GridView gridView = (GridView) mRecommendViews.get(gameInfo.getGameId())
-                                .findViewById(R.id.recommend_games);
-                        LiveChannelAdapter adapter = (LiveChannelAdapter) gridView.getAdapter();
-                        adapter.setChannels(mChannelInfos.get(gameInfo.getGameId()));
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
+                        @Override
+                        public void
+                                onSuccess(ResponseInfo<String> responseInfo) {
+                            Log.d(TAG, "onSuccess:" + responseInfo.statusCode);
+                            if (responseInfo.statusCode == 200) {
+                                parseResult(responseInfo.result, gameInfo);
+                            }
+                        }
+                    }, "recommend:" + gameInfo.getGameId() + ":4");
         }
 
         return convertView;
+    }
+
+    private void parseResult(String content, GameInfo gameInfo) {
+        try {
+            JSONObject object = new JSONObject(content);
+            JSONArray channels = object.getJSONArray("data");
+
+            mChannelInfos.put(gameInfo.getGameId(),
+                    ParserUtil.parseChannelsInfo(channels));
+        } catch (Exception e) {
+            Log.w(TAG,
+                    "Parse channel result exception:"
+                            + e.toString());
+        }
+
+        GridView gridView = (GridView) mRecommendViews.get(gameInfo.getGameId())
+                .findViewById(R.id.recommend_games);
+        LiveChannelAdapter adapter = (LiveChannelAdapter) gridView.getAdapter();
+        adapter.setChannels(mChannelInfos.get(gameInfo.getGameId()));
+        adapter.notifyDataSetChanged();
     }
 }

@@ -16,12 +16,14 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wanke.model.ChannelInfo;
 import com.wanke.model.ParserUtil;
 import com.wanke.network.http.CommonHttpUtils;
+import com.wanke.network.http.HttpExceptionButFoundCache;
 import com.wanke.tv.R;
 import com.wanke.ui.adapter.LiveChannelAdapter;
 
@@ -74,6 +76,7 @@ public class FragmentLive extends BaseFragment {
     private int mCurrentPage = 0;
     private boolean mHasMore = true;
     private boolean mInGetNextPage = false;
+    private boolean mPreviousState = true;
 
     private void getNextPage() {
         if (mInGetNextPage) {
@@ -84,38 +87,61 @@ public class FragmentLive extends BaseFragment {
         mInGetNextPage = true;
 
         final int thisPage = mCurrentPage;
-        String action = "recommend?offset=" + mCurrentPage + "&limit=20";
-        CommonHttpUtils.get(action, new RequestCallBack<String>() {
+        //        String action = "recommend?offset=" + mCurrentPage + "&limit=20";
+
+        RequestParams params = new RequestParams();
+        params.addQueryStringParameter("offset", "" + mCurrentPage);
+        params.addQueryStringParameter("limit", "" + 20);
+
+        CommonHttpUtils.get("recommend", params, new RequestCallBack<String>() {
 
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
                 if (responseInfo.statusCode == 200) {
                     try {
-                        JSONObject object = new JSONObject(responseInfo.result);
-                        ArrayList<ChannelInfo> channelInfos = ParserUtil.parseChannelsInfo(object.getJSONArray("data"));
-                        if (channelInfos.size() >= 20) {
+                        //                        JSONObject object = new JSONObject(responseInfo.result);
+                        //                        ArrayList<ChannelInfo> channelInfos = ParserUtil.parseChannelsInfo(object.getJSONArray("data"));
+
+                        if (parseResult(responseInfo.result) >= 20) {
                             mCurrentPage++;
                         } else {
                             mHasMore = false;
                         }
 
-                        mAdapter.addChannels(channelInfos);
+                        //                        mAdapter.addChannels(channelInfos);
                     } catch (Exception e) {
                         Log.d(TAG, "Get Next Page Exception:" + e.toString());
                     }
 
+                    mPreviousState = true;
                     mInGetNextPage = false;
                 }
             }
 
             @Override
-            public void onFailure(HttpException arg0, String arg1) {
-                if (thisPage == 0) {
-                    // 初始化
+            public void onFailure(HttpException error, String msg) {
+                if (thisPage == 0 && mPreviousState) {
+                    if (error instanceof HttpExceptionButFoundCache) {
+                        parseResult(msg);
+                    }
                 }
 
+                mPreviousState = false;
                 mInGetNextPage = false;
             }
-        });
+        }, "recomment:" + mCurrentPage + ":20");
+    }
+
+    private int parseResult(String content) {
+        int size = 0;
+        try {
+            JSONObject object = new JSONObject(content);
+            ArrayList<ChannelInfo> channelInfos = ParserUtil.parseChannelsInfo(object.getJSONArray("data"));
+            mAdapter.addChannels(channelInfos);
+            size = channelInfos.size();
+        } catch (Exception e) {
+            Log.d(TAG, "Get Next Page Exception:" + e.toString());
+        }
+        return size;
     }
 }

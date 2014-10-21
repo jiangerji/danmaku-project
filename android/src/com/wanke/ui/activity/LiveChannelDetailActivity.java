@@ -21,6 +21,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.network.http.Constants;
+import com.wanke.network.http.HttpExceptionButFoundCache;
 import com.wanke.tv.R;
 import com.wanke.ui.ToastUtil;
 import com.wanke.ui.UiUtils;
@@ -151,37 +152,43 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
         CommonHttpUtils.get("channel", params, new RequestCallBack<String>() {
 
+            private void parseResult(String content) {
+                try {
+                    JSONObject object = new JSONObject(content);
+
+                    mChannelOwnerNickname = object.getString("ownerNickname");
+                    mChannelCover = object.getString("roomCover");
+                    mChannelDetail = Html.fromHtml(object.getString("detail"))
+                            .toString();
+                    mChannelName = object.getString("roomName");
+                    mChannelOnline = object.getInt("online");
+                    mChannelId = object.getInt("roomId");
+                    mChannelFans = object.getInt("fans");
+                    mChannelOwnerUid = object.getInt("ownerUid");
+                    mChannelSubscribed = object.getBoolean("subscribed");
+                    initView();
+                } catch (Exception e) {
+                    Log.d(TAG,
+                            "Parse Channel Info Exception:" + e.toString());
+                }
+            }
+
             @Override
             public void onFailure(HttpException error, String msg) {
                 Log.d(TAG, "Get Channel Info Exception:" + msg);
+                if (error instanceof HttpExceptionButFoundCache) {
+                    parseResult(msg);
+                }
             }
 
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
-
                 if (responseInfo.statusCode == 200) {
-                    try {
-                        JSONObject object = new JSONObject(responseInfo.result);
-
-                        mChannelOwnerNickname = object.getString("ownerNickname");
-                        mChannelCover = object.getString("roomCover");
-                        mChannelDetail = Html.fromHtml(object.getString("detail"))
-                                .toString();
-                        mChannelName = object.getString("roomName");
-                        mChannelOnline = object.getInt("online");
-                        mChannelId = object.getInt("roomId");
-                        mChannelFans = object.getInt("fans");
-                        mChannelOwnerUid = object.getInt("ownerUid");
-                        mChannelSubscribed = object.getBoolean("subscribed");
-                        initView();
-                    } catch (Exception e) {
-                        Log.d(TAG,
-                                "Parse Channel Info Exception:" + e.toString());
-                    }
+                    parseResult(responseInfo.result);
                 }
 
             }
-        });
+        }, "" + mUid + ":" + mChannelId);
     }
 
     private void subscribe() {

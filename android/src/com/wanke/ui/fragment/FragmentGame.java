@@ -19,6 +19,7 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.wanke.model.GameInfo;
 import com.wanke.model.ParserUtil;
 import com.wanke.network.http.CommonHttpUtils;
+import com.wanke.network.http.HttpExceptionButFoundCache;
 import com.wanke.tv.R;
 import com.wanke.ui.activity.LiveChannelActivity;
 import com.wanke.ui.adapter.GameAdapter;
@@ -64,25 +65,35 @@ public class FragmentGame extends BaseFragment {
     private RequestCallBack<String> mCallBack = new RequestCallBack<String>() {
 
         @Override
-        public void onFailure(HttpException arg0, String arg1) {
-
+        public void onFailure(HttpException error, String msg) {
+            if (error instanceof HttpExceptionButFoundCache) {
+                parseResult(msg);
+            }
         }
 
         @Override
         public void onSuccess(ResponseInfo<String> responseInfo) {
             if (responseInfo.statusCode == 200) {
-                try {
-                    JSONObject object = new JSONObject(responseInfo.result);
-                    mAdapter.setGameInfos(ParserUtil.parseGamesInfo(object.getJSONArray("data")));
-                } catch (Exception e) {
-                }
-
+                //                try {
+                //                    JSONObject object = new JSONObject(responseInfo.result);
+                //                    mAdapter.setGameInfos(ParserUtil.parseGamesInfo(object.getJSONArray("data")));
+                //                } catch (Exception e) {
+                //                }
+                parseResult(responseInfo.result);
             }
         }
     };
 
+    private void parseResult(String content) {
+        try {
+            JSONObject object = new JSONObject(content);
+            mAdapter.setGameInfos(ParserUtil.parseGamesInfo(object.getJSONArray("data")));
+        } catch (Exception e) {
+        }
+    }
+
     private void init() {
         String action = "games";
-        CommonHttpUtils.get(action, mCallBack);
+        CommonHttpUtils.get(action, null, mCallBack, "games");
     }
 }
