@@ -2,6 +2,8 @@ package com.wanke.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -17,19 +19,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-    }
-
-    public class txListener implements View.OnClickListener {
-        private int index = 0;
-
-        public txListener(int i) {
-            index = i;
-        }
-
-        @Override
-        public void onClick(View v) {
-            mPager.setCurrentItem(index);
-        }
     }
 
     private View mRecommentBtn = null;
@@ -49,8 +38,9 @@ public class MainActivity extends BaseActivity {
         mFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         mPager.setOffscreenPageLimit(mFragmentPagerAdapter.getCount());
         mPager.setAdapter(mFragmentPagerAdapter);
-        mPager.setCurrentItem(0);// 设置当前显示标签页为第一页
+        mPager.setOnPageChangeListener(new MyOnPageChangeListener());
         //        mPager.setOnPageChangeListener(new MyOnPageChangeListener());// 页面变化时的监听器
+        //        mPager.setOnDragListener(l);
 
         mRecommentBtn = findViewById(R.id.recomment_btn);
         mRecommentBtn.setOnClickListener(mBtnClickListener);
@@ -60,6 +50,8 @@ public class MainActivity extends BaseActivity {
         mGameBtn.setOnClickListener(mBtnClickListener);
         mAccountBtn = findViewById(R.id.account_btn);
         mAccountBtn.setOnClickListener(mBtnClickListener);
+
+        setCurrentPage(0);// 设置当前显示标签页为第一页
     }
 
     private OnClickListener mBtnClickListener = new OnClickListener() {
@@ -89,11 +81,64 @@ public class MainActivity extends BaseActivity {
             }
 
             if (pageIndex >= 0 && pageIndex < mFragmentPagerAdapter.getCount()) {
-                mPager.setCurrentItem(pageIndex, true);
+                setCurrentPage(pageIndex);
             }
-
         }
     };
+
+    private void setCurrentPage(int index) {
+        if (index >= 0 && index < mFragmentPagerAdapter.getCount()) {
+            mPager.setCurrentItem(index, true);
+
+            mAccountBtn.setSelected(false);
+            mGameBtn.setSelected(false);
+            mLiveBtn.setSelected(false);
+            mRecommentBtn.setSelected(false);
+
+            switch (index) {
+            case 0:
+                mRecommentBtn.setSelected(true);
+                break;
+
+            case 1:
+                mLiveBtn.setSelected(true);
+                break;
+
+            case 2:
+                mGameBtn.setSelected(true);
+                break;
+
+            case 3:
+                mAccountBtn.setSelected(true);
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+
+    private class MyOnPageChangeListener implements OnPageChangeListener {
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            Log.d(TAG, "onPageScrollStateChanged:" + state);
+        }
+
+        @Override
+        public void onPageScrolled(
+                int position, float positionOffset, int positionOffsetPixels) {
+            Log.d(TAG, "onPageScrolled:" + position + " " + positionOffset
+                    + " " + positionOffsetPixels);
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            Log.d(TAG, "onPageSelected:" + position);
+            setCurrentPage(position);
+        }
+
+    }
     // /
     //    private int first = 0;
     //    private int second = 0;

@@ -37,7 +37,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/main_activity_bottom_panel_recommend_btn"
+                android:src="@drawable/panel_recommend_btn_bg"
                 android:contentDescription="@null" />
 
             <TextView
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/recommend"
-                android:textColor="#222222"
+                android:textColor="@color/panel_title_color"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -63,7 +63,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/main_activity_bottom_panel_lives_btn"
+                android:src="@drawable/panel_live_btn_bg"
                 android:contentDescription="@null" />
 
             <TextView
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/live"
-                android:textColor="#222222"
+                android:textColor="@color/panel_title_color"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -89,7 +89,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/main_activity_bottom_panel_games_btn"
+                android:src="@drawable/panel_games_btn_bg"
                 android:contentDescription="@null" />
 
             <TextView
@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/game"
-                android:textColor="#222222"
+                android:textColor="@color/panel_title_color"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/mine"
-                android:textColor="#222222"
+                android:textColor="@color/panel_title_color"
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
