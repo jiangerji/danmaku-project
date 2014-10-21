@@ -24,7 +24,7 @@ import com.wanke.ui.activity.LiveChannelDetailActivity;
 
 public class LiveChannelAdapter extends BaseAdapter {
 
-    private DisplayImageOptions mOptions = UiUtils.getOptionsFadeIn();
+    private DisplayImageOptions mOptions = UiUtils.getOptionsFadeIn(250);
 
     private ArrayList<ChannelInfo> mChannelInfos = new ArrayList<ChannelInfo>();
 
@@ -76,6 +76,12 @@ public class LiveChannelAdapter extends BaseAdapter {
                             LiveChannelDetailActivity.class);
                     intent.putExtra(LiveChannelDetailActivity.CHANNEL_ID,
                             channelInfo.getRoomId());
+                    intent.putExtra(LiveChannelDetailActivity.CHANNEL_NAME,
+                            channelInfo.getRoomName());
+                    intent.putExtra(LiveChannelDetailActivity.CHANNEL_ONLINE,
+                            channelInfo.getOnline());
+                    intent.putExtra(LiveChannelDetailActivity.CHANNEL_OWNER_NICKNAME,
+                            channelInfo.getOwnerNickName());
                     v.getContext().startActivity(intent);
                 }
             });

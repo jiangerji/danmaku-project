@@ -168,10 +168,40 @@ def parseHot():
     db.close()
 
 # parseHot()
-for i in os.listdir("."):
-    if i.startswith("avatar.php@uid="):
-        srcName = os.path.join(".", i)
-        targetName = os.path.join("cover", i[len("avatar.php@uid="):]+".png")
-        os.rename(srcName, targetName)
-        print i
+
+def getDetail():
+    db = sqlite3.connect("wanke.sqlite3.sqlite")
+    cursor = db.cursor() 
+    cursor.execute("select roomId from live_channels")
+    roomIds = []
+    for row in cursor.fetchall():
+        roomIds.append(row[0])
+
+    conn = httplib.HTTPConnection("api.douyutv.com")
+    index = 0
+    for roomId in roomIds:
+        url = "/api/client/room/"+str(roomId)+"?client_sys=android"
+        print url
+        conn.request(method="POST", url=url)
+        response = conn.getresponse()
+        # print response.status
+        # print response.reason
         # raw_input()
+        if response.status == 200:
+            all = json.loads(response.read())
+            room = all.get("data")
+            # roomCover = room.get("room_src")
+            roomDetail = room.get("show_details")
+
+            print roomId, roomDetail
+            cmd = "update live_channels set detail='%s' where roomId=%d"%(roomDetail, roomId)
+            # db.execute("update live_channels set detail=? where roomId=19574", (roomDetail))
+            try:
+                db.execute(cmd)
+            except Exception, e:
+                print e
+
+    db.commit()
+
+
+getDetail()

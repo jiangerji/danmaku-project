@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.wanke.WankeTVApplication;
 
 public class UiUtils {
@@ -95,9 +96,21 @@ public class UiUtils {
     }
 
     public static DisplayImageOptions getOptionsFadeIn() {
+        return getOptionsFadeIn(250);
+    }
+
+    public static DisplayImageOptions getOptionsFadeIn(int millseconds) {
         return new DisplayImageOptions.Builder().cacheOnDisk(true)
                 .bitmapConfig(Bitmap.Config.RGB_565).cacheInMemory(true)
-                .displayer(new FadeInBitmapDisplayer(250))
+                .displayer(new FadeInBitmapDisplayer(millseconds))
                 .imageScaleType(ImageScaleType.EXACTLY).build();
+    }
+
+    public static DisplayImageOptions getOptionsRound(int size) {
+        return new DisplayImageOptions.Builder().cacheOnDisk(true)
+                .cacheInMemory(true)
+                .displayer(new RoundedBitmapDisplayer((int) (size * getDensity(null))))
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .build();
     }
 }
