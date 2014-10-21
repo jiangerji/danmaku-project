@@ -92,15 +92,17 @@
             android:contentDescription="@null" />
         
         <ImageView
-            android:id="@+id/like_btn"
+            android:id="@+id/subscribe_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/avatar_top_indicator"
             android:layout_toLeftOf="@id/share_btn"
             android:layout_toStartOf="@id/share_btn"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/detail_activity_like_btn"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
+            android:src="@drawable/detail_activity_unsubscribed"
             android:contentDescription="@null" />
         
         <TextView

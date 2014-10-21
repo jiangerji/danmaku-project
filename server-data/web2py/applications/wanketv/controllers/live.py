@@ -105,11 +105,13 @@ def recommend():
 
 def channel():
     """
-    channel?roomId=2121
-    roomId 如果没有，返回空
+    channel?roomId=2121&uid=1
+    roomId: 如果没有，返回空
+    uid: 如果有，在返回结果中加入，该用户是否订阅了该房间
     """
     parseRequest()
     roomId = request.vars.get("roomId", "")
+    uid = request.vars.get("uid", "")
 
     db = DAL('sqlite://wanke.sqlite3.sqlite')
     allRooms = []
@@ -135,8 +137,23 @@ def channel():
         jsonRoom["online"] = room[12]
         jsonRoom["fans"] = room[13]
         jsonRoom["detail"] = room[14]
-        result = json.dumps(jsonRoom)
 
+        if len(uid) > 0:
+            sql = "select subscribes from subscribe where uid=%s"%uid
+            subscribes = db.executesql(sql)
+            subscribe = None
+            if len(subscribes) >= 1:
+                subscribe = subscribes[0][0]
+
+            print subscribe
+            if subscribe != None:
+                sset = set(subscribe.split(":"))
+                if roomId in sset:
+                    jsonRoom["subscribed"] = True
+                else:
+                    jsonRoom["subscribed"] = False
+
+        result = json.dumps(jsonRoom)
     return result
 
 import os
@@ -162,6 +179,71 @@ def version():
     result["downUrl"] = "http://www.baidu.com"
 
     return json.dumps(result)
+
+def unsubscribe():
+    parseRequest()
+    uid = request.vars.get("uid", "")
+    roomId = request.vars.get("roomId", "")
+
+    db = DAL('sqlite://wanke.sqlite3.sqlite')
+    sql = "select subscribes from subscribe where uid=%s"%uid
+
+    subscribes = db.executesql(sql)
+
+    subscribe = None
+    if len(subscribes) >= 1:
+        subscribe = subscribes[0][0]
+
+    result = {}
+    result["error"] = 1
+
+    if subscribe != None:
+        sset = set(subscribe.split(":"))
+        try:
+            sset.remove(roomId)
+
+            # update
+            sql = 'update subscribe set subscribes="%s" where uid=%s'%(":".join(list(sset)), uid)
+            db.executesql(sql)
+            result["error"] = 0
+        except Exception, e:
+            pass
+
+    return json.dumps(result)
+
+def subscribe():
+    parseRequest()
+    uid = request.vars.get("uid", "")
+    roomId = request.vars.get("roomId", "")
+    if len(uid) == 0 or len(roomId) == 0:
+        return ""
+
+    db = DAL('sqlite://wanke.sqlite3.sqlite')
+    sql = "select subscribes from subscribe where uid=%s"%uid
+
+    subscribes = db.executesql(sql)
+
+    subscribe = None
+    if len(subscribes) >= 1:
+        subscribe = subscribes[0][0]
+
+    if subscribe != None:
+        sset = set(subscribe.split(":"))
+        sset.add(roomId)
+
+        # update
+        sql = 'update subscribe set subscribes="%s" where uid=%s'%(":".join(list(sset)), uid)
+    else:
+        # insert
+        sql = 'insert into subscribe (uid, subscribes) VALUES (%s, "%s")'%(uid, roomId)
+    
+    db.executesql(sql)
+
+    result = {}
+    result["error"] = 0
+
+    return json.dumps(result)
+
 
 """
 获取图片

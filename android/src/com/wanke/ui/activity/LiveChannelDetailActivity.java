@@ -22,6 +22,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.network.http.Constants;
 import com.wanke.tv.R;
+import com.wanke.ui.ToastUtil;
 import com.wanke.ui.UiUtils;
 
 public class LiveChannelDetailActivity extends BaseActivity {
@@ -37,11 +38,15 @@ public class LiveChannelDetailActivity extends BaseActivity {
     private int mChannelOnline = 0;
     private int mChannelFans = 0;
     private String mChannelDetail = "";
-    private boolean mChannelLiked = false;
+    private boolean mChannelSubscribed = false;
     private String mChannelCover = "";
+
+    private int mUid = 1;
 
     private DisplayImageOptions mOptions = UiUtils.getOptionsFadeIn(100);
     private DisplayImageOptions mAvatarOptions = UiUtils.getOptionsRound(4);
+
+    ImageView mSubscribeBtn;
 
     @Override
     protected int getFlag() {
@@ -74,6 +79,25 @@ public class LiveChannelDetailActivity extends BaseActivity {
                 intent.setClass(LiveChannelDetailActivity.this,
                         VideoActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        mSubscribeBtn = (ImageView) findViewById(R.id.subscribe_btn);
+        mSubscribeBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                boolean logined = true;
+                if (logined) {
+                    if (mChannelSubscribed) {
+                        unsubscribe();
+                    } else {
+                        subscribe();
+                    }
+                } else {
+                    ToastUtil.showToastInCenter(LiveChannelDetailActivity.this,
+                            R.string.subscribe_need_login);
+                }
             }
         });
 
@@ -111,10 +135,18 @@ public class LiveChannelDetailActivity extends BaseActivity {
                             channelOwnerAvatar,
                             mAvatarOptions);
         }
+
+        mSubscribeBtn = (ImageView) findViewById(R.id.subscribe_btn);
+        if (mChannelSubscribed) {
+            mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+        } else {
+            mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+        }
     }
 
     private void getChannelInfo() {
         RequestParams params = new RequestParams();
+        params.addQueryStringParameter("uid", "" + mUid);
         params.addQueryStringParameter("roomId", "" + mChannelId);
 
         CommonHttpUtils.get("channel", params, new RequestCallBack<String>() {
@@ -133,12 +165,14 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
                         mChannelOwnerNickname = object.getString("ownerNickname");
                         mChannelCover = object.getString("roomCover");
-                        mChannelDetail = Html.fromHtml(object.getString("detail")).toString();
+                        mChannelDetail = Html.fromHtml(object.getString("detail"))
+                                .toString();
                         mChannelName = object.getString("roomName");
                         mChannelOnline = object.getInt("online");
                         mChannelId = object.getInt("roomId");
                         mChannelFans = object.getInt("fans");
                         mChannelOwnerUid = object.getInt("ownerUid");
+                        mChannelSubscribed = object.getBoolean("subscribed");
                         initView();
                     } catch (Exception e) {
                         Log.d(TAG,
@@ -148,5 +182,81 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
             }
         });
+    }
+
+    private void subscribe() {
+        mSubscribeBtn.setEnabled(false);
+        mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+
+        int uid = 1;
+        RequestParams params = new RequestParams();
+        params.addQueryStringParameter("uid", "" + uid);
+        params.addQueryStringParameter("roomId", "" + mChannelId);
+
+        CommonHttpUtils.get("subscribe", params, new RequestCallBack<String>() {
+
+            @Override
+            public void onFailure(HttpException error, String msg) {
+                mSubscribeBtn.setEnabled(true);
+                mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+            }
+
+            @Override
+            public void onSuccess(ResponseInfo<String> responseInfo) {
+                mSubscribeBtn.setEnabled(true);
+                if (responseInfo.statusCode == 200) {
+                    try {
+                        JSONObject object = new JSONObject(responseInfo.result);
+                        if (object.getInt("error") != 0) {
+                            // 订阅失败
+                            mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+                        } else {
+                            mChannelSubscribed = true;
+                        }
+                    } catch (Exception e) {
+                        mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+                    }
+                }
+            }
+        });
+    }
+
+    private void unsubscribe() {
+        mSubscribeBtn.setEnabled(false);
+        mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+
+        int uid = 1;
+        RequestParams params = new RequestParams();
+        params.addQueryStringParameter("uid", "" + uid);
+        params.addQueryStringParameter("roomId", "" + mChannelId);
+
+        CommonHttpUtils.get("unsubscribe",
+                params,
+                new RequestCallBack<String>() {
+
+                    @Override
+                    public void onFailure(HttpException error, String msg) {
+                        mSubscribeBtn.setEnabled(true);
+                        mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+                    }
+
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        mSubscribeBtn.setEnabled(true);
+                        if (responseInfo.statusCode == 200) {
+                            try {
+                                JSONObject object = new JSONObject(responseInfo.result);
+                                if (object.getInt("error") != 0) {
+                                    // 取消订阅失败
+                                    mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+                                } else {
+                                    mChannelSubscribed = false;
+                                }
+                            } catch (Exception e) {
+                                mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+                            }
+                        }
+                    }
+                });
     }
 }
