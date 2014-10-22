@@ -119,9 +119,7 @@ public class RecommendAdapter extends BaseAdapter {
                         public void
                                 onSuccess(ResponseInfo<String> responseInfo) {
                             Log.d(TAG, "onSuccess:" + responseInfo.statusCode);
-                            if (responseInfo.statusCode == 200) {
-                                parseResult(responseInfo.result, gameInfo);
-                            }
+                            parseResult(responseInfo.result, gameInfo);
                         }
                     }, "recommend:" + gameInfo.getGameId() + ":4");
         }

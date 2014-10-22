@@ -96,8 +96,7 @@ public class RecommendAdsLayout {
 
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String content = responseInfo.result;
-                        parseContent(content);
+                        parseContent(responseInfo.result);
                     }
 
                     @Override

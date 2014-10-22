@@ -73,14 +73,14 @@ public class FragmentGame extends BaseFragment {
 
         @Override
         public void onSuccess(ResponseInfo<String> responseInfo) {
-            if (responseInfo.statusCode == 200) {
-                //                try {
-                //                    JSONObject object = new JSONObject(responseInfo.result);
-                //                    mAdapter.setGameInfos(ParserUtil.parseGamesInfo(object.getJSONArray("data")));
-                //                } catch (Exception e) {
-                //                }
-                parseResult(responseInfo.result);
-            }
+            //            if (responseInfo.statusCode == 200) {
+            //                try {
+            //                    JSONObject object = new JSONObject(responseInfo.result);
+            //                    mAdapter.setGameInfos(ParserUtil.parseGamesInfo(object.getJSONArray("data")));
+            //                } catch (Exception e) {
+            //                }
+            parseResult(responseInfo.result);
+            //            }
         }
     };
 

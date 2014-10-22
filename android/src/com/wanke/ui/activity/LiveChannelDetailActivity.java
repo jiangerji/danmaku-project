@@ -102,12 +102,13 @@ public class LiveChannelDetailActivity extends BaseActivity {
             }
         });
 
-        initView();
+        //        initView();
 
         getChannelInfo();
     }
 
     private void initView() {
+        Log.d(TAG, "Init View!");
         TextView ownerNickname = (TextView) findViewById(R.id.owner_nickname);
         ownerNickname.setText(mChannelOwnerNickname);
 
@@ -166,7 +167,11 @@ public class LiveChannelDetailActivity extends BaseActivity {
                     mChannelFans = object.getInt("fans");
                     mChannelOwnerUid = object.getInt("ownerUid");
                     mChannelSubscribed = object.getBoolean("subscribed");
-                    initView();
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            initView();
+                        }
+                    });
                 } catch (Exception e) {
                     Log.d(TAG,
                             "Parse Channel Info Exception:" + e.toString());
@@ -183,12 +188,12 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
-                if (responseInfo.statusCode == 200) {
-                    parseResult(responseInfo.result);
-                }
-
+                //                if (responseInfo.statusCode == 200) {
+                parseResult(responseInfo.result);
+                //                }
             }
-        }, "" + mUid + ":" + mChannelId);
+        },
+                "" + mUid + ":" + mChannelId);
     }
 
     private void subscribe() {
@@ -225,7 +230,9 @@ public class LiveChannelDetailActivity extends BaseActivity {
                     }
                 }
             }
-        });
+        },
+                null,
+                0);
     }
 
     private void unsubscribe() {
@@ -264,6 +271,8 @@ public class LiveChannelDetailActivity extends BaseActivity {
                             }
                         }
                     }
-                });
+                },
+                null,
+                0);
     }
 }

@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.http.NameValuePair;
+
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -22,10 +24,26 @@ public class CommonHttpUtils {
 
     private final static String BASE_URL = "http://192.168.41.101:9257/wanketv/live/";
 
+    private static void printParams(RequestParams params) {
+        if (params != null) {
+            for (NameValuePair nameValuePair : params.getQueryStringParams()) {
+                Log.d(TAG,
+                        "  " + nameValuePair.getName() + ":"
+                                + nameValuePair.getValue());
+            }
+        }
+
+    }
+
     public static void get(
             final String action, final RequestParams params,
             final RequestCallBack<String> callBack) {
         get(action, params, callBack, null);
+    }
+
+    public static void get(final String action, final RequestParams params,
+            final RequestCallBack<String> callBack, final String cacheKey) {
+        get(action, params, callBack, cacheKey, 10);
     }
 
     /**
@@ -43,10 +61,11 @@ public class CommonHttpUtils {
      */
     public static void get(
             final String action, final RequestParams params,
-            final RequestCallBack<String> callBack, final String cacheKey) {
+            final RequestCallBack<String> callBack, final String cacheKey,
+            final int cacheExpiry) {
         final String url = BASE_URL + action;
         HttpUtils http = new HttpUtils();
-        http.configCurrentHttpCacheExpiry(1000 * 15);
+        http.configCurrentHttpCacheExpiry(1000 * cacheExpiry);
         http.configSoTimeout(1000 * 10);
         http.configTimeout(1000 * 10);
         http.send(HttpRequest.HttpMethod.GET,
@@ -66,6 +85,7 @@ public class CommonHttpUtils {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         Log.d(TAG, "Get " + url);
+                        printParams(params);
                         Log.d(TAG, "onSuccess:" + responseInfo.result);
                         if (callBack != null) {
                             callBack.onSuccess(responseInfo);
@@ -97,6 +117,7 @@ public class CommonHttpUtils {
                     @Override
                     public void onFailure(HttpException error, String msg) {
                         Log.d(TAG, "Get " + url + " failed:" + msg);
+                        printParams(params);
                         boolean findCache = false;
                         // 获取失败，寻找cache
                         FileInputStream fis = null;

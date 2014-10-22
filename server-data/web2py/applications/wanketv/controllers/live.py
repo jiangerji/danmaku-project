@@ -145,7 +145,6 @@ def channel():
             if len(subscribes) >= 1:
                 subscribe = subscribes[0][0]
 
-            print subscribe
             if subscribe != None:
                 sset = set(subscribe.split(":"))
                 if roomId in sset:
