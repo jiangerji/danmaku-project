@@ -9,13 +9,14 @@ import android.util.Log;
 
 import com.wanke.ui.fragment.FragmentGame;
 import com.wanke.ui.fragment.FragmentLive;
+import com.wanke.ui.fragment.FragmentMy;
 import com.wanke.ui.fragment.FragmentRecommend;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
     private Hashtable<Integer, Fragment> mFragmentTable = new Hashtable<Integer, Fragment>();
 
     private Class<?> mFragmentClass[] = { FragmentRecommend.class,
-            FragmentLive.class, FragmentGame.class };
+            FragmentLive.class, FragmentGame.class, FragmentMy.class };
 
     public MyFragmentPagerAdapter(FragmentManager fm) {
         super(fm);

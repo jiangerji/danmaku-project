@@ -50,11 +50,6 @@ public class LiveChannelDetailActivity extends BaseActivity {
     ImageView mSubscribeBtn;
 
     @Override
-    protected int getFlag() {
-        return FLAG_NO_SEARCH_VIEW;
-    }
-
-    @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
 

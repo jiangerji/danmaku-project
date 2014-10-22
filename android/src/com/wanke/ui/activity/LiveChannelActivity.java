@@ -30,6 +30,11 @@ public class LiveChannelActivity extends BaseActivity {
     PullToRefreshGridView mLiveChannels;
 
     @Override
+    protected int getFlag() {
+        return FLAG_SEARCH_VIEW;
+    }
+
+    @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 

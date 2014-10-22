@@ -52,6 +52,26 @@
             android:screenOrientation="portrait">
             
         </activity>
+        
+        <activity android:name="com.wanke.ui.activity.my.AboutActivity" 
+            android:screenOrientation="portrait">
+            
+        </activity>
+        
+        <activity android:name="com.wanke.ui.activity.my.LoginActivity" 
+            android:screenOrientation="portrait">
+            
+        </activity>
+        
+        <activity android:name="com.wanke.ui.activity.my.SettingActivity" 
+            android:screenOrientation="portrait">
+            
+        </activity>
+        
+        <activity android:name="com.wanke.ui.activity.my.RegisterActivity" 
+            android:screenOrientation="portrait">
+            
+        </activity>
     </application>
 
 </manifest>

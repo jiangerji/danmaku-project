@@ -3,7 +3,6 @@ package com.wanke.ui.activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -13,6 +12,11 @@ import com.wanke.ui.adapter.MyFragmentPagerAdapter;
 public class MainActivity extends BaseActivity {
     MyFragmentPagerAdapter mMyFragmentPagerAdapter;
     private ViewPager mPager;
+
+    @Override
+    protected int getFlag() {
+        return FLAG_SEARCH_VIEW | FLAG_DISABLE_HOME_AS_UP;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,7 @@ public class MainActivity extends BaseActivity {
                 break;
 
             case R.id.account_btn:
+                pageIndex = 3;
                 break;
 
             default:
@@ -122,19 +127,15 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onPageScrollStateChanged(int state) {
-            Log.d(TAG, "onPageScrollStateChanged:" + state);
         }
 
         @Override
         public void onPageScrolled(
                 int position, float positionOffset, int positionOffsetPixels) {
-            Log.d(TAG, "onPageScrolled:" + position + " " + positionOffset
-                    + " " + positionOffsetPixels);
         }
 
         @Override
         public void onPageSelected(int position) {
-            Log.d(TAG, "onPageSelected:" + position);
             setCurrentPage(position);
         }
 

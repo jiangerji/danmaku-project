@@ -7,4 +7,8 @@
     <color name="text_black_color">#FF707070</color>
     
     <color name="grey">#FFCCCCCC</color>
+    
+    <color name="divider">#FFB9D3E0</color>
+    
+    <color name="bisque">#FFA500</color>
 </resources>

@@ -1,5 +1,7 @@
 package com.wanke.ui.activity;
 
+import android.os.Bundle;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -12,15 +14,24 @@ public class BaseActivity extends SherlockFragmentActivity {
     /**
      * 不显示搜索view
      */
-    protected final static int FLAG_NO_SEARCH_VIEW = 0x01;
+    protected final static int FLAG_SEARCH_VIEW = 0x01;
+    protected final static int FLAG_DISABLE_HOME_AS_UP = 0x02;
 
     protected int getFlag() {
         return 0;
     }
 
     @Override
+    protected void onCreate(Bundle arg0) {
+        super.onCreate(arg0);
+        if ((getFlag() & FLAG_DISABLE_HOME_AS_UP) != FLAG_DISABLE_HOME_AS_UP) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if ((getFlag() & FLAG_NO_SEARCH_VIEW) != FLAG_NO_SEARCH_VIEW) {
+        if ((getFlag() & FLAG_SEARCH_VIEW) == FLAG_SEARCH_VIEW) {
             SearchView searchView = new SearchView(this);
             searchView.setQueryHint("Search for Live Room...");
             //        searchView.setOnQueryTextListener(this);

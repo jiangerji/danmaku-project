@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/toggle"/>
+    <item android:id="@android:id/progress">
+        <clip android:drawable="@drawable/toggle_active" />
+    </item>
+
+</layer-list>
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="20dip" />
+
+            <solid android:color="#CFCFCF" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <corners android:radius="20dip" />
+
+                <solid android:color="@color/bisque" />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

@@ -26,4 +26,36 @@
     <string name="fragment_recommend_game_title_dota2">DOTA2</string>
     <string name="fragment_recommend_game_title_lscs">炉石传说</string>
     <string name="fragment_recommend_game_title_zjyx">主机游戏</string>
+    
+    <!-- fragment my -->
+    <string name="fragment_my_click_to_login">点击登录</string>
+    <string name="fragment_my_fav">我的关注</string>
+    <string name="fragment_my_information">我的资料</string>
+    <string name="fragment_my_history">观看历史</string>
+    <string name="fragment_my_setting">设置选项</string>
+    <string name="fragment_my_about">关于我们</string>
+    
+    <!-- setting activity -->
+    <string name="setting_activity_system_setting">系统设置</string>
+    <string name="setting_activity_decode_by_hardware">硬件解码</string>
+    <string name="setting_activity_auto_play_in_23G">2G/3G自动播放视频</string>
+    <string name="setting_activity_danmaku_setting">弹幕设置</string>
+    <string name="setting_activity_danmaku_setting_alpha">弹幕透明度</string>
+    <string name="modify_password">修改密码</string>
+    <string name="feedback"><u>意见反馈</u></string>
+    
+    <!-- login activity -->
+    <string name="login_username_hint">请输入账号</string>
+    <string name="login_password_hint">请输入密码</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="login_username_is_empty">账号为空，请输入账号！</string>
+    <string name="login_password_is_empty">密码为空，请输入密码！</string>
+    <string name="login_password_is_error">密码错误，请重试！</string>
+    
+    <string name="verify_password_hint">请确认密码</string>
+    <string name="register_email_hint">请输入邮箱</string>
+    <string name="confirm_password_is_error">两次输入密码错误，请重新输入！</string>
+    <string name="register_email_is_empty">邮箱为空，请输入邮箱地址！</string>
+    <string name="register_email_is_error">邮箱错误，请重新输入！</string>
 </resources>
