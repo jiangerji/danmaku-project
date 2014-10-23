@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.wanke.tv.R;
 import com.wanke.ui.activity.my.AboutActivity;
+import com.wanke.ui.activity.my.InformationActivity;
 import com.wanke.ui.activity.my.LoginActivity;
 import com.wanke.ui.activity.my.SettingActivity;
 import com.wanke.util.PreferenceUtil;
@@ -38,6 +39,13 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
 
         PreferenceUtil.registerPreferencesListener(prefListener);
         return mRootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        PreferenceUtil.unregisterPreferencesListener(prefListener);
     }
 
     private void initView() {
@@ -77,6 +85,9 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
         if (!TextUtils.isEmpty(account)) {
             mName.setText(account);
             mHaveAccount = true;
+        } else {
+            mName.setText(R.string.fragment_my_click_to_login);
+            mHaveAccount = false;
         }
 
         // TODO: 显示头像
@@ -116,13 +127,17 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
             } else {
-                // TODO: 进入我的资料页面
+                intent = new Intent(getActivity(), InformationActivity.class);
+                startActivity(intent);
             }
             break;
 
         case R.id.my_setting:
             intent = new Intent(getActivity(), SettingActivity.class);
             startActivity(intent);
+            break;
+
+        case R.id.my_information:
             break;
 
         default:

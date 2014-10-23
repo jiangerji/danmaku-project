@@ -51,4 +51,13 @@ public class PreferenceUtil {
             sp.unregisterOnSharedPreferenceChangeListener(listener);
         }
     }
+
+    public static void clearAccount() {
+        SharedPreferences sp = WankeTVApplication.getCurrentApplication()
+                .getSharedPreferences(PREFERENCE_NAME, 0);
+        Editor editor = sp.edit();
+        editor.remove(KEY_USERNAME);
+        editor.remove(KEY_PASSWORD);
+        editor.commit();
+    }
 }

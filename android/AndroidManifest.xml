@@ -72,6 +72,11 @@
             android:screenOrientation="portrait">
             
         </activity>
+        
+        <activity android:name="com.wanke.ui.activity.my.InformationActivity" 
+            android:screenOrientation="portrait">
+            
+        </activity>
     </application>
 
 </manifest>

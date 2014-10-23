@@ -71,7 +71,7 @@ public class LoginActivity extends BaseActivity {
                 }
 
                 String savedPassword = PreferenceUtil.getPassword();
-                if (savedPassword.equals(password)) {
+                if (savedPassword == null || savedPassword.equals(password)) {
                     // TODO: 登录成功
                     PreferenceUtil.saveAccountInfo(account, password);
                     finish();
