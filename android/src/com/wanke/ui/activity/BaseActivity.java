@@ -52,6 +52,16 @@ public class BaseActivity extends SherlockFragmentActivity {
         });
     }
 
+    protected void showToast(final int resId) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                ToastUtil.showToast(BaseActivity.this, resId);
+            }
+        });
+    }
+
     /**
      * 不显示搜索view
      */

@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/divider"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -26,10 +25,9 @@
                 android:id="@+id/account_avatar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:src="@drawable/default_avatar"
+                android:scaleType="centerInside"
                 android:contentDescription="@null" />
 
             <TextView
@@ -37,8 +35,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="抠脚水冰月"
-                android:textSize="15sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </LinearLayout>
         
         <LinearLayout
@@ -63,10 +61,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/email_title_with_gap"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
+                android:background="@null"
                 android:textColor="@color/text_black_color"
                 android:textSize="15sp"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:enabled="false" />
             
             <TextView
                 android:layout_width="wrap_content"
@@ -106,9 +109,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
+                android:background="@null"
                 android:textColor="@color/text_black_color"
                 android:textSize="15sp"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:text="*********"
+                android:enabled="false" />
             
             <TextView
                 android:layout_width="wrap_content"

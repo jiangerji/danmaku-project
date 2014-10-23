@@ -45,12 +45,13 @@
     <string name="feedback"><u>意见反馈</u></string>
     
     <!-- login activity -->
-    <string name="login_username_hint">请输入账号</string>
+    <string name="login_username_hint">请输入注册邮箱</string>
     <string name="login_password_hint">请输入密码</string>
     <string name="login">登录</string>
     <string name="register">注册</string>
     <string name="logout">退出登录</string>
     <string name="login_username_is_empty">账号为空，请输入账号！</string>
+    <string name="login_username_is_error">账号格式错误，请输入正确的邮箱地址！</string>
     <string name="login_password_is_empty">密码为空，请输入密码！</string>
     <string name="login_password_is_error">密码错误，请重试！</string>
     
@@ -64,4 +65,6 @@
     <string name="password_title_with_gap">密\u0020码</string>
     <string name="gender_title_with_gap">性\u0020别</string>
     <string name="change_btn_title_with_gap"><u>更改</u></string>
+    
+    <string name="information_activity_get_user_info_error">获取用户资料失败！</string>
 </resources>

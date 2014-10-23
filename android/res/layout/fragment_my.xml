@@ -24,8 +24,8 @@
 
             <ImageView
                 android:id="@+id/account_avatar"
-                android:layout_width="100.5dp"
-                android:layout_height="100.5dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/default_avatar"
                 android:scaleType="centerInside"

@@ -10,7 +10,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.EditText;
 
 import com.wanke.tv.R;
-import com.wanke.ui.ToastUtil;
 import com.wanke.ui.activity.BaseActivity;
 import com.wanke.util.AccountUtil;
 import com.wanke.util.AccountUtil.LoginCallback;
@@ -61,13 +60,12 @@ public class LoginActivity extends BaseActivity {
                 final String account = mAccount.getText().toString().trim();
                 final String password = mPassword.getText().toString().trim();
                 if (TextUtils.isEmpty(account)) {
-                    ToastUtil.showToast(LoginActivity.this,
-                            R.string.login_username_is_empty);
+                    showToast(R.string.login_username_is_empty);
                     return;
                 }
+
                 if (TextUtils.isEmpty(password)) {
-                    ToastUtil.showToast(LoginActivity.this,
-                            R.string.login_password_is_empty);
+                    showToast(R.string.login_password_is_empty);
                     return;
                 }
 

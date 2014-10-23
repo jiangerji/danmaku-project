@@ -8,6 +8,7 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.wanke.model.AccountInfo;
 import com.wanke.network.http.CommonHttpUtils;
 
 public class AccountUtil {
@@ -180,6 +181,88 @@ public class AccountUtil {
                 }
             }
         });
+
+        return true;
+    }
+
+    public static interface UserInfoCallback {
+        /**
+         * 注册成功
+         */
+        public void onUserInfoSuccess(AccountInfo info);
+
+        /**
+         * 注册失败的回调,
+         * 
+         * @param error
+         *            错误代码
+         * @param msg
+         *            错误信息
+         */
+        public void onUserInfoFailed(int error, String msg);
+
+        /**
+         * 注册过程发生异常
+         * 
+         * @param msg
+         *            异常信息
+         */
+        public void onUserInfoException(String msg);
+    }
+
+    /**
+     * 获取某个用户的信息
+     * 
+     * @param uid
+     * @return
+     */
+    public static boolean userInfo(
+            String uid, final UserInfoCallback callback) {
+        if (TextUtils.isEmpty(uid)) {
+            return false;
+        }
+
+        RequestParams params = new RequestParams();
+        params.addQueryStringParameter("uid", uid);
+
+        CommonHttpUtils.get("userInfo", params, new RequestCallBack<String>() {
+
+            @Override
+            public void onFailure(HttpException error, String msg) {
+                if (callback != null) {
+                    callback.onUserInfoException(msg);
+                }
+            }
+
+            @Override
+            public void onSuccess(ResponseInfo<String> responseInfo) {
+                try {
+                    JSONObject object = new JSONObject(responseInfo.result);
+                    int errorCode = object.getInt("error");
+                    if (errorCode == 0) {
+                        // 登录成功
+                        if (callback != null) {
+                            AccountInfo info = new AccountInfo();
+                            info.setUid("" + object.getInt("uid"));
+                            info.setUsername(object.getString("username"));
+                            info.setEmail(object.getString("email"));
+                            info.setExp(object.getLong("exp"));
+                            callback.onUserInfoSuccess(info);
+                        }
+                    } else {
+                        String msg = object.getString("msg");
+                        if (callback != null) {
+                            callback.onUserInfoFailed(errorCode, msg);
+                        }
+                    }
+                } catch (Exception e) {
+                    if (callback != null) {
+                        callback.onUserInfoException(e.toString());
+                    }
+                }
+            }
+        }
+                );
 
         return true;
     }

@@ -98,7 +98,6 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
             mHaveAccount = false;
         }
 
-        // TODO: 显示头像
         String avatar = PreferenceUtil.getAvatar();
 
         if (!TextUtils.isEmpty(avatar)) {
@@ -144,6 +143,8 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
                 startActivity(intent);
             } else {
                 intent = new Intent(getActivity(), InformationActivity.class);
+                intent.putExtra(InformationActivity.KEY_UID,
+                        PreferenceUtil.getUid());
                 startActivity(intent);
             }
             break;
