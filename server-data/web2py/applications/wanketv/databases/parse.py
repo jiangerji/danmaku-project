@@ -204,4 +204,10 @@ def getDetail():
     db.commit()
 
 
-getDetail()
+def ggg():
+    for i in range(609):
+        format = "http://img.zxshuo.cn/image/secret/album_%d.png"%i
+        getFile(format)
+        # raw_input()
+
+ggg()

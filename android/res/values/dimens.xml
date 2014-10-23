@@ -5,4 +5,5 @@
     
     <dimen name="grid_view_horizontal_gap">3dp</dimen>
     <dimen name="grid_view_vertical_gap">3dp</dimen>
+    <dimen name="avatar_big_size">100dp</dimen>
 </resources>

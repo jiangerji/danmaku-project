@@ -12,13 +12,18 @@ public class PreferenceUtil {
 
     public final static String KEY_USERNAME = "username";
     public final static String KEY_PASSWORD = "password";
+    public final static String KEY_UID = "uid";
+    public final static String KEY_AVATAR = "avatar";
 
-    public static void saveAccountInfo(String username, String password) {
+    public static void saveAccountInfo(
+            String username, String password, String uid, String avatar) {
         SharedPreferences sp = WankeTVApplication.getCurrentApplication()
                 .getSharedPreferences(PREFERENCE_NAME, 0);
         Editor editor = sp.edit();
         editor.putString(KEY_USERNAME, username);
         editor.putString(KEY_PASSWORD, password);
+        editor.putString(KEY_UID, uid);
+        editor.putString(KEY_AVATAR, avatar);
         editor.commit();
     }
 
@@ -32,6 +37,12 @@ public class PreferenceUtil {
         SharedPreferences sp = WankeTVApplication.getCurrentApplication()
                 .getSharedPreferences(PREFERENCE_NAME, 0);
         return sp.getString(KEY_PASSWORD, null);
+    }
+
+    public static String getAvatar() {
+        SharedPreferences sp = WankeTVApplication.getCurrentApplication()
+                .getSharedPreferences(PREFERENCE_NAME, 0);
+        return sp.getString(KEY_AVATAR, null);
     }
 
     public static void registerPreferencesListener(
@@ -58,6 +69,8 @@ public class PreferenceUtil {
         Editor editor = sp.edit();
         editor.remove(KEY_USERNAME);
         editor.remove(KEY_PASSWORD);
+        editor.remove(KEY_AVATAR);
+        editor.remove(KEY_UID);
         editor.commit();
     }
 }

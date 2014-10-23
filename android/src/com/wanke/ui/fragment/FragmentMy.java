@@ -9,9 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.wanke.network.http.Constants;
 import com.wanke.tv.R;
+import com.wanke.ui.UiUtils;
 import com.wanke.ui.activity.my.AboutActivity;
 import com.wanke.ui.activity.my.InformationActivity;
 import com.wanke.ui.activity.my.LoginActivity;
@@ -21,10 +26,10 @@ import com.wanke.util.PreferenceUtil;
 public class FragmentMy extends BaseFragment implements View.OnClickListener {
 
     private TextView mName;
-    private View mLogin;
     private View mAboutus, mSetting, mFav, mHistory, mInformation;
     private View mAvatarBg;
     private View mRootView = null;
+    private ImageView mAvatar;
 
     // 是否已经有账户登录过
     private boolean mHaveAccount = false;
@@ -69,7 +74,6 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
                     }
                 });
 
-        mLogin = mRootView.findViewById(R.id.my_login);
         mAboutus = mRootView.findViewById(R.id.my_aboutus);
         mSetting = mRootView.findViewById(R.id.my_setting);
         mFav = mRootView.findViewById(R.id.my_fav);
@@ -77,8 +81,12 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
         mInformation = mRootView.findViewById(R.id.my_information);
         mName = (TextView) mRootView.findViewById(R.id.my_account_name);
 
+        mAvatar = (ImageView) mRootView.findViewById(R.id.account_avatar);
+
         initAccountView();
     }
+
+    private DisplayImageOptions mCircleOption = UiUtils.getOptionCircle();
 
     private void initAccountView() {
         String account = PreferenceUtil.getUsername();
@@ -91,6 +99,15 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
         }
 
         // TODO: 显示头像
+        String avatar = PreferenceUtil.getAvatar();
+
+        if (!TextUtils.isEmpty(avatar)) {
+            ImageLoader.getInstance()
+                    .displayImage(Constants.buildImageUrl(avatar),
+                            mAvatar, mCircleOption);
+        } else {
+            mAvatar.setImageResource(R.drawable.default_avatar);
+        }
     }
 
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -104,10 +121,9 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
     };
 
     private void initListener() {
-        mLogin.setOnClickListener(this);
+        mAvatar.setOnClickListener(this);
         mFav.setOnClickListener(this);
         mSetting.setOnClickListener(this);
-        mLogin.setOnClickListener(this);
         mAboutus.setOnClickListener(this);
         mInformation.setOnClickListener(this);
     }
@@ -122,7 +138,7 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
             startActivity(intent);
             break;
 
-        case R.id.my_login:
+        case R.id.account_avatar:
             if (!mHaveAccount) {
                 intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);

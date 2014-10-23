@@ -1,5 +1,6 @@
 package com.wanke.ui.activity;
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -7,9 +8,49 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.wanke.tv.R;
+import com.wanke.ui.ToastUtil;
+import com.wanke.ui.UiUtils;
 
 public class BaseActivity extends SherlockFragmentActivity {
     protected final static String TAG = "activity";
+
+    protected Dialog mWaitingDialog = null;
+
+    protected void showWaitingDialog() {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                mWaitingDialog = UiUtils.showWaitingDialog(BaseActivity.this);
+            }
+        });
+    }
+
+    protected void dismissWaitingDialog() {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (mWaitingDialog != null) {
+                        mWaitingDialog.dismiss();
+                    }
+                } catch (Exception e) {
+                }
+            }
+        });
+
+    }
+
+    protected void showToast(final String msg) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                ToastUtil.showToast(BaseActivity.this, msg);
+            }
+        });
+    }
 
     /**
      * 不显示搜索view

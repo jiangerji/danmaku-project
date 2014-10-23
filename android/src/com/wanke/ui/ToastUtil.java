@@ -12,6 +12,12 @@ public class ToastUtil {
         return toast;
     }
 
+    public static Toast showToast(Context context, String msg) {
+        Toast toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
+        toast.show();
+        return toast;
+    }
+
     public static Toast showToastInCenter(Context context, int resId) {
         Toast toast = Toast.makeText(context, resId, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);

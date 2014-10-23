@@ -1,7 +1,11 @@
 package com.wanke.ui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -10,6 +14,8 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.wanke.WankeTVApplication;
+import com.wanke.ui.widget.CircleBitmapDisplayer;
+import com.wanke.ui.widget.WaitingProgressDialog;
 
 public class UiUtils {
 
@@ -109,8 +115,43 @@ public class UiUtils {
     public static DisplayImageOptions getOptionsRound(int size) {
         return new DisplayImageOptions.Builder().cacheOnDisk(true)
                 .cacheInMemory(true)
-                .displayer(new RoundedBitmapDisplayer((int) (size * getDensity(null))))
+                .displayer(new RoundedBitmapDisplayer((int) (size)))
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .build();
+    }
+
+    public static DisplayImageOptions getOptionCircle() {
+        return new DisplayImageOptions.Builder().cacheOnDisk(true)
+                .cacheInMemory(true)
+                .displayer(new CircleBitmapDisplayer())
+                .build();
+    }
+
+    public static Dialog showWaitingDialog(Context context) {
+        WaitingProgressDialog progressDialog = new WaitingProgressDialog(context);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        return progressDialog;
+    }
+
+    public static void dismissWaitingDialog(Dialog dialog) {
+        try {
+            dialog.dismiss();
+        } catch (Exception e) {
+
+        }
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        Bitmap bitmap = Bitmap.createBitmap(width, height, drawable
+                .getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                : Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, width, height);
+        drawable.draw(canvas);
+        return bitmap;
     }
 }

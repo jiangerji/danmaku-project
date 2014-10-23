@@ -45,7 +45,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
     private int mUid = 1;
 
     private DisplayImageOptions mOptions = UiUtils.getOptionsFadeIn(100);
-    private DisplayImageOptions mAvatarOptions = UiUtils.getOptionsRound(4);
+    private DisplayImageOptions mAvatarOptions = UiUtils.getOptionsRound((int) (4 * UiUtils.getDensity(null)));
 
     ImageView mSubscribeBtn;
 

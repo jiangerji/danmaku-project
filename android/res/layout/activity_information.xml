@@ -52,9 +52,8 @@
             android:gravity="center_vertical" >
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/email_title_with_gap"
                 android:textColor="@color/text_black_color"
                 android:textSize="15sp" />
@@ -63,16 +62,15 @@
                 android:id="@+id/account_email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
+                android:layout_weight="1"
                 android:text="@string/email_title_with_gap"
                 android:textColor="@color/text_black_color"
                 android:textSize="15sp"
                 android:inputType="textEmailAddress" />
             
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/change_btn_title_with_gap"
                 android:textColor="@color/text_blue_color"
                 android:textSize="15sp" />
@@ -97,9 +95,8 @@
             android:gravity="center_vertical" >
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/password_title_with_gap"
                 android:textColor="@color/text_black_color"
                 android:textSize="15sp" />
@@ -108,15 +105,14 @@
                 android:id="@+id/account_password"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
+                android:layout_weight="1"
                 android:textColor="@color/text_black_color"
                 android:textSize="15sp"
                 android:inputType="textPassword" />
             
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/change_btn_title_with_gap"
                 android:textColor="@color/text_blue_color"
                 android:textSize="15sp" />

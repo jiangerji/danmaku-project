@@ -12,7 +12,8 @@ import android.widget.EditText;
 import com.wanke.tv.R;
 import com.wanke.ui.ToastUtil;
 import com.wanke.ui.activity.BaseActivity;
-import com.wanke.util.PreferenceUtil;
+import com.wanke.util.AccountUtil;
+import com.wanke.util.AccountUtil.LoginCallback;
 
 public class LoginActivity extends BaseActivity {
     protected static final String TAG = "MyLoginActivity";
@@ -57,8 +58,8 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                String account = mAccount.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
+                final String account = mAccount.getText().toString().trim();
+                final String password = mPassword.getText().toString().trim();
                 if (TextUtils.isEmpty(account)) {
                     ToastUtil.showToast(LoginActivity.this,
                             R.string.login_username_is_empty);
@@ -70,16 +71,28 @@ public class LoginActivity extends BaseActivity {
                     return;
                 }
 
-                String savedPassword = PreferenceUtil.getPassword();
-                if (savedPassword == null || savedPassword.equals(password)) {
-                    // TODO: 登录成功
-                    PreferenceUtil.saveAccountInfo(account, password);
-                    finish();
-                } else {
-                    ToastUtil.showToast(LoginActivity.this,
-                            R.string.login_password_is_error);
-                    return;
-                }
+                showWaitingDialog();
+
+                AccountUtil.login(account, password, new LoginCallback() {
+
+                    @Override
+                    public void onLoginSuccess() {
+                        dismissWaitingDialog();
+                        finish();
+                    }
+
+                    @Override
+                    public void onLoginFailed(int error, String msg) {
+                        showToast(msg);
+                        dismissWaitingDialog();
+                    }
+
+                    @Override
+                    public void onLoginException(String msg) {
+                        showToast(msg);
+                        dismissWaitingDialog();
+                    }
+                });
             }
         });
 

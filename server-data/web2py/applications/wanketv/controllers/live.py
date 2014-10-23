@@ -1,4 +1,7 @@
 import json
+import time
+
+dal = DAL('sqlite://wanke.sqlite3.sqlite')
 
 """
 获取推荐页顶部互动的广告信息
@@ -180,6 +183,11 @@ def version():
     return json.dumps(result)
 
 def unsubscribe():
+    """
+    unsubscribe?roomId=2121&uid=1
+    roomId: 需要取消订阅的房间号
+    uid:    用户uid
+    """
     parseRequest()
     uid = request.vars.get("uid", "")
     roomId = request.vars.get("roomId", "")
@@ -211,6 +219,11 @@ def unsubscribe():
     return json.dumps(result)
 
 def subscribe():
+    """
+    subscribe?roomId=2121&uid=1
+    roomId: 需要订阅的房间号
+    uid:    用户uid
+    """
     parseRequest()
     uid = request.vars.get("uid", "")
     roomId = request.vars.get("roomId", "")
@@ -242,6 +255,81 @@ def subscribe():
     result["error"] = 0
 
     return json.dumps(result)
+
+def login():
+    """
+    login?username=2121&password=1
+    username: 注册用户名
+    passwrod: 登录密码
+    """
+    time.sleep(2)
+
+    parseRequest()
+    username = request.vars.get("username", "")
+    password = request.vars.get("password", "")
+
+    """
+    返回值:
+        0:  登录成功
+        1:  用户名或密码错误
+    """
+    result = {}
+    result["error"] = 1
+    result["msg"] = "用户名或密码错误"
+    if len(username) > 0 and len(password) > 0:
+        try:
+            sql = 'select password, uid from account where username="%s"'%username
+            selectResults = dal.executesql(sql)
+            if len(selectResults) > 0:
+                dbPassword = selectResults[0][0]
+                if dbPassword == password:
+                    result["error"] = 0
+                    result["msg"] = ""
+                    result["username"] = username
+                    result["uid"] = selectResults[0][1]
+                    result["avatar"] = "album_"+str(selectResults[0][1])+'.png'
+        except Exception, e:
+            result["error"] = 1
+
+    return json.dumps(result)
+
+def register():
+    """
+    register?username=2121&password=1&email=123123@gmail.com
+    username: 注册用户名
+    passwrod: 登录密码
+    email:    注册邮箱
+    """
+    time.sleep(2)
+
+    parseRequest()
+
+    username = request.vars.get("username", "")
+    password = request.vars.get("password", "")
+    email = request.vars.get("email", "")
+    
+    """
+    返回值:
+        0:  注册成功
+        1:  参数格式错误
+        2:  用户名已存在
+    """
+    result = {}
+    if len(username) == 0 or len(password) == 0 or len(email) == 0:
+        result["error"] = 1
+        result["msg"] = "参数格式错误！"
+    else:
+        try:
+            sql = 'insert into account (username, password, email) VALUES ("%s", "%s", "%s")'%(username, password, email)
+            dal.executesql(sql)
+            result["error"] = 0
+            result["msg"] = ""
+        except Exception, e:
+            result["error"] = 2
+            result["msg"] = "用户名已存在！"
+
+    return json.dumps(result)
+
 
 
 """

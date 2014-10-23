@@ -10,7 +10,8 @@ import android.widget.EditText;
 import com.wanke.tv.R;
 import com.wanke.ui.ToastUtil;
 import com.wanke.ui.activity.BaseActivity;
-import com.wanke.util.PreferenceUtil;
+import com.wanke.util.AccountUtil;
+import com.wanke.util.AccountUtil.RegisterCallback;
 import com.wanke.util.RegexUtil;
 
 public class RegisterActivity extends BaseActivity {
@@ -37,8 +38,8 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                String account = mAccount.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
+                final String account = mAccount.getText().toString().trim();
+                final String password = mPassword.getText().toString().trim();
                 String email = mEmil.getText().toString().trim();
                 String passwordConfirm = mPasswordConfirm.getText().toString()
                         .trim();
@@ -67,11 +68,37 @@ public class RegisterActivity extends BaseActivity {
                             R.string.login_password_is_empty);
                     return;
                 }
+
                 if (password.equals(passwordConfirm)) {
-                    // TODO: 注册流程
-                    PreferenceUtil.saveAccountInfo(account, password);
-                    setResult(REGISTER_SUCC);
-                    finish();
+                    showWaitingDialog();
+
+                    AccountUtil.register(account,
+                            password,
+                            email,
+                            new RegisterCallback() {
+
+                                @Override
+                                public void onRegisterSuccess() {
+                                    dismissWaitingDialog();
+
+                                    setResult(REGISTER_SUCC);
+                                    finish();
+                                }
+
+                                @Override
+                                public void onRegisterFailed(
+                                        int error, String msg) {
+                                    showToast(msg);
+                                    dismissWaitingDialog();
+                                }
+
+                                @Override
+                                public void onRegisterException(String msg) {
+                                    showToast(msg);
+                                    dismissWaitingDialog();
+                                }
+                            });
+
                 } else {
                     ToastUtil.showToast(RegisterActivity.this,
                             R.string.confirm_password_is_error);
@@ -79,6 +106,5 @@ public class RegisterActivity extends BaseActivity {
                 }
             }
         });
-
     }
 }
