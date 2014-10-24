@@ -45,7 +45,7 @@
     <string name="feedback"><u>意见反馈</u></string>
     
     <!-- login activity -->
-    <string name="login_username_hint">请输入注册邮箱</string>
+    <string name="login_username_hint">请输入账号</string>
     <string name="login_password_hint">请输入密码</string>
     <string name="login">登录</string>
     <string name="register">注册</string>
@@ -69,4 +69,8 @@
     <string name="information_activity_get_user_info_error">获取用户资料失败！</string>
     
     <string name="information_activity_title">我的资料</string>
+    <string name="information_activity_fans">粉丝：%s</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
+    
 </resources>

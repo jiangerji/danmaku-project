@@ -49,6 +49,8 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
     ImageView mSubscribeBtn;
 
+    private View mShareBtn;
+
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
@@ -135,10 +137,19 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
         mSubscribeBtn = (ImageView) findViewById(R.id.subscribe_btn);
         if (mChannelSubscribed) {
-            mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+            mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed_btn);
         } else {
-            mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+            mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed_btn);
         }
+
+        mShareBtn = findViewById(R.id.share_btn);
+        mShareBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void getChannelInfo() {
@@ -193,7 +204,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
     private void subscribe() {
         mSubscribeBtn.setEnabled(false);
-        mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+        mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed_btn);
 
         int uid = 1;
         RequestParams params = new RequestParams();
@@ -205,7 +216,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
             @Override
             public void onFailure(HttpException error, String msg) {
                 mSubscribeBtn.setEnabled(true);
-                mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+                mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed_btn);
             }
 
             @Override
@@ -216,12 +227,12 @@ public class LiveChannelDetailActivity extends BaseActivity {
                         JSONObject object = new JSONObject(responseInfo.result);
                         if (object.getInt("error") != 0) {
                             // 订阅失败
-                            mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+                            mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed_btn);
                         } else {
                             mChannelSubscribed = true;
                         }
                     } catch (Exception e) {
-                        mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+                        mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed_btn);
                     }
                 }
             }
@@ -232,7 +243,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
     private void unsubscribe() {
         mSubscribeBtn.setEnabled(false);
-        mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed);
+        mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed_btn);
 
         int uid = 1;
         RequestParams params = new RequestParams();
@@ -246,7 +257,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
                     @Override
                     public void onFailure(HttpException error, String msg) {
                         mSubscribeBtn.setEnabled(true);
-                        mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+                        mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed_btn);
                     }
 
                     @Override
@@ -257,12 +268,12 @@ public class LiveChannelDetailActivity extends BaseActivity {
                                 JSONObject object = new JSONObject(responseInfo.result);
                                 if (object.getInt("error") != 0) {
                                     // 取消订阅失败
-                                    mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+                                    mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed_btn);
                                 } else {
                                     mChannelSubscribed = false;
                                 }
                             } catch (Exception e) {
-                                mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed);
+                                mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed_btn);
                             }
                         }
                     }

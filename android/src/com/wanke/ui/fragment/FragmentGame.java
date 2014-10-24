@@ -94,6 +94,6 @@ public class FragmentGame extends BaseFragment {
 
     private void init() {
         String action = "games";
-        CommonHttpUtils.get(action, null, mCallBack, "games");
+        CommonHttpUtils.get(action, null, mCallBack, "games", 30 * 60);
     }
 }

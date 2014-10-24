@@ -247,6 +247,8 @@ public class AccountUtil {
                             info.setUsername(object.getString("username"));
                             info.setEmail(object.getString("email"));
                             info.setExp(object.getLong("exp"));
+                            info.setFans(object.getInt("fans"));
+                            info.setGender(object.getInt("gender"));
                             callback.onUserInfoSuccess(info);
                         }
                     } else {

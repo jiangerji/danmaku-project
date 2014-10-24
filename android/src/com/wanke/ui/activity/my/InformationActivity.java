@@ -30,7 +30,7 @@ public class InformationActivity extends BaseActivity {
     public final static int LOGOUT_SUCC = 0x21;
 
     private EditText mEmail;
-    private TextView mName;
+    private TextView mName, mFans;
     private Button mExit;
     SharedPreferences.Editor editor = null;
 
@@ -50,7 +50,6 @@ public class InformationActivity extends BaseActivity {
             finish();
         } else {
             initView();
-
             getUserInfo();
         }
     }
@@ -59,11 +58,14 @@ public class InformationActivity extends BaseActivity {
     private ImageView mAvatar;
     private DisplayImageOptions mCircleOption = UiUtils.getOptionCircle();
 
+    private View mMaleBtn, mFemaleBtn;
+
     private void initView() {
         mAvatarBg = findViewById(R.id.account_avatar_bg);
         mAvatarBg.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
+                    @SuppressWarnings("deprecation")
                     @Override
                     public void onGlobalLayout() {
                         int width = mAvatarBg.getWidth();
@@ -96,6 +98,8 @@ public class InformationActivity extends BaseActivity {
         mName = (TextView) findViewById(R.id.account_name);
         mName.setText(PreferenceUtil.getUsername());
 
+        mFans = (TextView) findViewById(R.id.fans);
+
         mExit = (Button) findViewById(R.id.logout_btn);
 
         mExit.setOnClickListener(new OnClickListener() {
@@ -107,12 +111,48 @@ public class InformationActivity extends BaseActivity {
                 finish();
             }
         });
+
+        mMaleBtn = findViewById(R.id.male_checkbox);
+        mMaleBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                setGender(AccountInfo.MALE);
+            }
+        });
+        mFemaleBtn = findViewById(R.id.female_checkbox);
+        mFemaleBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                setGender(AccountInfo.FEMALE);
+            }
+        });
+    }
+
+    private int mGender = 0;
+
+    private void setGender(int gender) {
+        mGender = gender;
+        if (mGender == AccountInfo.MALE) {
+            mMaleBtn.setSelected(true);
+            mFemaleBtn.setSelected(false);
+        } else if (mGender == AccountInfo.FEMALE) {
+            mMaleBtn.setSelected(false);
+            mFemaleBtn.setSelected(true);
+        } else {
+            mMaleBtn.setSelected(false);
+            mFemaleBtn.setSelected(false);
+        }
     }
 
     private void setAccountInfo(AccountInfo info) {
         if (info != null) {
             mEmail.setText(info.getEmail());
             mName.setText(info.getUsername());
+            mFans.setText(getResources().getString(R.string.information_activity_fans,
+                    info.getFans()));
+            setGender(info.getGender());
         }
     }
 
