@@ -258,7 +258,7 @@ def subscribe():
 
 def login():
     """
-    login?username=2121&password=1
+    login?username=root@gmail.com&password=1
     username: 注册用户名
     passwrod: 登录密码
     """
@@ -330,7 +330,39 @@ def register():
 
     return json.dumps(result)
 
+def userInfo():
+    """
+    获取某人的资料信息
+    userInfo?uid=2121
+    uid: 注册用户的uid
+    """
+    parseRequest()
 
+    uid = request.vars.get("uid", "")
+    result = {}
+    result["error"] = 0
+    result["msg"] = ""
+
+    if len(uid) == 0:
+        result["error"] = 1
+        result["msg"] = "参数格式错误！"
+    else:
+        try:
+            sql = 'select * from account where uid="%s"'%uid
+            selectResults = dal.executesql(sql)
+            if len(selectResults) > 0:
+                info = selectResults[0]
+
+                result["uid"] = info[0]
+                result["username"] = info[1]
+                # result["password"] = info[2]
+                result["email"] = info[3]
+                result["exp"] = info[4]
+        except Exception, e:
+            result["error"] = 2
+            result["msg"] = "用户名已存在！"
+
+    return json.dumps(result)
 
 """
 获取图片

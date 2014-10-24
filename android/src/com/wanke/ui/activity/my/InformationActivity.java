@@ -41,6 +41,8 @@ public class InformationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information);
 
+        setTitle(R.string.information_activity_title);
+
         Intent intent = getIntent();
         mUid = intent.getStringExtra(KEY_UID);
 

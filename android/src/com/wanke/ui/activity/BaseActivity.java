@@ -100,7 +100,7 @@ public class BaseActivity extends SherlockFragmentActivity {
             //        searchView.setSuggestionsAdapter(mSuggestionsAdapter);
 
             menu.add("Search")
-                    .setIcon(R.drawable.abs__ic_search)
+                    .setIcon(R.drawable.action_bar_search_btn_bg)
                     .setActionView(searchView)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
                             | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);

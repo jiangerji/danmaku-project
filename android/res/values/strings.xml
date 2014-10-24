@@ -67,4 +67,6 @@
     <string name="change_btn_title_with_gap"><u>更改</u></string>
     
     <string name="information_activity_get_user_info_error">获取用户资料失败！</string>
+    
+    <string name="information_activity_title">我的资料</string>
 </resources>
