@@ -358,6 +358,8 @@ def userInfo():
                 # result["password"] = info[2]
                 result["email"] = info[3]
                 result["exp"] = info[4]
+                result["fans"] = info[5]
+                result["gender"] = info[6]
         except Exception, e:
             result["error"] = 2
             result["msg"] = "用户名已存在！"

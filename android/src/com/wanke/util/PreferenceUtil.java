@@ -79,4 +79,52 @@ public class PreferenceUtil {
         editor.remove(KEY_UID);
         editor.commit();
     }
+
+    private final static String KEY_DECODE_BY_HARDWARE = "decode_by_hardware";
+
+    public static boolean getDecodeByHardware() {
+        SharedPreferences sp = WankeTVApplication.getCurrentApplication()
+                .getSharedPreferences(PREFERENCE_NAME, 0);
+        return sp.getBoolean(KEY_DECODE_BY_HARDWARE, false);
+    }
+
+    public static void setDecodeByHardware(boolean use) {
+        SharedPreferences sp = WankeTVApplication.getCurrentApplication()
+                .getSharedPreferences(PREFERENCE_NAME, 0);
+        Editor editor = sp.edit();
+        editor.putBoolean(KEY_DECODE_BY_HARDWARE, use);
+        editor.commit();
+    }
+
+    private final static String KEY_AUTO_PLAY_IN_23G = "auto_play_in_23g";
+
+    public static boolean getAutoPlayIn23G() {
+        SharedPreferences sp = WankeTVApplication.getCurrentApplication()
+                .getSharedPreferences(PREFERENCE_NAME, 0);
+        return sp.getBoolean(KEY_AUTO_PLAY_IN_23G, false);
+    }
+
+    public static void setAutoPlayIn23G(boolean use) {
+        SharedPreferences sp = WankeTVApplication.getCurrentApplication()
+                .getSharedPreferences(PREFERENCE_NAME, 0);
+        Editor editor = sp.edit();
+        editor.putBoolean(KEY_AUTO_PLAY_IN_23G, use);
+        editor.commit();
+    }
+
+    private final static String KEY_DANMAKU_SETTING_ALPHA = "danmaku_setting_alpha";
+
+    public static int getDanmakuAlpha() {
+        SharedPreferences sp = WankeTVApplication.getCurrentApplication()
+                .getSharedPreferences(PREFERENCE_NAME, 0);
+        return sp.getInt(KEY_DANMAKU_SETTING_ALPHA, 0xFF);
+    }
+
+    public static void setDanmakuAlpha(int alpha) {
+        SharedPreferences sp = WankeTVApplication.getCurrentApplication()
+                .getSharedPreferences(PREFERENCE_NAME, 0);
+        Editor editor = sp.edit();
+        editor.putInt(KEY_DANMAKU_SETTING_ALPHA, alpha);
+        editor.commit();
+    }
 }
