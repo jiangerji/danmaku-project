@@ -80,6 +80,10 @@
             android:theme="@style/AppTheme" >
             
         </activity>
+	<activity
+            android:name="com.wanke.ui.activity.my.HistoryActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

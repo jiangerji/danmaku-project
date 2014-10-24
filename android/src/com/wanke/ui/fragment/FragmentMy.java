@@ -18,6 +18,7 @@ import com.wanke.network.http.Constants;
 import com.wanke.tv.R;
 import com.wanke.ui.UiUtils;
 import com.wanke.ui.activity.my.AboutActivity;
+import com.wanke.ui.activity.my.HistoryActivity;
 import com.wanke.ui.activity.my.InformationActivity;
 import com.wanke.ui.activity.my.LoginActivity;
 import com.wanke.ui.activity.my.SettingActivity;
@@ -119,13 +120,14 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
         }
     };
 
-    private void initListener() {
-        mAvatar.setOnClickListener(this);
-        mFav.setOnClickListener(this);
-        mSetting.setOnClickListener(this);
-        mAboutus.setOnClickListener(this);
-        mInformation.setOnClickListener(this);
-    }
+	private void initListener() {
+		mAvatar.setOnClickListener(this);
+		mFav.setOnClickListener(this);
+		mSetting.setOnClickListener(this);
+		mAboutus.setOnClickListener(this);
+		mInformation.setOnClickListener(this);
+		mHistory.setOnClickListener(this);
+	}
 
     @Override
     public void onClick(View view) {
@@ -154,65 +156,68 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
             startActivity(intent);
             break;
 
-        case R.id.my_information:
-            break;
-
-        default:
-            break;
-        }
-        //        if (view == mAbout) {
-        //            String account = sp.getString("account", "");
-        //            if (TextUtils.isEmpty(account)) {
-        //                Intent intent;
-        //                intent = new Intent(getActivity(), MyLoginActivity.class);
-        //                startActivity(intent);
-        //            } else {
-        //                Toast.makeText(getActivity(), R.string.toast_not_login, 1)
-        //                        .show();
-        //            }
-        //
-        //        }
-        //        if (view == mInformation) {
-        //            String account = sp.getString("account", "");
-        //            if (TextUtils.isEmpty(account)) {
-        //                Toast.makeText(getActivity(), R.string.toast_not_login, 1)
-        //                        .show();
-        //            } else {
-        //                Intent intent;
-        //                intent = new Intent(getActivity(), MyInformation.class);
-        //                startActivity(intent);
-        //            }
-        //
-        //        }
-        //        if (view == mHistory) {
-        //            String account = sp.getString("account", "");
-        //            if (TextUtils.isEmpty(account)) {
-        //                Intent intent;
-        //                intent = new Intent(getActivity(), MyInformation.class);
-        //                startActivity(intent);
-        //            } else {
-        //                Toast.makeText(getActivity(), R.string.toast_not_login, 1)
-        //                        .show();
-        //            }
-        //
-        //        }
-        //        if (view == mLogin) {
-        //            String account = sp.getString("account", "");
-        //            if (TextUtils.isEmpty(account)) {
-        //                Intent intent;
-        //                intent = new Intent(getActivity(), MyLoginActivity.class);
-        //                startActivity(intent);
-        //            }
-        //        }
-        //        if (view == mAboutus) {
-        //            Intent intent;
-        //            intent = new Intent(getActivity(), MyAbout.class);
-        //            startActivity(intent);
-        //        }
-        //        if (view == mSetting) {
-        //            Intent intent;
-        //            intent = new Intent(getActivity(), MySetting.class);
-        //            startActivity(intent);
-        //        }
-    }
+		case R.id.my_information:
+			break;
+		case R.id.my_history:
+			intent = new Intent(getActivity(), HistoryActivity.class);
+			startActivity(intent);
+			break;
+		default:
+			break;
+		}
+		// if (view == mAbout) {
+		// String account = sp.getString("account", "");
+		// if (TextUtils.isEmpty(account)) {
+		// Intent intent;
+		// intent = new Intent(getActivity(), MyLoginActivity.class);
+		// startActivity(intent);
+		// } else {
+		// Toast.makeText(getActivity(), R.string.toast_not_login, 1)
+		// .show();
+		// }
+		//
+		// }
+		// if (view == mInformation) {
+		// String account = sp.getString("account", "");
+		// if (TextUtils.isEmpty(account)) {
+		// Toast.makeText(getActivity(), R.string.toast_not_login, 1)
+		// .show();
+		// } else {
+		// Intent intent;
+		// intent = new Intent(getActivity(), MyInformation.class);
+		// startActivity(intent);
+		// }
+		//
+		// }
+		// if (view == mHistory) {
+		// String account = sp.getString("account", "");
+		// if (TextUtils.isEmpty(account)) {
+		// Intent intent;
+		// intent = new Intent(getActivity(), MyInformation.class);
+		// startActivity(intent);
+		// } else {
+		// Toast.makeText(getActivity(), R.string.toast_not_login, 1)
+		// .show();
+		// }
+		//
+		// }
+		// if (view == mLogin) {
+		// String account = sp.getString("account", "");
+		// if (TextUtils.isEmpty(account)) {
+		// Intent intent;
+		// intent = new Intent(getActivity(), MyLoginActivity.class);
+		// startActivity(intent);
+		// }
+		// }
+		// if (view == mAboutus) {
+		// Intent intent;
+		// intent = new Intent(getActivity(), MyAbout.class);
+		// startActivity(intent);
+		// }
+		// if (view == mSetting) {
+		// Intent intent;
+		// intent = new Intent(getActivity(), MySetting.class);
+		// startActivity(intent);
+		// }
+	}
 }
