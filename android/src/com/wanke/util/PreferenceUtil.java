@@ -48,7 +48,7 @@ public class PreferenceUtil {
     public static String getUid() {
         SharedPreferences sp = WankeTVApplication.getCurrentApplication()
                 .getSharedPreferences(PREFERENCE_NAME, 0);
-        return sp.getString(KEY_UID, null);
+        return sp.getString(KEY_UID, "");
     }
 
     public static void registerPreferencesListener(

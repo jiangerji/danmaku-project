@@ -1,5 +1,6 @@
 package com.wanke.ui.activity.my;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,6 +10,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.wanke.tv.R;
 import com.wanke.ui.activity.BaseActivity;
+import com.wanke.ui.activity.FeedbackActivity;
 import com.wanke.ui.widget.SwitchSeekBar;
 import com.wanke.ui.widget.SwitchSeekBar.OnCheckedChangeListener;
 import com.wanke.util.PreferenceUtil;
@@ -20,6 +22,7 @@ public class SettingActivity extends BaseActivity {
     private SwitchSeekBar mHardwareDecode;
     private SwitchSeekBar mAutoPlayIn23G;
     private SeekBar mDanmakuAlphaSetting;
+    private View mFeedbackBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,17 @@ public class SettingActivity extends BaseActivity {
             public void onProgressChanged(
                     SeekBar seekBar, int progress, boolean fromUser) {
 
+            }
+        });
+
+        mFeedbackBtn = findViewById(R.id.feedback_btn);
+        mFeedbackBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(SettingActivity.this, FeedbackActivity.class);
+                startActivity(intent);
             }
         });
     }

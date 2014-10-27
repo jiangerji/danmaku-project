@@ -141,6 +141,7 @@
         android:text="@string/modify_password" />
 
     <TextView
+        android:id="@+id/feedback_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="20dp"

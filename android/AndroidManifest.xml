@@ -80,8 +80,13 @@
             android:theme="@style/AppTheme" >
             
         </activity>
-	<activity
+	    <activity
             android:name="com.wanke.ui.activity.my.HistoryActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        
+        <activity
+            android:name="com.wanke.ui.activity.FeedbackActivity"
             android:screenOrientation="portrait" >
         </activity>
     </application>
