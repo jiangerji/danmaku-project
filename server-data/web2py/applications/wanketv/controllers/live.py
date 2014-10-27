@@ -392,6 +392,52 @@ def feedback():
 
     return json.dumps(result)
 
+def fav():
+    """
+    获取用户关注的直播频道数据
+    fav?uid=2121
+    """
+    parseRequest()
+
+    uid = request.vars.get("uid", "")
+    result = {}
+    result["error"] = 0
+    result["msg"] = ""
+
+    if len(uid) > 0:
+        try:
+            sql = 'select subscribes from subscribe where uid="%s"'%uid
+            selectResults = dal.executesql(sql)
+            if len(selectResults) > 0:
+                subscribesInfo = selectResults[0][0]
+                data = []
+                for roomId in subscribesInfo.split(":"):
+                    subscribe = {}
+                    subscribe["roomId"] = roomId
+                    data.append(subscribe)
+                    """
+                    uid, avatar, username, fans
+                    """
+
+                    try:
+                        sql = 'select ownerUid, ownerNickname, fans from live_channels where roomId=%s'%roomId
+                        selectResults = dal.executesql(sql)
+                        if len(selectResults) > 0:
+                            subscribe["uid"] = selectResults[0][0]
+                            subscribe["avatar"] = str(selectResults[0][0])+".png"
+                            subscribe["username"] = selectResults[0][1]
+                            subscribe["fans"] = selectResults[0][2]
+                    except Exception, e:
+                        raise e
+
+                result["data"] = data
+
+        except Exception, e:
+            pass
+
+    return json.dumps(result)
+
+
 """
 获取图片
 """
