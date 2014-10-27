@@ -258,7 +258,7 @@ def subscribe():
 
 def login():
     """
-    login?username=root@gmail.com&password=1
+    login?username=root&password=1
     username: 注册用户名
     passwrod: 登录密码
     """
@@ -363,6 +363,32 @@ def userInfo():
         except Exception, e:
             result["error"] = 2
             result["msg"] = "用户名已存在！"
+
+    return json.dumps(result)
+
+def feedback():
+    """
+    意见反馈接口
+    feedback?uid=2121&content=fasfasfasfasfasdf
+    uid: 注册用户的uid，可选
+    content: 用户反馈的意见，不能为空
+    """
+    parseRequest()
+
+    uid = request.vars.get("uid", "")
+    content = request.vars.get("content", "")
+
+    result = {}
+    result["error"] = 0
+    result["msg"] = ""
+
+    time.sleep(2)
+
+    if len(content) < 10:
+        result["error"] = 1
+        result["msg"] = "意见字数太少！"
+    else:
+        pass
 
     return json.dumps(result)
 
