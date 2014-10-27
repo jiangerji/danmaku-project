@@ -89,6 +89,11 @@
             android:name="com.wanke.ui.activity.FeedbackActivity"
             android:screenOrientation="portrait" >
         </activity>
+        
+        <activity
+            android:name="com.wanke.ui.activity.FavActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

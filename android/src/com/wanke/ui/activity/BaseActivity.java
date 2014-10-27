@@ -73,8 +73,8 @@ public class BaseActivity extends SherlockFragmentActivity {
     }
 
     @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
         if ((getFlag() & FLAG_DISABLE_HOME_AS_UP) != FLAG_DISABLE_HOME_AS_UP) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }

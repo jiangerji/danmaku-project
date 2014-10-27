@@ -25,6 +25,7 @@ import com.wanke.network.http.HttpExceptionButFoundCache;
 import com.wanke.tv.R;
 import com.wanke.ui.ToastUtil;
 import com.wanke.ui.UiUtils;
+import com.wanke.util.PreferenceUtil;
 
 public class LiveChannelDetailActivity extends BaseActivity {
     public final static String CHANNEL_ID = "channelId";
@@ -41,8 +42,6 @@ public class LiveChannelDetailActivity extends BaseActivity {
     private String mChannelDetail = "";
     private boolean mChannelSubscribed = false;
     private String mChannelCover = "";
-
-    private int mUid = 1;
 
     private DisplayImageOptions mOptions = UiUtils.getOptionsFadeIn(100);
     private DisplayImageOptions mAvatarOptions = UiUtils.getOptionsRound((int) (4 * UiUtils.getDensity(null)));
@@ -114,6 +113,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
         TextView channelTitle = (TextView) findViewById(R.id.room_title);
         channelTitle.setText(mChannelName);
+        setTitle(mChannelName);
 
         TextView channelDetail = (TextView) findViewById(R.id.room_detail);
         channelDetail.setText(mChannelDetail);
@@ -154,7 +154,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
     private void getChannelInfo() {
         RequestParams params = new RequestParams();
-        params.addQueryStringParameter("uid", "" + mUid);
+        params.addQueryStringParameter("uid", PreferenceUtil.getUid());
         params.addQueryStringParameter("roomId", "" + mChannelId);
 
         CommonHttpUtils.get("channel", params, new RequestCallBack<String>() {
@@ -198,15 +198,14 @@ public class LiveChannelDetailActivity extends BaseActivity {
                 parseResult(responseInfo.result);
                 //                }
             }
-        },
-                "" + mUid + ":" + mChannelId);
+        }, null, 0);
     }
 
     private void subscribe() {
         mSubscribeBtn.setEnabled(false);
         mSubscribeBtn.setImageResource(R.drawable.detail_activity_subscribed_btn);
 
-        int uid = 1;
+        String uid = PreferenceUtil.getUid();
         RequestParams params = new RequestParams();
         params.addQueryStringParameter("uid", "" + uid);
         params.addQueryStringParameter("roomId", "" + mChannelId);
@@ -245,7 +244,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
         mSubscribeBtn.setEnabled(false);
         mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed_btn);
 
-        int uid = 1;
+        String uid = PreferenceUtil.getUid();
         RequestParams params = new RequestParams();
         params.addQueryStringParameter("uid", "" + uid);
         params.addQueryStringParameter("roomId", "" + mChannelId);
