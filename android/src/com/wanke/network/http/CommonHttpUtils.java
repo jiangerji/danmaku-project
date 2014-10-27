@@ -22,7 +22,8 @@ import com.wanke.WankeTVApplication;
 public class CommonHttpUtils {
     private final static String TAG = "http";
 
-    private final static String BASE_URL = "http://192.168.41.101:9257/wanketv/live/";
+    private final static String BASE_URL = Constants.BASE_HOST
+            + "/wanketv/live/";
 
     private static void printParams(RequestParams params) {
         if (params != null) {
