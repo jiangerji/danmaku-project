@@ -2,13 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/activity_bg"
+    android:background="@android:color/white"
     android:orientation="vertical" >
+    
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/fav_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:scrollbars="none" />
     
     <LinearLayout
         android:id="@+id/bottom_panel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_panel_height"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:visibility="invisible" >
@@ -52,13 +59,4 @@
         </LinearLayout>
     </LinearLayout>
     
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/fav_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/bottom_panel"
-        android:background="@android:color/white"
-        android:scrollbars="none" />
-  
 </RelativeLayout>

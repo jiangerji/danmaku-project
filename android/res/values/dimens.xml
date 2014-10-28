@@ -8,4 +8,6 @@
     <dimen name="avatar_big_size">100dp</dimen>
     
     <dimen name="text_view_horizontal_gap">8dp</dimen>
+    
+    <dimen name="bottom_panel_height">44dp</dimen>
 </resources>

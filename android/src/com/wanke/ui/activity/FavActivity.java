@@ -10,6 +10,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -35,11 +39,20 @@ public class FavActivity extends BaseActivity {
     private View mSelectAll;
     private View mConfirmDelete;
 
+    private int mBottomPanelHeight;
+    private View mFooterView;
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
         setContentView(R.layout.activity_fav);
+
+        mBottomPanelHeight = getResources().getDimensionPixelSize(R.dimen.bottom_panel_height);
+
+        mFooterView = new View(this);
+        mFooterView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
+                mBottomPanelHeight));
 
         mFavList = (PullToRefreshListView) findViewById(R.id.fav_list);
         mFavList.setMode(Mode.DISABLED);
@@ -48,6 +61,7 @@ public class FavActivity extends BaseActivity {
         mFavList.setAdapter(mFavAdapter);
 
         mBottomPanel = findViewById(R.id.bottom_panel);
+
         mSelectAll = findViewById(R.id.select_all);
         mSelectAll.setOnClickListener(mSelectAllClickListener);
         mConfirmDelete = findViewById(R.id.confirm_delete);
@@ -102,14 +116,62 @@ public class FavActivity extends BaseActivity {
                 mFavAdapter.setMultiChoiceMode(!mInDeleteMode);
                 mInDeleteMode = !mInDeleteMode;
                 if (mInDeleteMode) {
-                    mBottomPanel.setVisibility(View.VISIBLE);
+                    showBottomPanel();
                 } else {
-                    mBottomPanel.setVisibility(View.INVISIBLE);
+                    hideBottomPanel();
                 }
                 return true;
             }
         });
         return true;
+    }
+
+    private void showBottomPanel() {
+        Animation animation = AnimationUtils.loadAnimation(this,
+                R.anim.slide_in_from_bottom);
+        animation.setAnimationListener(new AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mBottomPanel.setVisibility(View.VISIBLE);
+            }
+        });
+        mBottomPanel.startAnimation(animation);
+        mFavList.getRefreshableView().addFooterView(mFooterView);
+    }
+
+    private void hideBottomPanel() {
+        Animation animation = AnimationUtils.loadAnimation(this,
+                R.anim.slide_out_to_bottom);
+        animation.setAnimationListener(new AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mBottomPanel.setVisibility(View.INVISIBLE);
+            }
+        });
+        mBottomPanel.startAnimation(animation);
+        mFavList.getRefreshableView().removeFooterView(mFooterView);
     }
 
     private void getFav() {
