@@ -3,32 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:gravity="center_horizontal"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="250dp" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_banben"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="80dp"
-        android:text="版本号" />
+        android:padding="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/text_black_color"
+        android:textSize="18sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="2dp"
-        android:text="蓝港在线" />
+        android:text="蓝港在线 版权所有"
+        android:textSize="12sp"
+        android:textColor="@color/text_black_color" />
 
 </LinearLayout>

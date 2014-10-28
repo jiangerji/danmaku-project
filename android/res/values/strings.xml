@@ -75,4 +75,8 @@
     <string name="male">男</string>
     <string name="female">女</string>
     
+    <!-- fav activity -->
+    <string name="select_all">批量选择</string>
+    <string name="confirm_delete">确认删除</string>
+    
 </resources>

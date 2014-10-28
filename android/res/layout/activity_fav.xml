@@ -1,7 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.handmark.pulltorefresh.library.PullToRefreshListView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fav_list"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:scrollbars="none" />
+    android:background="@color/activity_bg"
+    android:orientation="vertical" >
+    
+    <LinearLayout
+        android:id="@+id/bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:visibility="invisible" >
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#FFC8CDD1" />
+    
+        <LinearLayout
+            
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            
+            <Button
+                android:id="@+id/select_all"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/normal_btn_bg"
+                android:text="@string/select_all"
+                android:textColor="@color/text_blue_color" />
+            
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="#FFC8CDD1" />
+            
+            <Button
+                android:id="@+id/confirm_delete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/normal_btn_bg"
+                android:gravity="center"
+                android:text="@string/confirm_delete"
+                android:textColor="@color/text_blue_color" />
+            
+        </LinearLayout>
+    </LinearLayout>
+    
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/fav_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/bottom_panel"
+        android:background="@android:color/white"
+        android:scrollbars="none" />
+  
+</RelativeLayout>

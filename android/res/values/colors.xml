@@ -11,4 +11,6 @@
     <color name="divider">#FFB9D3E0</color>
     
     <color name="bisque">#FFA500</color>
+    
+    <color name="activity_bg">#FF9B9EA3</color>
 </resources>

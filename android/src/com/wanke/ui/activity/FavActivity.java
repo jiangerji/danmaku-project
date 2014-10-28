@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -29,6 +31,9 @@ public class FavActivity extends BaseActivity {
     private PullToRefreshListView mFavList;
     private FavAdapter mFavAdapter;
     private MenuItem mDeleteMenuItem;
+    private View mBottomPanel;
+    private View mSelectAll;
+    private View mConfirmDelete;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -42,8 +47,46 @@ public class FavActivity extends BaseActivity {
         mFavAdapter = new FavAdapter();
         mFavList.setAdapter(mFavAdapter);
 
+        mBottomPanel = findViewById(R.id.bottom_panel);
+        mSelectAll = findViewById(R.id.select_all);
+        mSelectAll.setOnClickListener(mSelectAllClickListener);
+        mConfirmDelete = findViewById(R.id.confirm_delete);
+        mConfirmDelete.setOnClickListener(mConfirmDeleteClickListener);
+
         getFav();
     }
+
+    private boolean mIsSelectAll = false;
+
+    private OnClickListener mSelectAllClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            mFavAdapter.setSelectAll(!mIsSelectAll);
+            mIsSelectAll = !mIsSelectAll;
+        }
+    };
+
+    private OnClickListener mConfirmDeleteClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            if (mFavAdapter.confirmDelete(new RequestCallBack<String>() {
+
+                @Override
+                public void onSuccess(ResponseInfo<String> arg0) {
+                    dismissWaitingDialog();
+                }
+
+                @Override
+                public void onFailure(HttpException arg0, String arg1) {
+                    dismissWaitingDialog();
+                }
+            })) {
+                showWaitingDialog();
+            }
+        }
+    };
 
     private boolean mInDeleteMode = false;
 
@@ -58,6 +101,11 @@ public class FavActivity extends BaseActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 mFavAdapter.setMultiChoiceMode(!mInDeleteMode);
                 mInDeleteMode = !mInDeleteMode;
+                if (mInDeleteMode) {
+                    mBottomPanel.setVisibility(View.VISIBLE);
+                } else {
+                    mBottomPanel.setVisibility(View.INVISIBLE);
+                }
                 return true;
             }
         });
