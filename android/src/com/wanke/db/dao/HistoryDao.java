@@ -20,27 +20,27 @@ public class HistoryDao {
 		mDBHelper = new DBHelper(context);
 	}
 
-	/**
-	 * 添加一条记录到数据
-	 * 
-	 * @param path
-	 * @param number
-	 * @param name
-	 */
-	public boolean add(String number, String name, String path) {
-		SQLiteDatabase db = mDBHelper.getWritableDatabase();
-		ContentValues values = new ContentValues();
-		values.put("number", number);
-		values.put("name", name);
-		values.put("path", path);
-		long result = db.insert("history", null, values);
-		db.close();
-		if (result > 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    /**
+     * 添加一条记录到数据
+     * 
+     * @param path
+     * @param number
+     * @param name
+     */
+    public boolean add(int number, String name, String path) {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("number", number);
+        values.put("name", name);
+        values.put("path", path);
+        long result = db.insert("history", null, values);
+        db.close();
+        if (result > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 	/**
 	 * 查找一条记录是否在数据库

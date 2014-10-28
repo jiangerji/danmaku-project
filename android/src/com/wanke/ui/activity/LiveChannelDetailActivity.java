@@ -19,6 +19,7 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.wanke.db.dao.HistoryDao;
 import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.network.http.Constants;
 import com.wanke.network.http.HttpExceptionButFoundCache;
@@ -44,6 +45,8 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
     private int mUid = 1;
 
+    private HistoryDao mDao;
+
     private DisplayImageOptions mOptions = UiUtils.getOptionsFadeIn(100);
     private DisplayImageOptions mAvatarOptions = UiUtils.getOptionsRound((int) (4 * UiUtils.getDensity(null)));
 
@@ -57,7 +60,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
+        mDao = new HistoryDao(this);
         setContentView(R.layout.activity_video_detail);
 
         Intent intent = getIntent();
@@ -74,6 +77,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
+                mDao.add(mChannelOnline, mChannelOwnerNickname, mChannelName);
                 intent.setClass(LiveChannelDetailActivity.this,
                         VideoActivity.class);
                 startActivity(intent);
