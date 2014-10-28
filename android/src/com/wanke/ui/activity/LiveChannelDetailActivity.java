@@ -77,7 +77,10 @@ public class LiveChannelDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                mDao.add(mChannelOnline, mChannelOwnerNickname, mChannelName);
+                mDao.add(mChannelOnline,
+                        mChannelOwnerNickname,
+                        mChannelName,
+                        mChannelOwnerNickname);
                 intent.setClass(LiveChannelDetailActivity.this,
                         VideoActivity.class);
                 startActivity(intent);
