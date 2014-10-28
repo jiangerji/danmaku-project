@@ -74,15 +74,19 @@ public class FavAdapter extends BaseAdapter {
     public boolean confirmDelete(final RequestCallBack<String> callBack) {
         if (mSelectedCount > 0) {
             final ArrayList<FavInfo> tempInfos = new ArrayList<FavInfo>();
+            ArrayList<FavInfo> deleteInfos = new ArrayList<FavInfo>();
+
             for (int i = 0; i < getCount(); i++) {
                 if (!mSelected.get(i)) {
                     tempInfos.add(getItem(i));
+                } else {
+                    deleteInfos.add(getItem(i));
                 }
             }
 
             StringBuilder sb = new StringBuilder();
-            for (FavInfo info : tempInfos) {
-                sb.append(info.getRoomId() + ";");
+            for (FavInfo info : deleteInfos) {
+                sb.append(info.getRoomId() + ":");
             }
 
             RequestParams params = new RequestParams();

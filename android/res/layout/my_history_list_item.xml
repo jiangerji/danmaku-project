@@ -1,97 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="50dip"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:orientation="vertical"
     android:minHeight="?android:attr/listPreferredItemHeight" >
-
-    <RelativeLayout
-        android:id="@+id/my_history_list_item_name_rl"
-        android:layout_width="120dip"
-        android:layout_height="30dip"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
-
-        <ImageView
-            android:id="@+id/my_history_list_item_name_imageViews"
-            android:layout_width="30dip"
-            android:layout_height="20dip"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/history_voice" />
-
-        <TextView
-            android:id="@+id/my_history_list_item_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/my_history_list_item_name_imageViews"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:text="name" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="120dip"
-        android:layout_height="30dip"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true" >
-
-        <ImageView
-            android:id="@+id/my_history_list_item_gamename_imageView"
-            android:layout_width="30dip"
-            android:layout_height="20dip"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/history_game" />
-
-        <TextView
-            android:id="@+id/my_history_list_item_gamename"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/my_history_list_item_gamename_imageView"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:text="gamename" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="100dip"
-        android:layout_height="30dip"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" >
-
-        <ImageView
-            android:id="@+id/my_history_list_item_fans_ImageView"
-            android:layout_width="30dip"
-            android:layout_height="20dip"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/history_fans" />
-
-        <TextView
-            android:id="@+id/my_history_list_item_fans"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/my_history_list_item_fans_ImageView"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:text="fan" />
-    </RelativeLayout>
-
+    
     <TextView
-        android:id="@+id/my_history_list_item_videoname"
+        android:id="@+id/history_list_item_room_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="5dip"
+        android:layout_marginLeft="3dp"
+        android:layout_marginStart="3dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="videoname" />
+        android:textSize="18sp"
+        android:textColor="@color/text_black_color"
+        android:text="room name" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false" >
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+    
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/history_voice"
+                android:contentDescription="@null" />
+    
+            <TextView
+                android:id="@+id/history_list_item_owner_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="12sp"
+                android:textColor="@color/text_black_color"
+                android:text="user name" />
+        </LinearLayout>
+    
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+    
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/history_game"
+                android:contentDescription="@null" />
+    
+            <TextView
+                android:id="@+id/history_list_item_game_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="12sp"
+                android:textColor="@color/text_black_color"
+                android:text="game name" />
+        </LinearLayout>
+    
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+    
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/history_fans"
+                android:contentDescription="@null" />
+    
+            <TextView
+                android:id="@+id/history_list_item_fans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="12sp"
+                android:textColor="@color/text_black_color"
+                android:text="fan" />
+        </LinearLayout>
+    
+    </LinearLayout>
+
+</LinearLayout>

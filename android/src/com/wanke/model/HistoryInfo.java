@@ -7,57 +7,85 @@ public class HistoryInfo {
      * @author Administrator
      * 
      */
+    private String roomId;
+    private String roomName;
+    private String ownerNickname;
+    private String gameName;
+    private int fans;
 
-    private String number;
-    private String name;
-    private String gamename;
-    private String videoname;
-
-    public HistoryInfo(String number, String name, String gamename,
-            String videoname) {
-        this.number = number;
-        this.name = name;
-        this.gamename = gamename;
-        this.videoname = videoname;
+    /**
+     * @return the roomId
+     */
+    public String getRoomId() {
+        return roomId;
     }
 
-    public String getVideoname() {
-        return videoname;
+    /**
+     * @param roomId
+     *            the roomId to set
+     */
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 
-    public void setVideoname(String videoname) {
-        this.videoname = videoname;
+    /**
+     * @return the roomName
+     */
+    public String getRoomName() {
+        return roomName;
     }
 
-    public String getGamename() {
-        return gamename;
+    /**
+     * @param roomName
+     *            the roomName to set
+     */
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
-    public void setGamename(String gamename) {
-        this.gamename = gamename;
+    /**
+     * @return the ownerNickname
+     */
+    public String getOwnerNickname() {
+        return ownerNickname;
     }
 
-    public String getNumber() {
-        return number;
+    /**
+     * @param ownerNickname
+     *            the ownerNickname to set
+     */
+    public void setOwnerNickname(String ownerNickname) {
+        this.ownerNickname = ownerNickname;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    /**
+     * @return the gameName
+     */
+    public String getGameName() {
+        return gameName;
     }
 
-    public String getName() {
-        return name;
+    /**
+     * @param gameName
+     *            the gameName to set
+     */
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * @return the fans
+     */
+    public int getFans() {
+        return fans;
     }
 
-    @Override
-    public String toString() {
-        return "BlackNumberInfo [number=" + number + "videoname=" + videoname
-                + ", gamename=" + gamename
-                + ", name=" + name + "]";
+    /**
+     * @param fans
+     *            the fans to set
+     */
+    public void setFans(int fans) {
+        this.fans = fans;
     }
 
 }

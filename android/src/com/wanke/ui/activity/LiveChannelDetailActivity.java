@@ -33,6 +33,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
     public final static String CHANNEL_NAME = "channelName";
     public final static String CHANNEL_OWNER_NICKNAME = "channelOwnerNickname";
     public final static String CHANNEL_ONLINE = "channelOnline";
+    public final static String CHANNEL_GAME_NAME = "gameName";
 
     private int mChannelId = 0;
     private String mChannelName = "";
@@ -43,8 +44,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
     private String mChannelDetail = "";
     private boolean mChannelSubscribed = false;
     private String mChannelCover = "";
-
-    private int mUid = 1;
+    private String mChannelGameName;
 
     private HistoryDao mDao;
 
@@ -69,6 +69,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
         mChannelOwnerNickname = intent.getStringExtra(CHANNEL_OWNER_NICKNAME);
         mChannelOnline = intent.getIntExtra(CHANNEL_ONLINE, 0);
         mChannelId = intent.getIntExtra(CHANNEL_ID, 0);
+        mChannelGameName = intent.getStringExtra(CHANNEL_GAME_NAME);
 
         setTitle(mChannelName);
 
@@ -78,10 +79,11 @@ public class LiveChannelDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                mDao.add(mChannelOnline,
-                        mChannelOwnerNickname,
+                mDao.add(mChannelId,
                         mChannelName,
-                        mChannelOwnerNickname);
+                        mChannelGameName,
+                        mChannelOwnerNickname,
+                        mChannelFans);
                 intent.setClass(LiveChannelDetailActivity.this,
                         VideoActivity.class);
                 startActivity(intent);
@@ -182,6 +184,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
                     mChannelFans = object.getInt("fans");
                     mChannelOwnerUid = object.getInt("ownerUid");
                     mChannelSubscribed = object.getBoolean("subscribed");
+                    mChannelGameName = object.getString("gameName");
                     runOnUiThread(new Runnable() {
                         public void run() {
                             initView();

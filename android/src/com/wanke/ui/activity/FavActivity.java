@@ -165,6 +165,6 @@ public class FavActivity extends BaseActivity {
                 dismissWaitingDialog();
                 showToast(msg);
             }
-        }, null, 10000);
+        }, null, 0);
     }
 }

@@ -2,108 +2,82 @@ package com.wanke.ui.activity.my;
 
 import java.util.List;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.wanke.db.dao.HistoryDao;
-import com.wanke.model.HistoryInfo;
-import com.wanke.tv.R;
-import com.wanke.ui.UiUtils;
-import com.wanke.util.MyAsyncTask;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 import com.wanke.db.dao.HistoryDao;
 import com.wanke.model.HistoryInfo;
 import com.wanke.tv.R;
-import com.wanke.ui.UiUtils;
 import com.wanke.ui.activity.BaseActivity;
+import com.wanke.ui.activity.LiveChannelDetailActivity;
 import com.wanke.util.MyAsyncTask;
 
 public class HistoryActivity extends BaseActivity {
     public static final String TAG = "HistoryActivity";
-    private DisplayImageOptions mOptions = UiUtils.getOptionsFadeIn(250);
 
-	private ListView mListView;
-	private HistoryDao mDao;
-	private List<HistoryInfo> mHistoryInfo;
-	private HistoryAdapter mAdapter;
-	// 设置每一页显示的最多的条目.
-	private static final int mPageSize = 20;
-	// 总的页码
-	private int mTotalPage = 0;
-	// 当前页 默认第一页
-	private int mCurrentPage = 1;
+    private ListView mListView;
+    private HistoryDao mDao;
+    private List<HistoryInfo> mHistoryInfo;
+    private HistoryAdapter mAdapter;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.fragment_my_history);
-		mListView = (ListView) findViewById(R.id.my_history_listview);
-		mDao = new HistoryDao(this);
-		mTotalPage = mDao.getTotalPageNumber(mPageSize);
-		fillData();
-		// mHistoryInfo = mDao.findPartHistoryInfos(1, 1000);
-	}
-
-	private void fillData() {
-
-		new MyAsyncTask() {
- 
-			@Override
-			protected void onPreExectue() {
-			}
-
-			@Override
-			protected void onPostExecute() {
-				mAdapter = new HistoryAdapter();
-				mListView.setAdapter(mAdapter);
-			}
-
-			@Override
-			protected void doInbackgroud() {
-				mHistoryInfo = mDao.findHistoryInfosByPage(mCurrentPage,
-						mPageSize);
-			}
-		}.execute();
-	}
+    // 设置每一页显示的最多的条目.
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_my_history);
+        mListView = (ListView) findViewById(R.id.my_history_listview);
+        mDao = new HistoryDao(this);
+        fillData();
+    }
 
-        menu.add("delate")
-                .setIcon(R.drawable.history_delete)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
-                        | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        return true;
+    private void fillData() {
+
+        new MyAsyncTask() {
+
+            @Override
+            protected void onPreExectue() {
+            }
+
+            @Override
+            protected void onPostExecute() {
+                mAdapter = new HistoryAdapter();
+                mListView.setAdapter(mAdapter);
+            }
+
+            @Override
+            protected void doInbackgroud() {
+                mHistoryInfo = mDao.findAll();
+            }
+        }.execute();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case 0:
-            dialog();
-            break;
-        case android.R.id.home:
-            finish();
-        default:
-            break;
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.add("delete");
+        menuItem.setIcon(R.drawable.action_bar_delete_btn_bg)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
+                        | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        menuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                dialog();
+                return true;
+            }
+        });
         return true;
     }
 
@@ -114,8 +88,9 @@ public class HistoryActivity extends BaseActivity {
                 new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int arg1) {
-                        // TODO Auto-generated method stub
-                        mDao.delateAll();
+                        mDao.deleteAll();
+                        mHistoryInfo.clear();
+                        mAdapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });
@@ -123,7 +98,6 @@ public class HistoryActivity extends BaseActivity {
                 new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int arg1) {
-                        // TODO Auto-generated method stub
                         dialog.dismiss();
                     }
                 });
@@ -132,29 +106,27 @@ public class HistoryActivity extends BaseActivity {
 
     private class HistoryAdapter extends BaseAdapter {
 
-		@Override
-		public int getCount() {
-			return mHistoryInfo.size();
-		}
+        @Override
+        public int getCount() {
+            return mHistoryInfo.size();
+        }
 
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
 
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
         @Override
         public View getView(final int position, View convertView,
                 ViewGroup parent) {
             View view;
             ViewHolder holder;
-            if (convertView != null && convertView instanceof RelativeLayout) {
+            if (convertView != null) {
                 view = convertView;
                 holder = (ViewHolder) view.getTag();
             } else {
@@ -162,21 +134,43 @@ public class HistoryActivity extends BaseActivity {
                         R.layout.my_history_list_item, null);
                 holder = new ViewHolder();
                 holder.tv_name = (TextView) view
-                        .findViewById(R.id.my_history_list_item_name);
+                        .findViewById(R.id.history_list_item_owner_nickname);
                 holder.tv_number = (TextView) view
-                        .findViewById(R.id.my_history_list_item_fans);
-                holder.tv_gamename = (TextView) view.findViewById(R.id.my_history_list_item_gamename);
-                holder.tv_videoname = (TextView) view.findViewById(R.id.my_history_list_item_videoname);
-                view.setTag(holder);
+                        .findViewById(R.id.history_list_item_fans);
+                holder.tv_gamename = (TextView) view.findViewById(R.id.history_list_item_game_name);
+                holder.tv_videoname = (TextView) view.findViewById(R.id.history_list_item_room_name);
+
+                view.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        ViewHolder holder = (ViewHolder) v.getTag();
+
+                        HistoryInfo info = mHistoryInfo.get(holder.position);
+
+                        Intent intent = new Intent();
+                        intent.setClass(HistoryActivity.this,
+                                LiveChannelDetailActivity.class);
+                        intent.putExtra(LiveChannelDetailActivity.CHANNEL_ID,
+                                Integer.valueOf(info.getRoomId()));
+                        intent.putExtra(LiveChannelDetailActivity.CHANNEL_OWNER_NICKNAME,
+                                info.getOwnerNickname());
+                        startActivity(intent);
+                    }
+                });
             }
+
+            holder.position = position;
+            view.setTag(holder);
+
             HistoryInfo info = mHistoryInfo.get(position);
-            String number = info.getNumber();
+            String number = "" + info.getFans();
             holder.tv_number.setText(number);
-            String name = info.getName();
+            String name = info.getOwnerNickname();
             holder.tv_name.setText(name);
-            String gamename = info.getGamename();
+            String gamename = info.getGameName();
             holder.tv_gamename.setText(gamename);
-            String videoname = info.getVideoname();
+            String videoname = info.getRoomName();
             holder.tv_videoname.setText(videoname);
 
             return view;
@@ -189,5 +183,6 @@ public class HistoryActivity extends BaseActivity {
         TextView tv_number;
         TextView tv_gamename;
         TextView tv_videoname;
+        int position;
     }
 }

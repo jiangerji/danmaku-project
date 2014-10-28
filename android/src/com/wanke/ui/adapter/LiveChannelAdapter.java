@@ -82,6 +82,8 @@ public class LiveChannelAdapter extends BaseAdapter {
                             channelInfo.getOnline());
                     intent.putExtra(LiveChannelDetailActivity.CHANNEL_OWNER_NICKNAME,
                             channelInfo.getOwnerNickName());
+                    intent.putExtra(LiveChannelDetailActivity.CHANNEL_GAME_NAME,
+                            channelInfo.getGameName());
                     v.getContext().startActivity(intent);
                 }
             });
