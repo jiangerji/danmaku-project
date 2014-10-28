@@ -1,11 +1,13 @@
 <resources>
     
-    <string name="app_name">玩客TV</string>
+    <string name="app_name">黑马TV</string>
     
     <string name="recommend">推荐</string>
     <string name="live">直播</string>
     <string name="game">游戏</string>
     <string name="mine">我的</string>
+    
+    <string name="delete">删除</string>
     
     <string name="live_channel_title">直播——%s</string>
     

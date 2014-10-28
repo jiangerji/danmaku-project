@@ -17,6 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wanke.network.http.Constants;
 import com.wanke.tv.R;
 import com.wanke.ui.UiUtils;
+import com.wanke.ui.activity.FavActivity;
 import com.wanke.ui.activity.my.AboutActivity;
 import com.wanke.ui.activity.my.HistoryActivity;
 import com.wanke.ui.activity.my.InformationActivity;
@@ -167,6 +168,12 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
             intent = new Intent(getActivity(), HistoryActivity.class);
             startActivity(intent);
             break;
+
+        case R.id.my_fav:
+            intent = new Intent(getActivity(), FavActivity.class);
+            startActivity(intent);
+            break;
+
         default:
             break;
         }

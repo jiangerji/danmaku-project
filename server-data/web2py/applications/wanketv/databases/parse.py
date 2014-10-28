@@ -5,6 +5,7 @@ import sys
 import sqlite3
 import os
 import httplib
+import time
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -63,17 +64,6 @@ def getFile(url, destDir="."):
     print os.system(command)
     
 
-def parseLiveChannels():
-    # http://api.douyutv.com/api/client/live?client_sys=android&offset=0&limit=20
-    conn = httplib.HTTPConnection("api.douyutv.com")
-    conn.request(method="POST", url="/api/client/live?client_sys=android&offset=0&limit=20")
-    response = conn.getresponse();
-    if response.status == 200:
-        print "获取直播房间列表成功！"
-        all = json.loads(response.read())
-        rooms = all.get("data")
-        # for room in 
-
 # parseGames()
 """
 获取推荐页顶部广告栏信息
@@ -116,7 +106,7 @@ def parseAds():
 """
 def parseHot():
     # http://api.douyutv.com/api/client/live/2/?offset=0&limit=4&client_sys=android
-    db = sqlite3.connect("wanke.sqlite3.sqlite")
+    db = sqlite3.connect("wanke.sqlite3.sqlite.bak")
     cursor = db.cursor() 
     cursor.execute("select gameId from games")
     gameIds = []
@@ -204,10 +194,151 @@ def getDetail():
     db.commit()
 
 
-def ggg():
-    for i in range(609):
-        format = "http://img.zxshuo.cn/image/secret/album_%d.png"%i
-        getFile(format)
-        # raw_input()
+def parseLiveChannels():
+    # http://api.douyutv.com/api/client/live?client_sys=android&offset=0&limit=20
+    conn = httplib.HTTPConnection("api.douyutv.com")
+    offset = 0
+    while True:
+        conn.request(method="POST", url="/api/client/live?client_sys=android&offset="+str(offset)+"&limit=20")
 
-ggg()
+        response = conn.getresponse();
+        if response.status == 200:
+            print "获取直播房间列表成功！"
+            all = json.loads(response.read())
+            rooms = all.get("data")
+
+            if len(rooms) < 20:
+                break
+
+            for room in rooms:
+                roomId = room.get("room_id")
+                gameId = room.get("cate_id")
+                roomName = room.get("room_name")
+                owner_uid = room.get("owner_uid")
+                online = room.get("online")
+                game_name = room.get("game_name")
+
+            offset += 1
+
+        raw_input()
+        time.sleep(1)
+
+"""
+获取最热的视频直播列表
+"""
+def getAllHot():
+    # http://api.douyutv.com/api/client/live/2/?offset=0&limit=4&client_sys=android
+    db = sqlite3.connect("wanke.sqlite3.sqlite.bak")
+
+    try:
+        db.execute("delete from live_channels")
+    except Exception, e:
+        pass
+
+    cursor = db.cursor() 
+    cursor.execute("select gameId from games")
+    gameIds = []
+    for row in cursor.fetchall():
+        gameIds.append(row[0])
+
+    conn = httplib.HTTPConnection("api.douyutv.com")
+    index = 0
+    for gameId in gameIds:
+        offset = 0
+
+        while True:
+            url = "/api/client/live/"+str(gameId)+"/?offset="+str(offset*20)+"&limit=20&client_sys=android"
+            print url
+            conn.request(method="GET", url=url)
+            try:
+                response = conn.getresponse()
+                if response.status == 200:
+                    all = json.loads(response.read())
+                    rooms = all.get("data")
+                    for room in rooms:
+                        roomId = room.get("room_id")
+                        roomCover = room.get("room_src")
+                        roomName = room.get("room_name")
+                        tags = ""
+                        gameId = room.get("cate_id")
+                        gameName = room.get("game_name")
+                        vodQuality = 0
+                        showTime = room.get("show_time")
+                        ownerId = room.get("owner_uid")
+                        ownerAvatar = ""
+                        ownerNickname = room.get("nickname")
+                        online = room.get("online")
+                        fans = room.get("fans")
+                        detail = ""
+                        t = (index, roomId, roomName, os.path.split(roomCover)[1], tags, gameId, gameName, vodQuality, showTime, ownerId, ownerAvatar, ownerNickname, online,fans, detail)
+                        print "insert", t
+                        try:
+                            db.execute("insert into live_channels values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", t)
+                            index += 1
+                        except Exception, e:
+                            print e
+
+                        # getFile(roomCover, "cover")
+
+                        # 获取头像
+                        # getFile("http://uc.douyutv.com/avatar.php?uid=%s&size=big"%ownerId, "cover")
+
+                    print "get ", gameId, offset, len(rooms)
+                    db.commit()
+
+                    if len(rooms) < 20:
+                        break
+                    else:
+                        offset += 1
+
+                    # if offset > 2:
+                    #     raw_input()
+                    time.sleep(1)
+            except Exception, e:
+                time.sleep(1)
+            
+            # raw_input()
+    cursor.close()
+    db.close()
+
+# getAllHot()
+
+def _cmp(x, y):
+    if x[0] > y[0]:
+        return 1
+    elif x[0] == y[0]:
+        return 0
+    else:
+        return -1
+
+def statistic():
+    db = sqlite3.connect("wanke.sqlite3.sqlite.bak")
+
+    fp = open("statistic-"+time.time()+".log", "w")
+
+    # select gamename, count(*) from live_channels group by gameId
+    results = db.execute('select count(*), gamename from live_channels group by gameId')
+    results = list(results)
+    results.sort(cmp=_cmp, reverse=True)
+    fp.write("==========在线房间数量==========\n")
+    for i in results:
+        fp.write("%4d %s\n"%i)
+
+    fp.write("\n==========总在线人数==========\n")
+    results = db.execute('select sum(online), sum(fans) from live_channels ').fetchall()
+    fp.write("%d\n"%results[0][0])
+
+    fp.write("\n==========粉丝总人数==========\n")
+    fp.write("%d\n"%results[0][1])
+
+    fp.close()
+
+# statistic()
+
+def run():
+    getAllHot()
+    statistic()
+
+    time.sleep(60*60)
+
+run()
