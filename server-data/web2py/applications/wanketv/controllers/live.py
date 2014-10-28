@@ -5,7 +5,7 @@ dal = DAL('sqlite://wanke.sqlite3.sqlite')
 
 """
 获取推荐页顶部互动的广告信息
-live/ads
+http://54.64.105.44/wanketv/live/ads
 """
 def ads():
     parseRequest()
@@ -30,6 +30,7 @@ def ads():
 
 """
 获取当前支持直播的游戏列表
+http://54.64.105.44/wanketv/live/games
 """
 def games():
     db = DAL('sqlite://wanke.sqlite3.sqlite')
@@ -48,17 +49,18 @@ def games():
     return json.dumps(result)
 
 """
-http://api.douyutv.com/api/client/live/3/?offset=0&limit=4&client_sys=android
 获取某款游戏的热门直播列表
-"""
-def recommend():
-    """
-    recommend?gameId=2&offset=0&limit=4
+
+http://54.64.105.44/wanketv/live/recommend?gameId=2&offset=0&limit=4
+http://54.64.105.44/wanketv/live/recommend?offset=1&limit=20
+
+recommend?gameId=2&offset=0&limit=4
     获取room id的第offset页，每页4个
     limit  默认值为20
     offset 默认值为0
     gameId 如果没有，不按照游戏进行分类返回
-    """
+"""
+def recommend():
     parseRequest()
     gameId = request.vars.get("gameId", "")
     limit = int(request.vars.get("limit", 20))
@@ -106,12 +108,17 @@ def recommend():
     result["data"] = jsonRooms
     return json.dumps(result)
 
-def channel():
-    """
-    channel?roomId=2121&uid=1
+"""
+获取某个房间的详细信息
+
+http://54.64.105.44/wanketv/live/channel?roomId=7
+http://54.64.105.44/wanketv/live/channel?roomId=7&uid=1
+
+channel?roomId=7&uid=1
     roomId: 如果没有，返回空
-    uid: 如果有，在返回结果中加入，该用户是否订阅了该房间
-    """
+    uid: 如果有，在返回结果中加入该用户是否订阅了该房间的字段
+"""
+def channel():
     parseRequest()
     roomId = request.vars.get("roomId", "")
     uid = request.vars.get("uid", "")
@@ -160,7 +167,12 @@ def channel():
 
 import os
 """
+http://54.64.105.44/wanketv/live/version?type=android
+
 获取当前版本更新信息
+
+type: ios或者android
+
 """
 def version():
     parseRequest()
@@ -182,15 +194,18 @@ def version():
 
     return json.dumps(result)
 
-def unsubscribe():
-    """
-    unsubscribe?roomId=2121&uid=1
+"""
+取消对房间的订阅
+http://54.64.105.44/wanketv/live/unsubscribe?roomId=7&uid=1
+
+unsubscribe?roomId=7&uid=1
     roomId: 需要取消订阅的房间号
     uid:    用户uid，不能为空
     roomIds: 使用;对roomId进行分割，同时取消订阅多个房间号使用，优先级高于roomId
     all:    true or false, 这个优先级高于roomIds, 如果该值被设置为true, 删除该用户的所有订阅消息
-
-    """
+"""
+def unsubscribe():
+    
     parseRequest()
     uid = request.vars.get("uid", "")
     roomId = request.vars.get("roomId", "")
@@ -240,12 +255,15 @@ def unsubscribe():
 
     return json.dumps(result)
 
-def subscribe():
-    """
-    subscribe?roomId=2121&uid=1
+"""
+订阅某个房间
+http://54.64.105.44/wanketv/live/subscribe?roomId=7&uid=1
+
+subscribe?roomId=7&uid=1
     roomId: 需要订阅的房间号
     uid:    用户uid
-    """
+"""
+def subscribe():
     parseRequest()
     uid = request.vars.get("uid", "")
     roomId = request.vars.get("roomId", "")
@@ -278,12 +296,15 @@ def subscribe():
 
     return json.dumps(result)
 
-def login():
-    """
-    login?username=root&password=1
+"""
+登录操作
+http://54.64.105.44/wanketv/live/login?username=root&password=1
+
+login?username=root&password=1
     username: 注册用户名
     passwrod: 登录密码
-    """
+"""
+def login():
     time.sleep(2)
 
     parseRequest()
@@ -315,13 +336,17 @@ def login():
 
     return json.dumps(result)
 
-def register():
-    """
-    register?username=2121&password=1&email=123123@gmail.com
+
+"""
+注册新用户
+http://54.64.105.44/wanketv/live/register?username=2121&password=1&email=123123@gmail.com
+
+register?username=2121&password=1&email=123123@gmail.com
     username: 注册用户名
     passwrod: 登录密码
     email:    注册邮箱
-    """
+"""
+def register():
     time.sleep(2)
 
     parseRequest()
@@ -352,12 +377,16 @@ def register():
 
     return json.dumps(result)
 
-def userInfo():
-    """
-    获取某人的资料信息
-    userInfo?uid=2121
+"""
+获取某人的资料信息
+http://54.64.105.44/wanketv/live/userInfo?uid=2121
+
+
+userInfo?uid=2121
     uid: 注册用户的uid
-    """
+"""
+def userInfo():
+
     parseRequest()
 
     uid = request.vars.get("uid", "")
@@ -388,13 +417,15 @@ def userInfo():
 
     return json.dumps(result)
 
-def feedback():
-    """
-    意见反馈接口
-    feedback?uid=2121&content=fasfasfasfasfasdf
+"""
+意见反馈接口
+http://54.64.105.44/wanketv/live/feedback?uid=2121&content=fasfasfasfasfasdf
+
+feedback?uid=2121&content=fasfasfasfasfasdf
     uid: 注册用户的uid，可选
     content: 用户反馈的意见，不能为空
-    """
+"""
+def feedback():
     parseRequest()
 
     uid = request.vars.get("uid", "")
@@ -414,11 +445,13 @@ def feedback():
 
     return json.dumps(result)
 
+"""
+获取用户关注的直播频道数据
+http://54.64.105.44/wanketv/live/fav?uid=1
+
+fav?uid=2121
+"""
 def fav():
-    """
-    获取用户关注的直播频道数据
-    fav?uid=2121
-    """
     parseRequest()
 
     uid = request.vars.get("uid", "")
