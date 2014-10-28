@@ -2,50 +2,62 @@ package com.wanke.model;
 
 public class HistoryInfo {
 
-	/**
-	 * 
-	 * @author Administrator
-	 * 
-	 */
+    /**
+     * 
+     * @author Administrator
+     * 
+     */
 
-	private String number;
-	private String name;
-	private String path;
+    private String number;
+    private String name;
+    private String gamename;
+    private String videoname;
 
-	public HistoryInfo(String number, String name, String path) {
-		this.number = number;
-		this.name = name;
-		this.path = path;
-	}
+    public HistoryInfo(String number, String name, String gamename,
+            String videoname) {
+        this.number = number;
+        this.name = name;
+        this.gamename = gamename;
+        this.videoname = videoname;
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getVideoname() {
+        return videoname;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public void setVideoname(String videoname) {
+        this.videoname = videoname;
+    }
 
-	public String getNumber() {
-		return number;
-	}
+    public String getGamename() {
+        return gamename;
+    }
 
-	public void setNumber(String number) {
-		this.number = number;
-	}
+    public void setGamename(String gamename) {
+        this.gamename = gamename;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getNumber() {
+        return number;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
-	@Override
-	public String toString() {
-		return "BlackNumberInfo [number=" + number + ", path=" + path
-				+ ", name=" + name + "]";
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "BlackNumberInfo [number=" + number + "videoname=" + videoname
+                + ", gamename=" + gamename
+                + ", name=" + name + "]";
+    }
 
 }

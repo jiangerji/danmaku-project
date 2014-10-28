@@ -10,16 +10,16 @@ public class DBHelper extends SQLiteOpenHelper {
 		super(context, "history.db", null, 1);
 	}
 
-	// id 主键 自增长
-	// number
-	// path
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("create table history (id integer primary key autoincrement, number varchar(20), name varchar(2), path varchar(200) )");
-		// db.execSQL("create table about (id integer primary key autoincrement, number varchar(20), name varchar(2), path varchar(200) )");
-	}
+    // id 主键 自增长
+    // number
+    // path
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("create table history (id integer primary key autoincrement, number varchar(20),gamename varchar(20), videoname varchar(20), name varchar(2) )");
+        // db.execSQL("create table about (id integer primary key autoincrement, number varchar(20), name varchar(2), path varchar(200) )");
+    }
 
-	@Override
+    @Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 	}
