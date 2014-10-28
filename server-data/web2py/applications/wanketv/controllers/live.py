@@ -186,35 +186,57 @@ def unsubscribe():
     """
     unsubscribe?roomId=2121&uid=1
     roomId: 需要取消订阅的房间号
-    uid:    用户uid
+    uid:    用户uid，不能为空
+    roomIds: 使用;对roomId进行分割，同时取消订阅多个房间号使用，优先级高于roomId
+    all:    true or false, 这个优先级高于roomIds, 如果该值被设置为true, 删除该用户的所有订阅消息
+
     """
     parseRequest()
     uid = request.vars.get("uid", "")
     roomId = request.vars.get("roomId", "")
+    roomIds = request.vars.get("roomIds", "").split(":")
+    unsubscribeAll = request.vars.get("all", "false")
 
-    db = DAL('sqlite://wanke.sqlite3.sqlite')
-    sql = "select subscribes from subscribe where uid=%s"%uid
-
-    subscribes = db.executesql(sql)
-
-    subscribe = None
-    if len(subscribes) >= 1:
-        subscribe = subscribes[0][0]
+    print roomIds
 
     result = {}
     result["error"] = 1
 
-    if subscribe != None:
-        sset = set(subscribe.split(":"))
+    if unsubscribeAll.lower() == "true":
+        # 删除所有的订阅
         try:
-            sset.remove(roomId)
-
-            # update
-            sql = 'update subscribe set subscribes="%s" where uid=%s'%(":".join(list(sset)), uid)
-            db.executesql(sql)
+            sql = 'update subscribe set subscribes="%s" where uid=%s'%("", uid)
+            dal.executesql(sql)
             result["error"] = 0
         except Exception, e:
-            pass
+            result["msg"] = e.message
+    else:
+        if len(roomIds) == 0:
+            roomIds.add(roomId)
+
+        sql = "select subscribes from subscribe where uid=%s"%uid
+
+        subscribes = dal.executesql(sql)
+
+        subscribe = None
+        if len(subscribes) >= 1:
+            subscribe = subscribes[0][0]
+
+        if subscribe != None:
+            sset = set(subscribe.split(":"))
+            try:
+                for tempId in roomIds:
+                    try:
+                        sset.remove(tempId)
+                    except Exception, e:
+                        pass
+
+                # update
+                sql = 'update subscribe set subscribes="%s" where uid=%s'%(":".join(list(sset)), uid)
+                dal.executesql(sql)
+                result["error"] = 0
+            except Exception, e:
+                result["msg"] = e.message
 
     return json.dumps(result)
 
