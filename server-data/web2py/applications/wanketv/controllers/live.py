@@ -494,6 +494,21 @@ def fav():
 
 
 """
+获取当前弹幕热词
+"""
+def danmaku():
+    parseRequest()
+
+    result = {}
+    result["error"] = 0
+    result["msg"] = ""
+
+    data = ["机油上吧~~", "太烂了吧你也！", "我看好你哦~~哈哈", "看的我真心醉了！！", "牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛！！！！"]
+    result["data"] = data
+
+    return json.dumps(result)
+
+"""
 获取图片
 """
 def imgfile():
