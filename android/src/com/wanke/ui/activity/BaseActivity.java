@@ -3,6 +3,7 @@ package com.wanke.ui.activity;
 import android.app.Dialog;
 import android.os.Bundle;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -76,7 +77,10 @@ public class BaseActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         if ((getFlag() & FLAG_DISABLE_HOME_AS_UP) != FLAG_DISABLE_HOME_AS_UP) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
         }
     }
 

@@ -86,6 +86,7 @@ public class LiveChannelDetailActivity extends BaseActivity {
                         mChannelFans);
                 intent.setClass(LiveChannelDetailActivity.this,
                         VideoActivity.class);
+                intent.putExtra(VideoActivity.KEY_ROOM_TITLE, mChannelName);
                 startActivity(intent);
             }
         });

@@ -35,6 +35,8 @@
         android:id="@+id/video_controll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:orientation="horizontal"
         android:background="#80333333"
         android:gravity="center|start"
@@ -106,14 +108,16 @@
             android:layout_toStartOf="@id/screen_adjust_btn"
             android:layout_alignTop="@id/video_player_panel_controller_btn"
             android:layout_alignBottom="@id/video_player_panel_controller_btn"
+            android:gravity="center"
             android:paddingStart="10dp"
             android:paddingLeft="10dp"
             android:paddingEnd="10dp"
             android:paddingRight="10dp"
-            android:textSize="28sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:text="弹幕" />
+            android:background="@drawable/video_panel_btn_bg"
+            android:text="@string/close_danmaku" />
         
     </RelativeLayout>
     
@@ -127,24 +131,12 @@
         android:gravity="center|start"
         android:visibility="invisible" >
         
-        <ImageView
-            android:id="@+id/video_top_panel_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:src="@drawable/video_player_top_panel_back_btn"
-            android:contentDescription="@null" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/video_top_panel_back"
-            android:layout_alignBottom="@id/video_top_panel_back"
-            android:layout_toRightOf="@id/video_top_panel_back"
-            android:layout_toEndOf="@id/video_top_panel_back"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:gravity="center"
             android:orientation="horizontal" >
             
@@ -152,18 +144,20 @@
                 android:id="@+id/video_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingLeft="0dp"
-                android:paddingStart="0dp"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:paddingRight="20dp"
                 android:paddingEnd="20dp"
+                android:drawableLeft="@drawable/video_player_top_panel_back_btn"
+                android:drawableStart="@drawable/video_player_top_panel_back_btn"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
-                android:text="妹妹叫你怎么过关~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
                 android:singleLine="true"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:gravity="center|start"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                 />
             
             <ImageView
                 android:id="@+id/video_top_panel_share"
@@ -172,7 +166,8 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:src="@drawable/video_player_top_panel_share_btn"
-                android:contentDescription="@null" />
+                android:contentDescription="@null"
+                android:visibility="gone" />
             
             <LinearLayout
                 android:id="@+id/video_top_panel_right_widget"
@@ -198,7 +193,6 @@
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
-                    android:text="12:20"
                     android:singleLine="true"
                     android:maxLines="1"
                     android:gravity="center" />

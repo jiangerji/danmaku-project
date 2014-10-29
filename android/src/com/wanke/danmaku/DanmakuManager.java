@@ -101,9 +101,11 @@ public class DanmakuManager {
     public void show() {
         Log.d(TAG, "显示弹幕:" + new Date().toString());
         if (mDanmakuView != null && mDanmakuView.isPrepared()) {
-            mDanmakuView.show();
+            mDanmakuView.showAndResumeDrawTask(mHideTime);
         }
     }
+
+    private long mHideTime = 0L;
 
     /**
      * 隐藏弹幕
@@ -111,7 +113,7 @@ public class DanmakuManager {
     public void hide() {
         Log.d(TAG, "隐藏弹幕:" + new Date().toString());
         if (mDanmakuView != null && mDanmakuView.isPrepared()) {
-            mDanmakuView.hide();
+            mHideTime = mDanmakuView.hideAndPauseDrawTask();
         }
     }
 
@@ -133,6 +135,19 @@ public class DanmakuManager {
         if (mDanmakuView != null && mDanmakuView.isPrepared()) {
             mDanmakuView.resume();
         }
+    }
+
+    /**
+     * 返回当前弹幕控件是否可见
+     * 
+     * @return
+     */
+    public boolean isShown() {
+        boolean result = false;
+        if (mDanmakuView != null) {
+            result = mDanmakuView.isShown();
+        }
+        return result;
     }
 
     /**

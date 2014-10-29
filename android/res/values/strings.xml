@@ -84,5 +84,9 @@
     <string name="history_dialog_title">你确定要删除吗？</string>
     <string name="history_dialog_bt_ok">确定</string>
     <string name="history_dialog_bt_cancel">取消</string>
+    
+    <!-- video activity -->
+    <string name="open_danmaku">打开弹幕</string>
+    <string name="close_danmaku">关闭弹幕</string>
 
 </resources>

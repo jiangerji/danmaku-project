@@ -1,10 +1,13 @@
 package com.wanke.ui.activity;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import master.flame.danmaku.ui.widget.DanmakuSurfaceView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.videolan.libvlc.EventHandler;
 import org.videolan.libvlc.IVideoPlayer;
 import org.videolan.libvlc.LibVLC;
@@ -12,7 +15,6 @@ import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaList;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -41,24 +43,32 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.wanke.danmaku.DanmakuController;
 import com.wanke.danmaku.DanmakuController.DanmakuListener;
 import com.wanke.danmaku.DanmakuManager;
 import com.wanke.danmaku.protocol.PushChatResponse;
+import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.tv.R;
 import com.wanke.ui.ToastUtil;
 import com.wanke.ui.UiUtils;
 import com.wanke.ui.adapter.HotDamankuAdapter;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class VideoActivity extends Activity implements SurfaceHolder.Callback,
+public class VideoActivity extends BaseActivity implements
+        SurfaceHolder.Callback,
         IVideoPlayer {
     public final static String TAG = "VideoActivity";
+
+    public final static String KEY_ROOM_TITLE = "roomTitle";
 
     public final static String LOCATION = "com.compdigitec.libvlcandroidsample.VideoActivity.location";
 
@@ -69,7 +79,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     private SurfaceHolder holder;
 
     // media player
-    private LibVLC libvlc;
+    private LibVLC mLibvlc;
     private int mVideoWidth;
     private int mVideoHeight;
     private final static int VideoSizeChanged = -1;
@@ -77,9 +87,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     private View mRootView;
     private View mVideoControllContainer;
 
-    /*************
-     * Activity
-     *************/
+    private String mRoomTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,7 +97,6 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         mRootView = getLayoutInflater().inflate(R.layout.activity_video_play,
                 null);
         requestFullScreen();
-        //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         setContentView(mRootView);
 
@@ -98,6 +105,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         Bundle extraBundle = intent.getExtras();
         if (extraBundle != null) {
             mFilePath = extraBundle.getString(LOCATION);
+            mRoomTitle = extraBundle.getString(KEY_ROOM_TITLE);
         }
 
         mFilePath = "file:///storage/sdcard0/1.mp4";
@@ -113,7 +121,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     }
 
     // 控制是否显示弹幕
-    private View mDanmakuSwitch = null;
+    private TextView mDanmakuSwitch = null;
     private Chronometer mElapseTime = null;
 
     private View mTopPanel = null;
@@ -125,6 +133,10 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     private View mTopDanmakuPanelSendBtn;
     private View mInvokeDanmakuPanelBtn;
 
+    private ImageView mVideoPlayerPlayBtn;
+
+    private View mBackKey;
+
     /**
      * 初始化视频播放的工具栏
      * 
@@ -134,6 +146,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         mNavigationBarHeight = getNavigationBarHeight();
         Log.d(TAG, "navigation bar height:" + mNavigationBarHeight);
 
+        // 初始化底部控制栏
         mVideoControllContainer = findViewById(R.id.video_controll_container);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -144,6 +157,33 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             layoutParams.setMargins(0, 0, 0, 0);
         }
         mVideoControllContainer.setLayoutParams(layoutParams);
+
+        mVideoPlayerPlayBtn = (ImageView) findViewById(R.id.video_player_panel_controller_btn);
+        mVideoPlayerPlayBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                togglePlayState();
+            }
+        });
+
+        mBackKey = findViewById(R.id.video_title);
+        mBackKey.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        View shareBtn = findViewById(R.id.video_top_panel_share);
+        shareBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                openShare();
+            }
+        });
 
         // init top panel
         mTopPanel = findViewById(R.id.video_top_panel);
@@ -157,17 +197,27 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         }
         mTopPanel.setLayoutParams(layoutParams);
 
+        TextView roomTitle = (TextView) findViewById(R.id.video_title);
+        roomTitle.setText(mRoomTitle);
+
         // 顶部时间控件
         mTopPanelTime = (TextView) mTopPanel.findViewById(R.id.video_top_panel_time);
         updateTime();
 
-        mDanmakuSwitch = mVideoControllContainer.findViewById(R.id.danmuku_btn);
+        mDanmakuSwitch = (TextView) mVideoControllContainer.findViewById(R.id.danmuku_btn);
 
         mDanmakuSwitch.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                sendDanmaku("Hello World!");
+                //                sendDanmaku("Hello World!");
+                if (DanmakuManager.getInstance().isShown()) {
+                    DanmakuManager.getInstance().hide();
+                    mDanmakuSwitch.setText(R.string.close_danmaku);
+                } else {
+                    DanmakuManager.getInstance().show();
+                    mDanmakuSwitch.setText(R.string.open_danmaku);
+                }
             }
         });
 
@@ -237,6 +287,25 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
         initHotDanmakuList();
     }
 
+    private void openShare() {
+        // TODO: 实现分享接口
+        showToast("open share!");
+    }
+
+    private boolean mPlayState = true;
+
+    private void togglePlayState() {
+        mPlayState = !mPlayState;
+
+        if (mLibvlc != null) {
+            if (mPlayState) {
+                mLibvlc.pause();
+            } else {
+                mLibvlc.play();
+            }
+        }
+    }
+
     private ListView mHotDanmakus;
     private HotDamankuAdapter mHotDamankuAdapter;
 
@@ -246,34 +315,16 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     private void initHotDanmakuList() {
         mHotDanmakus = (ListView) findViewById(R.id.video_top_danmaku_panel_hot_danmaku_list);//new ListView(this);
         int width = UiUtils.getScreenWidth(this) / 5 * 2;
-        int height = UiUtils.getScreenHeight(this) / 4 * 3;
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                width, height);
+                width, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.ALIGN_RIGHT,
                 R.id.video_top_danmaku_panel);
         layoutParams.addRule(RelativeLayout.BELOW, R.id.video_top_danmaku_panel);
         layoutParams.setMargins(0, 2, 0, 0);
         mHotDanmakus.setLayoutParams(layoutParams);
 
-        //        ((RelativeLayout) findViewById(R.id.video_player_root)).addView(mHotDanmakus);
-        //        mHotDanmakus.setVisibility(View.INVISIBLE);
-
         mHotDamankuAdapter = new HotDamankuAdapter(this);
-        // debug begin
-        String[] hotDanmakus = {
-                "牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛！！！！",
-                "太烂了吧你也！",
-                "我看好你哦~~哈哈",
-                "真心贵了",
-                "牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛！！！！",
-                "太烂了吧你也！",
-                "我看好你哦~~哈哈",
-                "真心贵了"
-        };
-        for (String hotDanmaku : hotDanmakus) {
-            mHotDamankuAdapter.add(hotDanmaku);
-        }
         mHotDanmakus.setAdapter(mHotDamankuAdapter);
 
         mHotDanmakus.setOnItemClickListener(new OnItemClickListener() {
@@ -285,6 +336,39 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
                 sendDanmaku(content);
             }
         });
+
+        getHotDanmakus();
+    }
+
+    private void getHotDanmakus() {
+        String action = "danmaku";
+
+        CommonHttpUtils.get(action, null, new RequestCallBack<String>() {
+
+            @Override
+            public void onSuccess(ResponseInfo<String> responseInfo) {
+
+                try {
+                    JSONObject object = new JSONObject(responseInfo.result);
+                    int error = object.getInt("error");
+                    if (error == 0) {
+                        ArrayList<String> danmakus = new ArrayList<String>();
+                        JSONArray datas = object.getJSONArray("data");
+                        for (int i = 0; i < datas.length(); i++) {
+                            danmakus.add(datas.get(i).toString());
+                        }
+
+                        mHotDamankuAdapter.set(danmakus);
+                    }
+                } catch (Exception e) {
+                }
+            }
+
+            @Override
+            public void onFailure(HttpException error, String msg) {
+                // 获取热词失败
+            }
+        }, "hot-danmaku", 30);
     }
 
     private long mPreSendDanmakuTime = 0;
@@ -613,9 +697,9 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
 
     public void surfaceChanged(SurfaceHolder surfaceholder, int format,
             int width, int height) {
-        if (libvlc != null) {
+        if (mLibvlc != null) {
             if (holder != null) {
-                libvlc.attachSurface(holder.getSurface(), this);
+                mLibvlc.attachSurface(holder.getSurface(), this);
             }
         }
     }
@@ -688,21 +772,21 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
             }
 
             // Create a new media player
-            libvlc = LibVLC.getInstance();
-            libvlc.setHardwareAcceleration(LibVLC.HW_ACCELERATION_DECODING);
-            libvlc.setAout(LibVLC.AOUT_OPENSLES);
-            libvlc.setTimeStretching(true);
-            libvlc.setChroma("RV32");
-            libvlc.setVerboseMode(false);
+            mLibvlc = LibVLC.getInstance();
+            mLibvlc.setHardwareAcceleration(LibVLC.HW_ACCELERATION_DECODING);
+            mLibvlc.setAout(LibVLC.AOUT_OPENSLES);
+            mLibvlc.setTimeStretching(true);
+            mLibvlc.setChroma("RV32");
+            mLibvlc.setVerboseMode(false);
             // LibVLC.restart(this);
-            libvlc.init(this);
+            mLibvlc.init(this);
             EventHandler.getInstance().addHandler(mHandler);
             holder.setFormat(PixelFormat.RGBX_8888);
             holder.setKeepScreenOn(true);
-            MediaList list = libvlc.getMediaList();
+            MediaList list = mLibvlc.getMediaList();
             list.clear();
-            list.add(new Media(libvlc, media));
-            libvlc.playIndex(0);
+            list.add(new Media(mLibvlc, media));
+            mLibvlc.playIndex(0);
         } catch (Exception e) {
             Toast.makeText(this, "Error creating player!", Toast.LENGTH_LONG)
                     .show();
@@ -711,15 +795,15 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback,
     }
 
     private void releasePlayer() {
-        if (libvlc == null)
+        if (mLibvlc == null)
             return;
         EventHandler.getInstance().removeHandler(mHandler);
-        libvlc.stop();
-        libvlc.detachSurface();
+        mLibvlc.stop();
+        mLibvlc.detachSurface();
         holder = null;
-        libvlc.closeAout();
-        libvlc.destroy();
-        libvlc = null;
+        mLibvlc.closeAout();
+        mLibvlc.destroy();
+        mLibvlc = null;
 
         mVideoWidth = 0;
         mVideoHeight = 0;

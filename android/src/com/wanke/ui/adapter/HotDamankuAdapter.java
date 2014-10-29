@@ -25,6 +25,13 @@ public class HotDamankuAdapter extends BaseAdapter {
         mHotDanmakus.add(danmaku);
     }
 
+    public void set(ArrayList<String> danmakus) {
+        mHotDanmakus.clear();
+        mHotDanmakus.addAll(danmakus);
+
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return mHotDanmakus.size();
