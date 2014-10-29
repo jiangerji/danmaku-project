@@ -493,18 +493,34 @@ def fav():
     return json.dumps(result)
 
 
+
 """
 获取当前弹幕热词
 """
 def danmaku():
+    global hotDanmakus
     parseRequest()
+
+    sql = 'CREATE TABLE IF NOT EXISTS hot_danmakus (content TEXT NOT NULL )'
+    dal.executesql(sql)
 
     result = {}
     result["error"] = 0
     result["msg"] = ""
 
-    data = ["机油上吧~~", "太烂了吧你也！", "我看好你哦~~哈哈", "看的我真心醉了！！", "牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛牛！！！！"]
-    result["data"] = data
+    danmakuContent = request.vars.get("add", "")
+    if len(danmakuContent) > 0:
+        sql = 'insert into hot_danmakus (content) VALUES ("%s")'%danmakuContent
+        dal.executesql(sql)
+    else:
+        sql = 'select * from hot_danmakus'
+        selectResults = dal.executesql(sql)
+        datas = []
+        if len(selectResults) > 0:
+            for i in selectResults:
+                datas.append(i[0])
+
+        result["data"] = datas
 
     return json.dumps(result)
 
