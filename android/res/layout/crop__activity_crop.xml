@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/done_cancel_bar"
+        style="@style/Crop.DoneCancelBar"
+        android:layout_alignParentBottom="true" >
+
+        <FrameLayout
+            android:id="@+id/btn_cancel"
+            style="@style/Crop.ActionButton" >
+
+            <TextView style="@style/Crop.ActionButtonText.Cancel" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/btn_done"
+            style="@style/Crop.ActionButton" >
+
+            <TextView style="@style/Crop.ActionButtonText.Done" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <com.wanke.ui.crop.CropImageView
+        android:id="@+id/crop_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/done_cancel_bar"
+        android:background="@drawable/crop__texture"
+        android:layerType="software" />
+
+</RelativeLayout>

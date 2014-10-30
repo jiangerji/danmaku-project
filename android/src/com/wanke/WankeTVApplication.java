@@ -11,6 +11,10 @@ public class WankeTVApplication extends Application {
 
     private static WankeTVApplication mCurrentApplication = null;
 
+    public static WankeTVApplication getApplication() {
+        return mCurrentApplication;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
