@@ -10,4 +10,5 @@
     <dimen name="text_view_horizontal_gap">8dp</dimen>
     
     <dimen name="bottom_panel_height">44dp</dimen>
+      <dimen name="crop__bar_height">48dp</dimen>
 </resources>

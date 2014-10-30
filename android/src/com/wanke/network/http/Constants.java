@@ -7,4 +7,10 @@ public class Constants {
     public static String buildImageUrl(String imageId) {
         return BASE_HOST + "/wanketv/static/images/cover/" + imageId;
     }
+
+    public static final String BASE_SDCARD = "file://";
+
+    public static String SDImageUrl(String imageId) {
+        return BASE_SDCARD + imageId;
+    }
 }
