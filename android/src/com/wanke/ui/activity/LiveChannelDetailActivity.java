@@ -175,17 +175,17 @@ public class LiveChannelDetailActivity extends BaseActivity {
                 try {
                     JSONObject object = new JSONObject(content);
 
-                    mChannelOwnerNickname = object.getString("ownerNickname");
-                    mChannelCover = object.getString("roomCover");
-                    mChannelDetail = Html.fromHtml(object.getString("detail"))
-                            .toString();
-                    mChannelName = object.getString("roomName");
-                    mChannelOnline = object.getInt("online");
-                    mChannelId = object.getInt("roomId");
-                    mChannelFans = object.getInt("fans");
-                    mChannelOwnerUid = object.getInt("ownerUid");
-                    mChannelSubscribed = object.getBoolean("subscribed");
-                    mChannelGameName = object.getString("gameName");
+                    mChannelOwnerNickname = object.optString("ownerNickname");
+                    mChannelCover = object.optString("roomCover");
+                    mChannelDetail = Html.fromHtml(object.optString("detail",
+                            "")).toString();
+                    mChannelName = object.optString("roomName");
+                    mChannelOnline = object.optInt("online", -1);
+                    mChannelId = object.optInt("roomId", -1);
+                    mChannelFans = object.optInt("fans", -1);
+                    mChannelOwnerUid = object.optInt("ownerUid", -1);
+                    mChannelSubscribed = object.optBoolean("subscribed");
+                    mChannelGameName = object.optString("gameName");
                     runOnUiThread(new Runnable() {
                         public void run() {
                             initView();
@@ -211,7 +211,9 @@ public class LiveChannelDetailActivity extends BaseActivity {
                 parseResult(responseInfo.result);
                 //                }
             }
-        }, null, 0);
+        },
+                null,
+                0);
     }
 
     private void subscribe() {
