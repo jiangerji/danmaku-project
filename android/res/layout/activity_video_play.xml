@@ -8,6 +8,7 @@
     android:id="@+id/video_player_root" >
 
     <FrameLayout
+        android:id="@+id/player_surface_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible" >
@@ -35,24 +36,22 @@
         android:id="@+id/video_controll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:padding="5dp"
         android:orientation="horizontal"
         android:background="#80333333"
         android:gravity="center|start"
-        android:visibility="invisible" >
+        android:visibility="invisible"
+        android:layout_alignParentBottom="true" >
         
         <ImageView
             android:id="@+id/video_player_panel_controller_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
             android:paddingStart="20dp"
             android:paddingLeft="20dp"
             android:paddingEnd="10dp"
             android:paddingRight="10dp"
-            android:src="@drawable/video_player_panel_pause_btn"
+            android:src="@drawable/video_player_pause"
             android:contentDescription="@null" />
         
         <Chronometer
@@ -61,51 +60,28 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/video_player_panel_controller_btn"
             android:layout_toRightOf="@id/video_player_panel_controller_btn"
+            android:layout_centerVertical="true"
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:text="@string/start_time" />
             
-        <TextView
+        <ImageView
             android:id="@+id/setting_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignTop="@id/video_player_panel_controller_btn"
-            android:layout_alignBottom="@id/video_player_panel_controller_btn"
-            android:paddingStart="10dp"
-            android:paddingLeft="10dp"
-            android:paddingEnd="20dp"
-            android:paddingRight="20dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:text="设置" />
+            android:src="@drawable/video_player_setting"
+            android:contentDescription="@null" />
         
         <TextView
+            android:visibility="gone"
             android:id="@+id/screen_adjust_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/setting_btn"
             android:layout_toStartOf="@id/setting_btn"
-            android:layout_alignTop="@id/video_player_panel_controller_btn"
-            android:layout_alignBottom="@id/video_player_panel_controller_btn"
-            android:paddingStart="10dp"
-            android:paddingLeft="10dp"
-            android:paddingEnd="10dp"
-            android:paddingRight="10dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:text="分辨率" />
-        
-        <TextView
-            android:id="@+id/danmuku_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/screen_adjust_btn"
-            android:layout_toStartOf="@id/screen_adjust_btn"
             android:layout_alignTop="@id/video_player_panel_controller_btn"
             android:layout_alignBottom="@id/video_player_panel_controller_btn"
             android:gravity="center"
@@ -117,7 +93,19 @@
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:background="@drawable/video_panel_btn_bg"
-            android:text="@string/close_danmaku" />
+            android:text="@string/screen_scale_type_auto" />
+        
+        <ImageView
+            android:id="@+id/danmuku_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/setting_btn"
+            android:layout_toStartOf="@id/setting_btn"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:src="@drawable/video_player_close_danmaku"
+            android:contentDescription="@null" />
         
     </RelativeLayout>
     
@@ -148,8 +136,8 @@
                 android:paddingStart="10dp"
                 android:paddingRight="20dp"
                 android:paddingEnd="20dp"
-                android:drawableLeft="@drawable/video_player_top_panel_back_btn"
-                android:drawableStart="@drawable/video_player_top_panel_back_btn"
+                android:drawableLeft="@drawable/video_player_top_panel_back"
+                android:drawableStart="@drawable/video_player_top_panel_back"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
                 android:singleLine="true"
@@ -276,7 +264,19 @@
         android:layout_alignRight="@id/video_controll_container"
         android:layout_marginRight="20dp"
         android:layout_marginEnd="20dp"
-        android:src="@drawable/video_palyer_invoke_send_danmaku_panel"
+        android:src="@drawable/video_player_open_danmaku_panel_normal"
+        android:contentDescription="@null" />
+    
+    <ImageView
+        android:id="@+id/video_player_lock_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/video_controll_container"
+        android:layout_alignStart="@id/video_controll_container"
+        android:layout_alignLeft="@id/video_controll_container"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/video_player_unlock"
         android:contentDescription="@null" />
     
     <ListView

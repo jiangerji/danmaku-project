@@ -14,6 +14,7 @@ import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaList;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -43,6 +44,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -76,12 +78,11 @@ public class VideoActivity extends BaseActivity implements
 
     // display surface
     private SurfaceView mSurface;
-    private SurfaceHolder holder;
+    private SurfaceHolder mHolder;
+    private FrameLayout mSurfaceFrame;
 
     // media player
     private LibVLC mLibvlc;
-    private int mVideoWidth;
-    private int mVideoHeight;
     private final static int VideoSizeChanged = -1;
 
     private View mRootView;
@@ -89,6 +90,7 @@ public class VideoActivity extends BaseActivity implements
 
     private String mRoomTitle;
 
+    @SuppressLint("InflateParams")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,16 +114,17 @@ public class VideoActivity extends BaseActivity implements
 
         Log.d(TAG, "Playing back " + mFilePath);
 
+        mSurfaceFrame = (FrameLayout) findViewById(R.id.player_surface_frame);
         mSurface = (SurfaceView) findViewById(R.id.video_surface);
-        holder = mSurface.getHolder();
-        holder.addCallback(this);
+        mHolder = mSurface.getHolder();
+        mHolder.addCallback(this);
 
         initVideoPanel();
         initDanmaku();
     }
 
     // 控制是否显示弹幕
-    private TextView mDanmakuSwitch = null;
+    private ImageView mDanmakuSwitch = null;
     private Chronometer mElapseTime = null;
 
     private View mTopPanel = null;
@@ -132,10 +135,11 @@ public class VideoActivity extends BaseActivity implements
     private EditText mTopDanmakuPanelContent;
     private View mTopDanmakuPanelSendBtn;
     private View mInvokeDanmakuPanelBtn;
+    private ImageView mLockPlayerBtn;
 
     private ImageView mVideoPlayerPlayBtn;
-
-    private View mBackKey;
+    private TextView mScreenAdjust;
+    private View mSettingBtn;
 
     /**
      * 初始化视频播放的工具栏
@@ -167,8 +171,9 @@ public class VideoActivity extends BaseActivity implements
             }
         });
 
-        mBackKey = findViewById(R.id.video_title);
-        mBackKey.setOnClickListener(new OnClickListener() {
+        TextView roomTitle = (TextView) findViewById(R.id.video_title);
+        roomTitle.setText(mRoomTitle);
+        roomTitle.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -197,15 +202,11 @@ public class VideoActivity extends BaseActivity implements
         }
         mTopPanel.setLayoutParams(layoutParams);
 
-        TextView roomTitle = (TextView) findViewById(R.id.video_title);
-        roomTitle.setText(mRoomTitle);
-
         // 顶部时间控件
         mTopPanelTime = (TextView) mTopPanel.findViewById(R.id.video_top_panel_time);
         updateTime();
 
-        mDanmakuSwitch = (TextView) mVideoControllContainer.findViewById(R.id.danmuku_btn);
-
+        mDanmakuSwitch = (ImageView) mVideoControllContainer.findViewById(R.id.danmuku_btn);
         mDanmakuSwitch.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -213,11 +214,37 @@ public class VideoActivity extends BaseActivity implements
                 //                sendDanmaku("Hello World!");
                 if (DanmakuManager.getInstance().isShown()) {
                     DanmakuManager.getInstance().hide();
-                    mDanmakuSwitch.setText(R.string.close_danmaku);
+                    mDanmakuSwitch.setImageResource(R.drawable.video_player_open_danmaku);
                 } else {
                     DanmakuManager.getInstance().show();
-                    mDanmakuSwitch.setText(R.string.open_danmaku);
+                    mDanmakuSwitch.setImageResource(R.drawable.video_player_close_danmaku);
                 }
+            }
+        });
+
+        mScreenAdjust = (TextView) findViewById(R.id.screen_adjust_btn);
+        mScreenAdjust.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mCurrentScreenState == SCREEN_AUTO) {
+                    mCurrentScreenState = SCREEN_FULL;
+                } else if (mCurrentScreenState == SCREEN_FULL) {
+                    mCurrentScreenState = SCREEN_16x9;
+                } else {
+                    mCurrentScreenState = SCREEN_AUTO;
+                }
+
+                adjustScreen();
+            }
+        });
+
+        mSettingBtn = findViewById(R.id.setting_btn);
+        mSettingBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                openSetting();
             }
         });
 
@@ -285,6 +312,94 @@ public class VideoActivity extends BaseActivity implements
         });
 
         initHotDanmakuList();
+
+        mLockPlayerBtn = (ImageView) findViewById(R.id.video_player_lock_btn);
+        mLockPlayerBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                toggleLockState();
+            }
+        });
+    }
+
+    /**
+     * 打开设置界面
+     */
+    private void openSetting() {
+        showToast("waiting :)");
+    }
+
+    private boolean mLockState = false;
+
+    /**
+     * 切换锁定播放器状态
+     */
+    private void toggleLockState() {
+        mLockState = !mLockState;
+
+        if (mLockState) {
+            mLockPlayerBtn.setImageResource(R.drawable.video_player_locked);
+            mLockPlayerBtn.clearAnimation();
+            Animation animation = AnimationUtils.loadAnimation(this,
+                    R.anim.fade_out);
+            animation.setAnimationListener(new AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mLockPlayerBtn.setAlpha(0.3f);
+                }
+            });
+            mLockPlayerBtn.startAnimation(animation);
+
+            hideVideoBar();
+            hideDanmakuPanel();
+        } else {
+            mLockPlayerBtn.setImageResource(R.drawable.video_player_unlock);
+            mLockPlayerBtn.clearAnimation();
+            mLockPlayerBtn.setAlpha(1.0f);
+        }
+    }
+
+    private int mCurrentScreenState = SCREEN_AUTO;
+
+    private final static int SCREEN_AUTO = 1;
+    private final static int SCREEN_FULL = 2;
+    private final static int SCREEN_16x9 = 3;
+
+    private void adjustScreen() {
+        // TODO: 调整分辨率
+        int w = getWindow().getDecorView().getWidth();
+        int h = getWindow().getDecorView().getHeight();
+
+        switch (mCurrentScreenState) {
+        case SCREEN_AUTO:
+            mScreenAdjust.setText(R.string.screen_scale_type_full);
+            break;
+
+        case SCREEN_FULL:
+            mScreenAdjust.setText(R.string.screen_scale_type_16x9);
+            //            Message message = Message.obtain(mHandler, VideoSizeChanged, w, h);
+            //            message.sendToTarget();
+            break;
+
+        case SCREEN_16x9:
+            mScreenAdjust.setText(R.string.screen_scale_type_auto);
+            break;
+
+        default:
+            break;
+        }
     }
 
     private void openShare() {
@@ -295,14 +410,19 @@ public class VideoActivity extends BaseActivity implements
     private boolean mPlayState = true;
 
     private void togglePlayState() {
-        mPlayState = !mPlayState;
-
         if (mLibvlc != null) {
             if (mPlayState) {
                 mLibvlc.pause();
             } else {
                 mLibvlc.play();
             }
+        }
+
+        mPlayState = !mPlayState;
+        if (mPlayState) {
+            mVideoPlayerPlayBtn.setImageResource(R.drawable.video_player_pause);
+        } else {
+            mVideoPlayerPlayBtn.setImageResource(R.drawable.video_player_play);
         }
     }
 
@@ -450,6 +570,12 @@ public class VideoActivity extends BaseActivity implements
 
             @Override
             public void onClick(View v) {
+                if (mLockState) {
+                    mLockPlayerBtn.clearAnimation();
+                    mLockPlayerBtn.setAlpha(1.0f);
+                    return;
+                }
+
                 int i = mRootView.getSystemUiVisibility();
                 Log.d(TAG, "system ui visibility:" + i);
 
@@ -557,6 +683,8 @@ public class VideoActivity extends BaseActivity implements
                 }
             });
             mVideoControllContainer.startAnimation(animation);
+        } else {
+            mRootView.setSystemUiVisibility(uiHideOptions);
         }
 
         if (mTopPanel.getVisibility() == View.VISIBLE) {
@@ -689,6 +817,14 @@ public class VideoActivity extends BaseActivity implements
         deinitDanmaku();
     }
 
+    // size of the video
+    private int mVideoHeight;
+    private int mVideoWidth;
+    private int mVideoVisibleHeight;
+    private int mVideoVisibleWidth;
+    private int mSarNum;
+    private int mSarDen;
+
     /*************
      * Surface
      *************/
@@ -698,8 +834,8 @@ public class VideoActivity extends BaseActivity implements
     public void surfaceChanged(SurfaceHolder surfaceholder, int format,
             int width, int height) {
         if (mLibvlc != null) {
-            if (holder != null) {
-                mLibvlc.attachSurface(holder.getSurface(), this);
+            if (mHolder != null) {
+                mLibvlc.attachSurface(mHolder.getSurface(), this);
             }
         }
     }
@@ -708,6 +844,93 @@ public class VideoActivity extends BaseActivity implements
     }
 
     private void setSize(int width, int height) {
+        int sw;
+        int sh;
+
+        // get screen size
+        sw = getWindow().getDecorView().getWidth();
+        sh = getWindow().getDecorView().getHeight();
+
+        double dw = sw, dh = sh;
+        boolean isPortrait;
+
+        isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+
+        if (sw > sh && isPortrait || sw < sh && !isPortrait) {
+            dw = sh;
+            dh = sw;
+        }
+
+        // sanity check
+        if (dw * dh == 0 || mVideoWidth * mVideoHeight == 0) {
+            Log.e(TAG, "Invalid surface size");
+            return;
+        }
+
+        // compute the aspect ratio
+        double ar, vw;
+        if (mSarDen == mSarNum) {
+            /* No indication about the density, assuming 1:1 */
+            vw = mVideoVisibleWidth;
+            ar = (double) mVideoVisibleWidth / (double) mVideoVisibleHeight;
+        } else {
+            /* Use the specified aspect ratio */
+            vw = mVideoVisibleWidth * (double) mSarNum / mSarDen;
+            ar = vw / mVideoVisibleHeight;
+        }
+
+        // compute the display aspect ratio
+        double dar = dw / dh;
+
+        switch (mCurrentScreenState) {
+        case SCREEN_AUTO:
+            if (dar < ar)
+                dh = dw / ar;
+            else
+                dw = dh * ar;
+            break;
+        case SCREEN_FULL:
+            break;
+        case SCREEN_16x9:
+            ar = 16.0 / 9.0;
+            if (dar < ar)
+                dh = dw / ar;
+            else
+                dw = dh * ar;
+            break;
+        //        case SURFACE_4_3:
+        //            ar = 4.0 / 3.0;
+        //            if (dar < ar)
+        //                dh = dw / ar;
+        //            else
+        //                dw = dh * ar;
+        //            break;
+        //        case SURFACE_ORIGINAL:
+        //            dh = mVideoVisibleHeight;
+        //            dw = vw;
+        //            break;
+        }
+
+        if (mHolder != null) {
+            mHolder.setFixedSize(mVideoWidth, mVideoHeight);
+        }
+
+        // set display size
+        LayoutParams lp = mSurface.getLayoutParams();
+        lp.width = (int) Math.ceil(dw * mVideoWidth / mVideoVisibleWidth);
+        lp.height = (int) Math.ceil(dh * mVideoHeight / mVideoVisibleHeight);
+        mSurface.setLayoutParams(lp);
+
+        // set frame size (crop if necessary)
+        lp = mSurfaceFrame.getLayoutParams();
+        lp.width = (int) Math.floor(dw);
+        lp.height = (int) Math.floor(dh);
+        mSurfaceFrame.setLayoutParams(lp);
+
+        mSurface.invalidate();
+    }
+
+    private void setSize1(int width, int height) {
         mVideoWidth = width;
         mVideoHeight = height;
         if (mVideoWidth * mVideoHeight <= 1) {
@@ -736,7 +959,9 @@ public class VideoActivity extends BaseActivity implements
             w = (int) (h * videoAR);
 
         // force surface buffer size
-        holder.setFixedSize(mVideoWidth, mVideoHeight);
+        if (mHolder != null) {
+            mHolder.setFixedSize(mVideoWidth, mVideoHeight);
+        }
 
         // set display size
         LayoutParams lp = mSurface.getLayoutParams();
@@ -745,15 +970,35 @@ public class VideoActivity extends BaseActivity implements
         mSurface.setLayoutParams(lp);
         mSurface.invalidate();
 
-        Log.d(TAG, "Set Video Surface View Width=" + w + ", Height=" + h);
+        Log.d(TAG, "Set Video Surface View Width=" + w + ", Height=" + h
+                + ", fix width=" + mVideoWidth + ", fix height=" + mVideoHeight);
     }
 
     @Override
     public void setSurfaceSize(int width, int height, int visible_width,
             int visible_height, int sar_num, int sar_den) {
         Log.d(TAG, "setSurfaceSize:" + width + " " + height + " "
-                + visible_width + " " + visible_height);
-        Message msg = Message.obtain(mHandler, VideoSizeChanged, width, height);
+                + visible_width + " " + visible_height + " " + sar_num + " "
+                + sar_den);
+        //        //        if (mCurrentScreenState == SCREEN_FULL) {
+        //        width = 1280;
+        //        height = 720;
+        //        //        }
+        if (width * height == 0)
+            return;
+
+        // store video size
+        mVideoHeight = height;
+        mVideoWidth = width;
+        mVideoVisibleHeight = visible_height;
+        mVideoVisibleWidth = visible_width;
+        mSarNum = sar_num;
+        mSarDen = sar_den;
+
+        Message msg = Message.obtain(mHandler,
+                VideoSizeChanged,
+                mVideoWidth,
+                mVideoHeight);
         msg.sendToTarget();
     }
 
@@ -781,8 +1026,8 @@ public class VideoActivity extends BaseActivity implements
             // LibVLC.restart(this);
             mLibvlc.init(this);
             EventHandler.getInstance().addHandler(mHandler);
-            holder.setFormat(PixelFormat.RGBX_8888);
-            holder.setKeepScreenOn(true);
+            mHolder.setFormat(PixelFormat.RGBX_8888);
+            mHolder.setKeepScreenOn(true);
             MediaList list = mLibvlc.getMediaList();
             list.clear();
             list.add(new Media(mLibvlc, media));
@@ -800,7 +1045,7 @@ public class VideoActivity extends BaseActivity implements
         EventHandler.getInstance().removeHandler(mHandler);
         mLibvlc.stop();
         mLibvlc.detachSurface();
-        holder = null;
+        mHolder = null;
         mLibvlc.closeAout();
         mLibvlc.destroy();
         mLibvlc = null;

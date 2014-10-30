@@ -88,5 +88,9 @@
     <!-- video activity -->
     <string name="open_danmaku">打开弹幕</string>
     <string name="close_danmaku">关闭弹幕</string>
+    
+    <string name="screen_scale_type_16x9">16:9</string>
+    <string name="screen_scale_type_auto">自适应</string>
+    <string name="screen_scale_type_full">全屏</string>
 
 </resources>

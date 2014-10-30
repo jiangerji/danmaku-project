@@ -27,7 +27,7 @@
             android:layout_alignRight="@id/room_cover"
             android:layout_alignEnd="@id/room_cover"
             android:scaleType="center"
-            android:src="@drawable/detail_activity_play_btn"
+            android:src="@drawable/video_player_play"
             android:contentDescription="@null" />
         
         <View
