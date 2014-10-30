@@ -12,30 +12,30 @@
             android:layout_width="match_parent"
             android:layout_height="200dip"
             android:layout_alignParentTop="true"
+            android:contentDescription="@null"
             android:scaleType="fitXY"
-            android:src="@drawable/live_channel_default_cover"
-            android:contentDescription="@null" />
-    
+            android:src="@drawable/live_channel_default_cover" />
+
         <ImageView
             android:id="@+id/video_play_btn"
             android:layout_width="match_parent"
             android:layout_height="200dip"
-            android:layout_alignTop="@id/room_cover"
             android:layout_alignBottom="@id/room_cover"
-            android:layout_alignLeft="@id/room_cover"
-            android:layout_alignStart="@id/room_cover"
-            android:layout_alignRight="@id/room_cover"
             android:layout_alignEnd="@id/room_cover"
+            android:layout_alignLeft="@id/room_cover"
+            android:layout_alignRight="@id/room_cover"
+            android:layout_alignStart="@id/room_cover"
+            android:layout_alignTop="@id/room_cover"
+            android:contentDescription="@null"
             android:scaleType="center"
-            android:src="@drawable/video_player_play"
-            android:contentDescription="@null" />
-        
+            android:src="@drawable/video_player_play" />
+
         <View
             android:id="@+id/avatar_top_indicator"
             android:layout_width="match_parent"
             android:layout_height="10dip"
             android:layout_alignBottom="@id/room_cover" />
-        
+
         <ImageView
             android:id="@+id/owner_avatar"
             android:layout_width="60dp"
@@ -43,109 +43,115 @@
             android:layout_alignTop="@id/avatar_top_indicator"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
+            android:contentDescription="@null"
             android:scaleType="fitXY"
-            android:src="@drawable/default_avatar"
-            android:contentDescription="@null" />
-        
+            android:src="@drawable/default_avatar" />
+
         <TextView
             android:id="@+id/owner_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/room_cover"
-            android:layout_toRightOf="@id/owner_avatar"
             android:layout_toEndOf="@id/owner_avatar"
-            android:paddingTop="3dp"
+            android:layout_toRightOf="@id/owner_avatar"
+            android:paddingEnd="0dp"
             android:paddingLeft="3dp"
             android:paddingRight="0dp"
             android:paddingStart="3dp"
-            android:paddingEnd="0dp"
-            android:textSize="14sp"
-            android:text="我是主播" />
-        
+            android:paddingTop="3dp"
+            android:text="我是主播"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/online"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/owner_nickname"
             android:layout_alignBottom="@id/owner_avatar"
-            android:layout_toRightOf="@id/owner_avatar"
+            android:layout_below="@id/owner_nickname"
             android:layout_toEndOf="@id/owner_avatar"
-            android:paddingTop="3dp"
+            android:layout_toRightOf="@id/owner_avatar"
+            android:paddingEnd="0dp"
             android:paddingLeft="3dp"
             android:paddingRight="0dp"
             android:paddingStart="3dp"
-            android:paddingEnd="0dp"
-            android:textSize="12sp"
-            android:textColor="@color/text_black_color" />
-        
+            android:paddingTop="3dp"
+            android:textColor="@color/text_black_color"
+            android:textSize="12sp" />
+
         <ImageView
             android:id="@+id/share_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/avatar_top_indicator"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:paddingTop="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/avatar_top_indicator"
+            android:contentDescription="@null"
             android:paddingBottom="5dp"
-            android:paddingRight="10dp"
             android:paddingEnd="10dp"
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:paddingStart="10dp"
-            android:src="@drawable/detail_activity_share_btn"
-            android:contentDescription="@null" />
-        
-        <ImageView
-            android:id="@+id/subscribe_btn"
+            android:paddingTop="5dp"
+            android:src="@drawable/detail_activity_share_btn" />
+
+        <RelativeLayout
+            android:id="@+id/subscribe_rlt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/avatar_top_indicator"
             android:layout_toLeftOf="@id/share_btn"
-            android:layout_toStartOf="@id/share_btn"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingRight="10dp"
-            android:paddingEnd="10dp"
-            android:paddingLeft="10dp"
-            android:paddingStart="10dp"
-            android:src="@drawable/detail_activity_unsubscribed_btn"
-            android:contentDescription="@null" />
-        
+            android:layout_toStartOf="@id/share_btn" >
+
+            <ImageView
+                android:id="@+id/subscribe_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:paddingBottom="5dp"
+                android:paddingEnd="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:src="@drawable/detail_activity_unsubscribed_btn" />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/room_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/owner_avatar"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginRight="25dp"   
             android:layout_marginEnd="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginStart="25dp"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
             android:textSize="14sp" />
-        
+
         <View
             android:id="@+id/detail_top_indicator"
             android:layout_width="match_parent"
             android:layout_height="2dip"
             android:layout_below="@id/room_title"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
             android:background="@color/grey" />
-        
+
         <TextView
             android:id="@+id/room_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/detail_top_indicator"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginRight="25dp"
             android:layout_marginEnd="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginStart="25dp"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
             android:textSize="12sp" />
-    
     </RelativeLayout>
+
 </ScrollView>

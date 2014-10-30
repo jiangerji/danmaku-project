@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wanke.network.http.Constants;
 import com.wanke.tv.R;
+import com.wanke.ui.ToastUtil;
 import com.wanke.ui.UiUtils;
 import com.wanke.ui.activity.FavActivity;
 import com.wanke.ui.activity.my.AboutActivity;
@@ -158,20 +159,35 @@ public class FragmentMy extends BaseFragment implements View.OnClickListener {
             break;
 
         case R.id.my_information:
-            intent = new Intent(getActivity(), InformationActivity.class);
-            intent.putExtra(InformationActivity.KEY_UID,
-                    PreferenceUtil.getUid());
-            startActivity(intent);
+            if (!mHaveAccount) {
+                ToastUtil.showToast(getActivity(), R.string.need_login_hint);
+            } else {
+                intent = new Intent(getActivity(), InformationActivity.class);
+                intent.putExtra(InformationActivity.KEY_UID,
+                        PreferenceUtil.getUid());
+                startActivity(intent);
+            }
+
             break;
 
         case R.id.my_history:
-            intent = new Intent(getActivity(), HistoryActivity.class);
-            startActivity(intent);
+            if (!mHaveAccount) {
+                ToastUtil.showToast(getActivity(), R.string.need_login_hint);
+            } else {
+                intent = new Intent(getActivity(), HistoryActivity.class);
+                startActivity(intent);
+            }
+
             break;
 
         case R.id.my_fav:
-            intent = new Intent(getActivity(), FavActivity.class);
-            startActivity(intent);
+            if (!mHaveAccount) {
+                ToastUtil.showToast(getActivity(), R.string.need_login_hint);
+            } else {
+                intent = new Intent(getActivity(), FavActivity.class);
+                startActivity(intent);
+            }
+
             break;
 
         default:

@@ -63,6 +63,7 @@ import com.wanke.tv.R;
 import com.wanke.ui.ToastUtil;
 import com.wanke.ui.UiUtils;
 import com.wanke.ui.adapter.HotDamankuAdapter;
+import com.wanke.util.PreferenceUtil;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class VideoActivity extends BaseActivity implements
@@ -89,6 +90,7 @@ public class VideoActivity extends BaseActivity implements
     private View mVideoControllContainer;
 
     private String mRoomTitle;
+    boolean logined = true;
 
     @SuppressLint("InflateParams")
     @Override
@@ -121,6 +123,16 @@ public class VideoActivity extends BaseActivity implements
 
         initVideoPanel();
         initDanmaku();
+        initAccountView();
+    }
+
+    private void initAccountView() {
+        String account = PreferenceUtil.getUsername();
+        if (!TextUtils.isEmpty(account)) {
+            logined = true;
+        } else {
+            logined = false;
+        }
     }
 
     // 控制是否显示弹幕
@@ -269,15 +281,20 @@ public class VideoActivity extends BaseActivity implements
         mTopDanmakuPanel.setLayoutParams(layoutParams);
 
         mInvokeDanmakuPanelBtn.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                if (mTopDanmakuPanel.getVisibility() == View.VISIBLE) {
-                    hideDanmakuPanel();
+                if (logined) {
+                    if (mTopDanmakuPanel.getVisibility() == View.VISIBLE) {
+                        hideDanmakuPanel();
+                    } else {
+                        hideVideoBarOnly();
+                        showDanmakuPanel();
+                    }
                 } else {
-                    hideVideoBarOnly();
-                    showDanmakuPanel();
+                    ToastUtil.showToast(getApplicationContext(),
+                            R.string.need_login_hint);
                 }
+
             }
         });
 

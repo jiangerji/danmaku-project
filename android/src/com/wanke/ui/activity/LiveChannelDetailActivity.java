@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -45,14 +46,14 @@ public class LiveChannelDetailActivity extends BaseActivity {
     private boolean mChannelSubscribed = false;
     private String mChannelCover = "";
     private String mChannelGameName;
-
+    boolean logined = true;
     private HistoryDao mDao;
 
     private DisplayImageOptions mOptions = UiUtils.getOptionsFadeIn(100);
     private DisplayImageOptions mAvatarOptions = UiUtils.getOptionsRound((int) (4 * UiUtils.getDensity(null)));
 
     ImageView mSubscribeBtn;
-
+    RelativeLayout mSubscribeRlt;
     private View mShareBtn;
 
     @Override
@@ -92,27 +93,48 @@ public class LiveChannelDetailActivity extends BaseActivity {
         });
 
         mSubscribeBtn = (ImageView) findViewById(R.id.subscribe_btn);
-        mSubscribeBtn.setOnClickListener(new OnClickListener() {
+        mSubscribeRlt = (RelativeLayout) findViewById(R.id.subscribe_rlt);
+        mSubscribeRlt.setOnClickListener(new OnClickListener() {
 
             @Override
-            public void onClick(View v) {
-                boolean logined = true;
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
                 if (logined) {
-                    if (mChannelSubscribed) {
-                        unsubscribe();
-                    } else {
-                        subscribe();
-                    }
+                    mSubscribeBtn.setOnClickListener(new OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            if (logined) {
+                                if (mChannelSubscribed) {
+                                    unsubscribe();
+                                } else {
+                                    subscribe();
+                                }
+                            } else {
+                                ToastUtil.showToastInCenter(LiveChannelDetailActivity.this,
+                                        R.string.subscribe_need_login);
+                            }
+                        }
+                    });
                 } else {
-                    ToastUtil.showToastInCenter(LiveChannelDetailActivity.this,
-                            R.string.subscribe_need_login);
+                    ToastUtil.showToast(getApplicationContext(),
+                            R.string.need_login_hint);
                 }
             }
         });
 
-        //        initView();
-
+        //initView();
         getChannelInfo();
+        initAccountView();
+    }
+
+    private void initAccountView() {
+        String account = PreferenceUtil.getUsername();
+        if (!TextUtils.isEmpty(account)) {
+            logined = true;
+        } else {
+            logined = false;
+        }
     }
 
     private void initView() {
@@ -153,7 +175,6 @@ public class LiveChannelDetailActivity extends BaseActivity {
         } else {
             mSubscribeBtn.setImageResource(R.drawable.detail_activity_unsubscribed_btn);
         }
-
         mShareBtn = findViewById(R.id.share_btn);
         mShareBtn.setOnClickListener(new OnClickListener() {
 

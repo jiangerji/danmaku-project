@@ -14,6 +14,7 @@
     <string name="danmaku_login_failed">登录弹幕服务器失败！</string>
     <string name="danmaku_send_too_fast">发送弹幕速度太快！</string>
     <string name="subscribe_need_login">订阅频道需要登录哦！</string>
+    <string name="need_login_hint">需要登录哦！</string>
 
     <!-- danmaku related -->
     <string name="danmaku_edittext_hint">请输入您要发送的弹幕</string>
