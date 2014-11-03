@@ -20,6 +20,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
@@ -28,9 +30,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -45,9 +49,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,6 +100,14 @@ public class VideoActivity extends BaseActivity implements
     private String mRoomTitle;
     boolean logined = true;
 
+    //video setting
+    private View layout;
+    PopupWindow popupWindow;
+    boolean state = true;
+    SeekBar mScreen;
+    ImageButton mLesser, mNormal, mLarger, mOversized;
+    private SharedPreferences sp;
+
     @SuppressLint("InflateParams")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +116,7 @@ public class VideoActivity extends BaseActivity implements
 
         mRootView = getLayoutInflater().inflate(R.layout.activity_video_play,
                 null);
+        sp = getSharedPreferences("config", MODE_PRIVATE);
         requestFullScreen();
 
         setContentView(mRootView);
@@ -250,13 +267,136 @@ public class VideoActivity extends BaseActivity implements
                 adjustScreen();
             }
         });
+        /**
+         * 打开设置界面
+         */
 
         mSettingBtn = findViewById(R.id.setting_btn);
         mSettingBtn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                openSetting();
+                //openSetting(v);
+                if (state) {
+                    state = false;
+                    LayoutInflater inflater = LayoutInflater.from(v.getContext());
+                    layout = inflater.inflate(R.layout.video_setting, null);
+                    mScreen = (SeekBar) layout.findViewById(R.id.video_setting_screen_luminance_seekbar);
+                    mLesser = (ImageButton) layout.findViewById(R.id.lesser_checkbox);
+                    mNormal = (ImageButton) layout.findViewById(R.id.normal_checkbox);
+                    mLarger = (ImageButton) layout.findViewById(R.id.larger_checkbox);
+                    mOversized = (ImageButton) layout.findViewById(R.id.oversized_checkbox);
+
+                    mLesser.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            // TODO Auto-generated method stub
+                            DanmakuManager.getInstance().setTextSize(20);
+                            setGender(1);
+                            Editor editor = sp.edit();
+                            editor.putInt("config", 51);
+                            editor.commit();
+                        }
+                    });
+
+                    mNormal.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            // TODO Auto-generated method stub
+                            setGender(2);
+                            DanmakuManager.getInstance().setTextSize(3);
+                            Editor editor = sp.edit();
+                            editor.putInt("config", 52);
+                            editor.commit();
+                        }
+                    });
+
+                    mLarger.setOnClickListener(new OnClickListener() {
+
+                        @Override
+                        public void onClick(View arg0) {
+                            // TODO Auto-generated method stub
+                            setGender(3);
+                            DanmakuManager.getInstance().setTextSize(40);
+                            Editor editor = sp.edit();
+                            editor.putInt("config", 53);
+                            editor.commit();
+                        }
+                    });
+
+                    mOversized.setOnClickListener(new OnClickListener() {
+
+                        @Override
+                        public void onClick(View arg0) {
+                            // TODO Auto-generated method stub
+                            setGender(4);
+                            DanmakuManager.getInstance().setTextSize(50);
+                            Editor editor = sp.edit();
+                            editor.putInt("config", 54);
+                            editor.commit();
+                        }
+                    });
+
+                    int ser = sp.getInt("config", 52);
+                    if (ser == 51) {
+                        mLesser.setSelected(true);
+                    } else if (ser == 52) {
+                        mNormal.setSelected(true);
+                    } else if (ser == 53) {
+                        mLarger.setSelected(true);
+                    } else if (ser == 54) {
+                        mOversized.setSelected(true);
+                    }
+
+                    //mScreen
+                    mScreen.setMax(255);
+                    int normal = Settings.System.getInt(getContentResolver(),
+                            Settings.System.SCREEN_BRIGHTNESS, 255);
+                    mScreen.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+                        @Override
+                        public void onStopTrackingTouch(SeekBar arg0) {
+                            // TODO Auto-generated method stub
+                            int tmpInt = mScreen.getProgress();
+                            if (tmpInt < 80) {
+                                tmpInt = 80;
+                            }
+                            // 根据当前进度改变亮度
+                            Settings.System.putInt(getContentResolver(),
+                                    Settings.System.SCREEN_BRIGHTNESS, tmpInt);
+                            tmpInt = Settings.System.getInt(getContentResolver(),
+                                    Settings.System.SCREEN_BRIGHTNESS,
+                                    -1);
+                            WindowManager.LayoutParams wl = getWindow().getAttributes();
+                            float tmpFloat = (float) tmpInt / 255;
+                            if (tmpFloat > 0 && tmpFloat <= 1) {
+                                wl.screenBrightness = tmpFloat;
+                            }
+                            getWindow().setAttributes(wl);
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar arg0) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                        @Override
+                        public void onProgressChanged(
+                                SeekBar arg0, int arg1, boolean arg2) {
+                            // TODO Auto-generated method stub
+
+                        }
+                    });
+                    popupWindow = new PopupWindow(findViewById(R.id.video_dialogsetting_LinearLayout),
+                            800,
+                            400);
+                    popupWindow.setContentView(layout);
+                    popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+
+                } else {
+                    state = true;
+                    popupWindow.dismiss();
+                }
             }
         });
 
@@ -340,11 +480,38 @@ public class VideoActivity extends BaseActivity implements
         });
     }
 
-    /**
-     * 打开设置界面
-     */
-    private void openSetting() {
-        showToast("waiting :)");
+    //video setting
+    private int mDanmaku = 0;
+
+    private void setGender(int danmaku) {
+        mDanmaku = danmaku;
+        if (mDanmaku == 1) {
+            mLesser.setSelected(true);
+            mNormal.setSelected(false);
+            mLarger.setSelected(false);
+            mOversized.setSelected(false);
+        } else if (mDanmaku == 2) {
+            mLesser.setSelected(false);
+            mNormal.setSelected(true);
+            mLarger.setSelected(false);
+            mOversized.setSelected(false);
+        } else if (mDanmaku == 3) {
+            mLesser.setSelected(false);
+            mNormal.setSelected(false);
+            mLarger.setSelected(true);
+            mOversized.setSelected(false);
+        } else if (mDanmaku == 4) {
+            mLesser.setSelected(false);
+            mNormal.setSelected(false);
+            mLarger.setSelected(false);
+            mOversized.setSelected(true);
+        } else {
+            mLesser.setSelected(false);
+            mNormal.setSelected(false);
+            mLarger.setSelected(false);
+            mOversized.setSelected(false);
+        }
+
     }
 
     private boolean mLockState = false;
@@ -1145,4 +1312,5 @@ public class VideoActivity extends BaseActivity implements
             mTopPanelTime.setText(String.format("%02d:%02d", hour, minute));
         }
     }
+
 }

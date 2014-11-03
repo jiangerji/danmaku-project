@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/video_dialogsetting_LinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#e0000000"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:gravity="center|start"
+                android:text="弹幕透明度" />
+
+            <SeekBar
+                android:id="@+id/danmaku_alpha_setting"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:gravity="center|start"
+                android:text="视频的亮度" />
+
+            <SeekBar
+                android:id="@+id/video_setting_screen_luminance_seekbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="0.73" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:gravity="center|start"
+                android:text="视频的亮度" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="30dp"
+                android:paddingTop="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/text_view_horizontal_gap"
+                    android:paddingLeft="@dimen/text_view_horizontal_gap"
+                    android:paddingRight="@dimen/text_view_horizontal_gap"
+                    android:paddingStart="@dimen/text_view_horizontal_gap"
+                    android:text="较小"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="15sp" />
+
+                <ImageButton
+                    android:id="@+id/lesser_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/checkbox_bg"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingEnd="@dimen/text_view_horizontal_gap"
+                    android:paddingLeft="@dimen/text_view_horizontal_gap"
+                    android:paddingRight="@dimen/text_view_horizontal_gap"
+                    android:paddingStart="@dimen/text_view_horizontal_gap"
+                    android:text="正常"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="15sp" />
+
+                <ImageButton
+                    android:id="@+id/normal_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/checkbox_bg"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingEnd="@dimen/text_view_horizontal_gap"
+                    android:paddingLeft="@dimen/text_view_horizontal_gap"
+                    android:paddingRight="@dimen/text_view_horizontal_gap"
+                    android:paddingStart="@dimen/text_view_horizontal_gap"
+                    android:text="较大"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="15sp" />
+
+                <ImageButton
+                    android:id="@+id/larger_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/checkbox_bg"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingEnd="@dimen/text_view_horizontal_gap"
+                    android:paddingLeft="@dimen/text_view_horizontal_gap"
+                    android:paddingRight="@dimen/text_view_horizontal_gap"
+                    android:paddingStart="@dimen/text_view_horizontal_gap"
+                    android:text="超大"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="15sp" />
+
+                <ImageButton
+                    android:id="@+id/oversized_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/checkbox_bg"
+                    android:contentDescription="@null" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
