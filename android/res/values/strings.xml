@@ -15,6 +15,7 @@
     <string name="danmaku_send_too_fast">发送弹幕速度太快！</string>
     <string name="subscribe_need_login">订阅频道需要登录哦！</string>
     <string name="need_login_hint">需要登录哦！</string>
+    <string name="need_data_hint">还没数据哦！</string>
 
     <!-- danmaku related -->
     <string name="danmaku_edittext_hint">请输入您要发送的弹幕</string>
@@ -88,5 +89,6 @@
     <string name="crop__pick_error">没找到图片</string>
     <string name="crop__done">完成</string>
     <string name="crop__cancel">取消</string>
-
+    <!-- feedback -->
+	<string name="feedback_submit">提交</string>
 </resources>

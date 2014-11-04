@@ -350,15 +350,20 @@ public class VideoActivity extends BaseActivity implements
 
                     //mScreen
                     mScreen.setMax(255);
+                    mScreen.setProgress((int) ((PreferenceUtil.getDanmakuAlpha() - 0x30)
+                            * 70.f / (0xFF - 0x30)));
                     int normal = Settings.System.getInt(getContentResolver(),
                             Settings.System.SCREEN_BRIGHTNESS, 255);
                     mScreen.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
                         @Override
-                        public void onStopTrackingTouch(SeekBar arg0) {
+                        public void onStopTrackingTouch(SeekBar seekBar) {
                             // TODO Auto-generated method stub
+
                             int tmpInt = mScreen.getProgress();
-                            if (tmpInt < 80) {
-                                tmpInt = 80;
+                            PreferenceUtil.setDanmakuAlpha((int) (tmpInt
+                                    * ((255.0f - 0x30) / 70.0f) + 0x30));
+                            if (tmpInt < 20) {
+                                tmpInt = 20;
                             }
                             // 根据当前进度改变亮度
                             Settings.System.putInt(getContentResolver(),
@@ -375,7 +380,7 @@ public class VideoActivity extends BaseActivity implements
                         }
 
                         @Override
-                        public void onStartTrackingTouch(SeekBar arg0) {
+                        public void onStartTrackingTouch(SeekBar seekBar) {
                             // TODO Auto-generated method stub
 
                         }
@@ -389,7 +394,7 @@ public class VideoActivity extends BaseActivity implements
                     });
                     popupWindow = new PopupWindow(findViewById(R.id.video_dialogsetting_LinearLayout),
                             800,
-                            400);
+                            300);
                     popupWindow.setContentView(layout);
                     popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
 

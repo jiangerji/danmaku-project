@@ -72,7 +72,7 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onProgressChanged(
                     SeekBar seekBar, int progress, boolean fromUser) {
-
+                //  mDanmakuAlphaSetting.getBackground().setAlpha(progress);
             }
         });
 

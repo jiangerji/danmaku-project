@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -15,12 +19,14 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.wanke.network.http.CommonHttpUtils;
 import com.wanke.tv.R;
+import com.wanke.ui.ToastUtil;
 import com.wanke.util.PreferenceUtil;
 
 public class FeedbackActivity extends BaseActivity {
 
     private EditText mFeedbackContent = null;
-
+    private TextView mTextContent;
+    private Button mSubmit;
     private MenuItem mCommit;
 
     @Override
@@ -30,6 +36,18 @@ public class FeedbackActivity extends BaseActivity {
         setContentView(R.layout.activity_feedback);
 
         mFeedbackContent = (EditText) findViewById(R.id.feedback_content);
+        mTextContent = (TextView) findViewById(R.id.feedback_content_textview);
+        mSubmit = (Button) findViewById(R.id.feedback_submit_button);
+        mTextContent.getText().toString().trim();
+        mSubmit.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                ToastUtil.showToast(getApplicationContext(),
+                        R.string.need_data_hint);
+            }
+        });
         mFeedbackContent.addTextChangedListener(new TextWatcher() {
 
             @Override

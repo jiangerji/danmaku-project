@@ -1,13 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<EditText  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/feedback_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_marginLeft="2dp"
     android:layout_marginRight="2dp"
-    android:ems="10"
-    android:inputType="textMultiLine" >
+    android:background="@color/abs__background_holo_light"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/feedback_content_textview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/text_white_color"
+        android:ems="10"
+        android:gravity="top"
+        android:hapticFeedbackEnabled="true"
+        android:hint="请写下您的意见反馈，我们将会不断的改进，谢谢！"
+        android:inputType="textMultiLine"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:textSize="13dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/text_white_color"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/feedback_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="请留下你的电话或QQ，我们联系你。"
+            android:paddingLeft="10dp"
+            android:textSize="13dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/feedback_submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/text_blue_color"
+        android:text="@string/feedback_submit"
+        android:textColor="@color/text_white_color" />
 
     <requestFocus />
-</EditText>
 
+</LinearLayout>
